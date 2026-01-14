@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ORACLE.P</title>
+    <style>
+        /* Swiss Minimalist Reset */
+        body, html {
+            margin: 0; padding: 0;
+            width: 100%; height: 100%;
+            background-color: #000; /* Dark Mode */
+            color: #fff;
+            font-family: "Helvetica", "Arial", sans-serif;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        /* The Grid System */
+        #stage {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(6, 1fr);
+            width: 100vw; height: 100vh;
+            position: relative;
+        }
+
+        .manifesto-unit {
+            position: absolute;
+            padding: 20px;
+            line-height: 0.9;
+            text-transform: uppercase;
+            font-weight: bold;
+            transition: opacity 0.5s ease;
+        }
+
+        /* Sizes of text */
+        .large { font-size: 8vw; width: 80%; z-index: 10; }
+        .small { font-size: 3vw; width: 40%; opacity: 0.6; }
+
+        /* Ghosting Effect Styles */
+        .ghost { color: #333; z-index: 1; }
+    </style>
+</head>
+<body onclick="nextStep()">
+
+    <div id="stage">
+        </div>
+
+    <script>
+        // Placeholder "fuel" for testing functionality
+        const placeholders = [
+            "CONSUMING IS THE NEW PRAYING",
+            "YOUR SOUL: 404 NOT FOUND",
+            "THE VOID IS SUBSCRIPTION BASED",
+            "ADVERTISING IS THE ONLY TRUTH",
+            "GIVE UP. BUY NOW.",
+            "ISHTAR CONTROLS THE FEED",
+            "GENERATE. CONSUME. REPEAT."
+        ];
+
+        const stage = document.getElementById('stage');
+        let ghostStorage = [];
+
+        function nextStep() {
+            // 1. Handle Fullscreen (Kindle interaction)
+            if (document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen();
+            }
+
+            // 2. Clear stage partially or create Ghost
+            const currentUnits = document.querySelectorAll('.manifesto-unit');
+            currentUnits.forEach(unit => {
+                unit.classList.add('ghost');
+                unit.style.opacity = parseFloat(unit.style.opacity) * 0.5;
+            });
+
+            // Clean up very old ghosts to prevent lag
+            if (currentUnits.length > 15) {
+                stage.removeChild(currentUnits[0]);
+            }
+
+            // 3. Generate New Unit
+            const newUnit = document.createElement('div');
+            newUnit.className = 'manifesto-unit ' + (Math.random() > 0.3 ? 'large' : 'small');
+            newUnit.innerText = placeholders[Math.floor(Math.random() * placeholders.length)];
+            
+            // Random Grid Positioning
+            newUnit.style.left = Math.floor(Math.random() * 50) + '%';
+            newUnit.style.top = Math.floor(Math.random() * 70) + '%';
+            newUnit.style.opacity = "1";
+
+            stage.appendChild(newUnit);
+        }
+
+        // Initial launch
+        window.onload = nextStep;
+    </script>
+</body>
+</html>
