@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ORACLE.P | POSTER v.0.6</title>
+    <title>ORACLE.P | v.0.7 RAW</title>
     <style>
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
@@ -12,95 +12,113 @@
             overflow: hidden; text-transform: uppercase;
         }
 
-        /* Контейнер со смещением вниз, чтобы не биться об адресную строку */
+        /* Защитный отступ сверху, чтобы не лезть под браузерную строку */
         #canvas { 
             position: relative; 
             width: 100vw; 
-            height: 90vh; /* Оставляем место под браузер */
-            margin-top: 5vh; 
+            height: 85vh; 
+            margin-top: 10vh; 
         }
 
         .element { 
             position: absolute; 
             font-weight: 900; 
-            line-height: 0.85; 
-            transition: opacity 0.6s ease;
+            line-height: 0.8; 
+            transition: opacity 0.5s ease;
+            word-wrap: break-word;
         }
 
-        /* Стили слоев */
-        .headline { font-size: 16vw; width: 90%; letter-spacing: -4px; z-index: 100; }
-        .sub { font-size: 4vw; font-weight: 400; opacity: 0.7; z-index: 50; letter-spacing: 1px; }
-        .id-mark { font-size: 30vw; opacity: 0.1; z-index: 10; }
+        /* Стили для разных калибров текста */
+        .giant { font-size: 60vw; opacity: 0.15; z-index: 10; letter-spacing: -10px; }
+        .hero { font-size: 15vw; width: 90%; z-index: 100; letter-spacing: -3px; }
+        .detail { font-size: 3.5vw; font-weight: 400; opacity: 0.6; z-index: 50; letter-spacing: 1px; }
 
-        .ghost { color: #1a1a1a !important; z-index: 1 !important; }
+        /* Эффект накопления (Ghosting) */
+        .ghost { color: #1a1a1a !important; z-index: 5 !important; }
     </style>
 </head>
-<body onclick="generatePoster()">
+<body onclick="spawn()">
 
     <div id="canvas"></div>
 
     <script>
         const slogans = [
-            "Reality is a trial version",
-            "The Void is subscription based",
-            "Consuming is the new praying",
-            "Upgrade your karma now",
-            "Pure digital emptiness",
-            "Ishtar is watching you",
-            "No refunds for eternity"
+            "REALITY IS A TRIAL VERSION",
+            "THE VOID IS SUBSCRIPTION BASED",
+            "CONSUMING IS THE NEW PRAYING",
+            "HAPPINESS IS A MARKETING GLITCH",
+            "UPGRADE YOUR KARMA",
+            "ISHTAR CONTROLS THE FEED",
+            "THE ALGORITHM KNOWS YOUR SINS",
+            "PURE DIGITAL EMPTINESS",
+            "BUY THE TRUTH / GET THE VOID",
+            "YOUR SOUL IS A 404 ERROR"
         ];
 
-        const meta = ["Oracle.P / System", "Terminal 01", "GOLGOTHA INC.", "V.0.6", "NON-REFUNDABLE"];
+        const meta = [
+            "ORACLE.P / SYSTEM", "GOLGOTHA INC.", "NON-REFUNDABLE", 
+            "VERSION 2026.01", "USER AGREEMENT: ACCEPTED", "LIMIT: ETERNITY"
+        ];
 
-        function generatePoster() {
+        function spawn() {
             const canvas = document.getElementById('canvas');
             
-            // 1. Ghosting: превращаем старое в тени
+            // 1. Делаем старые элементы "призраками"
             const old = document.querySelectorAll('.element');
-            old.forEach(el => { el.classList.add('ghost'); el.style.opacity = "0.15"; });
+            old.forEach(el => { 
+                el.classList.add('ghost'); 
+                el.style.opacity = parseFloat(el.style.opacity) * 0.4;
+            });
 
-            // Очистка старых слоев
-            if (old.length > 12) { canvas.removeChild(old[0]); }
+            // Чтобы Kindle не тормозил, чистим старье
+            if (old.length > 15) { canvas.removeChild(old[0]); }
 
-            // 2. Выбор типа композиции (Layout)
-            const layoutType = Math.floor(Math.random() * 3);
+            // 2. ГЕНЕРИРУЕМ КОМПОЗИЦИЮ (3 слоя за раз)
+
+            // Слой А: ГИГАНТСКАЯ БУКВА (Фон)
+            const randomLetter = "P"; // Можно заменить на slogan[0] для большего рандома
+            createEl('giant', randomLetter, {
+                left: Math.random() * 20 + '%',
+                top: Math.random() * 20 + '%'
+            });
+
+            // Слой Б: ОСНОВНОЙ СЛОГАН
             const slogan = slogans[Math.floor(Math.random() * slogans.length)];
-            const info = meta[Math.floor(Math.random() * meta.length)];
+            createEl('hero', slogan, {
+                left: Math.random() * 10 + 5 + '%',
+                top: Math.random() * 40 + 10 + '%'
+            });
 
-            if (layoutType === 0) {
-                // Центрированный массивный блок
-                createEl('headline', slogan, { top: '30%', left: '5%', textAlign: 'left' });
-                createEl('sub', info, { top: '5%', left: '5%' });
-            } 
-            else if (layoutType === 1) {
-                // Вертикальное напряжение
-                const el = createEl('headline', slogan, { top: '10%', left: '10%' });
-                el.style.transform = "rotate(90deg)";
-                el.style.transformOrigin = "left top";
-                createEl('sub', info, { bottom: '10%', right: '5%' });
-            } 
-            else {
-                // Разнесенная композиция (Топ/Боттом)
-                createEl('headline', slogan, { bottom: '15%', left: '5%' });
-                createEl('sub', "P", { top: '5%', right: '5%', fontSize: '20vw', opacity: '0.2' });
-                createEl('sub', info, { top: '5%', left: '5%' });
-            }
+            // Слой В: МЕЛКАЯ ДЕТАЛЬ
+            const detail = meta[Math.floor(Math.random() * meta.length)];
+            createEl('detail', detail, {
+                left: Math.random() * 60 + '%',
+                top: Math.random() * 80 + 5 + '%'
+            });
 
-            // Пытаемся спрятать адресную строку
+            // Пытаемся скрыть строку браузера
             window.scrollTo(0, 1);
         }
 
-        function createEl(cls, txt, styles) {
+        function createEl(cls, txt, pos) {
             const div = document.createElement('div');
             div.className = 'element ' + cls;
             div.innerText = txt;
-            Object.assign(div.style, styles);
+            
+            // Рандомный разворот для Hero (20% шанс)
+            if (cls === 'hero' && Math.random() > 0.8) {
+                div.style.transform = "rotate(90deg)";
+                div.style.transformOrigin = "left top";
+            }
+
+            Object.assign(div.style, pos);
             document.getElementById('canvas').appendChild(div);
             return div;
         }
 
+        // Запуск при старте
         window.onload = () => {
-            generatePoster();
+            spawn();
             setTimeout(() => window.scrollTo(0, 1), 500);
         };
     </script>
