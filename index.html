@@ -3,33 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ORACLE.P | v.0.8 TYPO</title>
+    <title>ORACLE.P | v.0.9 FINAL</title>
     <style>
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
             background-color: #000; color: #fff;
             overflow: hidden; text-transform: uppercase;
+            -webkit-user-select: none;
         }
 
         #canvas { position: relative; width: 100vw; height: 100vh; }
 
-        .element { position: absolute; line-height: 0.8; transition: opacity 0.5s ease; word-wrap: break-word; }
+        .element { position: absolute; line-height: 0.8; transition: opacity 0.4s ease; word-wrap: break-word; }
 
-        /* Типы шрифтов */
-        .f-sans { font-family: "Helvetica", "Arial", sans-serif; }
-        .f-serif { font-family: "Georgia", "Times New Roman", serif; font-style: italic; text-transform: none; letter-spacing: 0; }
-        .f-mono { font-family: "Courier New", monospace; font-weight: 400; letter-spacing: -1px; }
+        /* Fonts */
+        .f-sans { font-family: "Helvetica", "Arial", sans-serif; font-weight: 900; }
+        .f-serif { font-family: "Georgia", "Times New Roman", serif; font-style: italic; text-transform: none; font-weight: 400; }
+        .f-mono { font-family: "Courier New", monospace; font-weight: 400; letter-spacing: -2px; }
 
-        /* Стили слоев */
-        .anchor-p { font-size: 35vw; font-weight: 900; z-index: 10; opacity: 0.3; font-family: sans-serif; }
-        .anchor-text { font-size: 3vw; font-weight: 400; color: #888; z-index: 15; letter-spacing: 1px; width: 30%; }
+        /* Layer Styles */
+        .giant-p { font-size: 50vw; font-weight: 900; z-index: 10; opacity: 0.25; }
+        .hero { font-size: 18vw; font-weight: 900; width: 110%; z-index: 100; letter-spacing: -5px; }
+        .hero span { display: inline-block; margin-right: 15px; }
         
-        .hero { font-size: 15vw; font-weight: 900; width: 95%; z-index: 100; letter-spacing: -3px; }
-        .hero span { display: inline-block; } /* Для рандома внутри строки */
+        .sub-text { font-size: 3.5vw; font-weight: 400; color: #aaa; z-index: 20; letter-spacing: 1px; width: 40%; }
+        .detail { font-size: 5vw; z-index: 50; opacity: 0.8; font-weight: 400; border: 1px solid #fff; padding: 2px 8px; }
 
-        .detail { font-size: 4vw; z-index: 50; opacity: 0.7; font-weight: 400; }
-
-        .ghost { color: #1a1a1a !important; z-index: 5 !important; }
+        .ghost { color: #1a1a1a !important; border-color: #1a1a1a !important; z-index: 5 !important; }
     </style>
 </head>
 <body onclick="spawn()">
@@ -46,65 +46,76 @@
             "Ishtar controls the feed",
             "The algorithm knows your sins",
             "Buy the truth / Get the void",
-            "Your soul is a 404 error"
+            "Your soul is a 404 error",
+            "God is offline",
+            "1000 Aura"
         ];
 
-        const meta = ["ORACLE.P", "SYSTEM FAILURE", "NON-REFUNDABLE", "LIMIT: ETERNITY", "GOLGOTHA", "USER_ACCEPTED"];
+        const meta = ["ORACLE.P", "SYSTEM_FAILURE", "NON-REFUNDABLE", "LIMIT: ETERNITY", "GOLGOTHA", "USER_ACCEPTED", "$999.00"];
         const fontClasses = ["f-sans", "f-serif", "f-mono"];
 
         function spawn() {
             const canvas = document.getElementById('canvas');
+            
+            // 1. Ghosting
             const old = document.querySelectorAll('.element');
             old.forEach(el => { 
                 el.classList.add('ghost'); 
-                el.style.opacity = parseFloat(el.style.opacity) * 0.3;
+                el.style.opacity = "0.1"; 
             });
-            if (old.length > 20) { canvas.removeChild(old[0]); }
+            if (old.length > 25) { canvas.removeChild(old[0]); }
 
-            // 1. СТАТИЧНЫЙ ЯКОРЬ (Появляется в разных углах, но размер всегда один)
-            const anchorTop = Math.random() > 0.5 ? '5%' : '60%';
-            createEl('anchor-p f-sans', "P", { left: '5%', top: anchorTop });
-            createEl('anchor-text f-sans', "POWERED BY ORACLE.P // v.0.8", { left: '10%', top: (parseFloat(anchorTop)+20)+'%' });
+            // 2. COMPOSITION GENERATION
 
-            // 2. ГЛАВНЫЙ СЛОГАН (С заменой шрифта у слов)
+            // A. THE BIG P (Random corner)
+            const pPos = [
+                {top: '-5%', left: '-5%'}, {top: '-5%', right: '-5%'}, 
+                {bottom: '-5%', left: '-5%'}, {bottom: '-5%', right: '-5%'}
+            ];
+            createEl('giant-p f-sans', "P", pPos[Math.floor(Math.random()*pPos.length)]);
+
+            // B. THE HERO SLOGAN
             const slogan = slogans[Math.floor(Math.random() * slogans.length)];
-            const heroEl = createEl('hero f-sans', "", {
-                left: Math.random() * 5 + '%',
-                top: Math.random() * 60 + 10 + '%'
+            const hero = createEl('hero f-sans', "", {
+                left: (Math.random() * 20 - 10) + '%',
+                top: (Math.random() * 80) + '%'
             });
             
-            // Рандом шрифта внутри заголовка
             slogan.split(' ').forEach(word => {
                 const span = document.createElement('span');
-                span.innerText = word + " ";
-                if (Math.random() > 0.7) span.className = fontClasses[Math.floor(Math.random() * fontClasses.length)];
-                heroEl.appendChild(span);
+                span.innerText = word;
+                if (Math.random() > 0.6) span.className = fontClasses[Math.floor(Math.random() * fontClasses.length)];
+                hero.appendChild(span);
             });
 
-            // 3. ДОПОЛНИТЕЛЬНЫЕ ЭЛЕМЕНТЫ (3-4 штуки для плотности)
-            for(let i=0; i<3; i++) {
-                const txt = meta[Math.floor(Math.random() * meta.length)];
-                const font = fontClasses[Math.floor(Math.random() * fontClasses.length)];
-                createEl('detail ' + font, txt, {
-                    left: Math.random() * 70 + '%',
-                    top: Math.random() * 90 + '%'
+            // C. THE SUB-TEXT (Attached to P logic)
+            createEl('sub-text f-mono', "POWERED BY ORACLE.P // " + meta[Math.floor(Math.random()*meta.length)], {
+                left: '5%', bottom: '5%'
+            });
+
+            // D. RANDOM DETAILS (2-3 items)
+            for(let i=0; i<2; i++) {
+                createEl('detail ' + fontClasses[Math.floor(Math.random()*3)], meta[Math.floor(Math.random()*meta.length)], {
+                    right: (Math.random() * 10) + '%',
+                    top: (Math.random() * 90) + '%'
                 });
             }
 
             window.scrollTo(0, 1);
         }
 
-        function createEl(cls, txt, pos) {
+        function createEl(cls, txt, styles) {
             const div = document.createElement('div');
             div.className = 'element ' + cls;
             if (txt) div.innerText = txt;
             
+            // Random Rotation (15% chance)
             if (cls.includes('hero') && Math.random() > 0.85) {
                 div.style.transform = "rotate(90deg)";
-                div.style.transformOrigin = "left top";
+                div.style.transformOrigin = "center";
             }
 
-            Object.assign(div.style, pos);
+            Object.assign(div.style, styles);
             document.getElementById('canvas').appendChild(div);
             return div;
         }
