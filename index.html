@@ -3,98 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ORACLE.P</title>
+    <title>ORACLE.P | GENERATIVE TERMINAL</title>
     <style>
-        /* Swiss Minimalist Reset */
         body, html {
             margin: 0; padding: 0;
             width: 100%; height: 100%;
-            background-color: #000; /* Dark Mode */
+            background-color: #000;
             color: #fff;
             font-family: "Helvetica", "Arial", sans-serif;
             overflow: hidden;
-            cursor: pointer;
-        }
-
-        /* The Grid System */
-        #stage {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            grid-template-rows: repeat(6, 1fr);
-            width: 100vw; height: 100vh;
-            position: relative;
-        }
-
-        .manifesto-unit {
-            position: absolute;
-            padding: 20px;
-            line-height: 0.9;
             text-transform: uppercase;
-            font-weight: bold;
-            transition: opacity 0.5s ease;
         }
 
-        /* Sizes of text */
-        .large { font-size: 8vw; width: 80%; z-index: 10; }
-        .small { font-size: 3vw; width: 40%; opacity: 0.6; }
+        #canvas {
+            position: relative;
+            width: 100vw; height: 100vh;
+        }
 
-        /* Ghosting Effect Styles */
-        .ghost { color: #333; z-index: 1; }
+        .element {
+            position: absolute;
+            line-height: 0.85;
+            font-weight: 900;
+            word-wrap: break-word;
+            transition: opacity 0.8s ease;
+        }
+
+        /* Styles for Hierarchy */
+        .headline { font-size: 12vw; width: 90%; z-index: 100; letter-spacing: -2px; }
+        .detail { font-size: 3vw; width: 30%; font-weight: 400; opacity: 0.7; z-index: 50; }
+        .background-mark { font-size: 40vw; opacity: 0.15; z-index: 10; font-weight: 900; }
+
+        .ghost { color: #222 !important; z-index: 5 !important; }
     </style>
 </head>
-<body onclick="nextStep()">
+<body onclick="generatePoster()">
 
-    <div id="stage">
-        </div>
+    <div id="canvas"></div>
 
     <script>
-        // Placeholder "fuel" for testing functionality
-        const placeholders = [
-            "CONSUMING IS THE NEW PRAYING",
-            "YOUR SOUL: 404 NOT FOUND",
-            "THE VOID IS SUBSCRIPTION BASED",
-            "ADVERTISING IS THE ONLY TRUTH",
-            "GIVE UP. BUY NOW.",
-            "ISHTAR CONTROLS THE FEED",
-            "GENERATE. CONSUME. REPEAT."
+        const slogans = [
+            "Consuming is the new praying",
+            "The void is subscription based",
+            "Your soul is a 404 error",
+            "Advertising is the only truth",
+            "Ishtar controls the feed",
+            "Reality is a trial version",
+            "Happiness is a marketing glitch",
+            "The algorithm knows your sins"
         ];
 
-        const stage = document.getElementById('stage');
-        let ghostStorage = [];
+        const details = [
+            "Optimized for eternity", "User agreement: accepted", 
+            "Non-refundable existence", "Powered by Oracle.P",
+            "Version 2026.01", "Limited time offer"
+        ];
 
-        function nextStep() {
-            // 1. Handle Fullscreen (Kindle interaction)
-            if (document.documentElement.requestFullscreen) {
-                document.documentElement.requestFullscreen();
-            }
-
-            // 2. Clear stage partially or create Ghost
-            const currentUnits = document.querySelectorAll('.manifesto-unit');
-            currentUnits.forEach(unit => {
-                unit.classList.add('ghost');
-                unit.style.opacity = parseFloat(unit.style.opacity) * 0.5;
+        function generatePoster() {
+            const canvas = document.getElementById('canvas');
+            
+            // 1. Create Ghosting (fade old elements)
+            const oldElements = document.querySelectorAll('.element');
+            oldElements.forEach(el => {
+                el.classList.add('ghost');
+                el.style.opacity = parseFloat(el.style.opacity) * 0.4;
             });
 
-            // Clean up very old ghosts to prevent lag
-            if (currentUnits.length > 15) {
-                stage.removeChild(currentUnits[0]);
-            }
+            // Clean up to keep Kindle fast
+            if (oldElements.length > 20) { canvas.removeChild(oldElements[0]); }
 
-            // 3. Generate New Unit
-            const newUnit = document.createElement('div');
-            newUnit.className = 'manifesto-unit ' + (Math.random() > 0.3 ? 'large' : 'small');
-            newUnit.innerText = placeholders[Math.floor(Math.random() * placeholders.length)];
+            // 2. GENERATE COMPOSITION
             
-            // Random Grid Positioning
-            newUnit.style.left = Math.floor(Math.random() * 50) + '%';
-            newUnit.style.top = Math.floor(Math.random() * 70) + '%';
-            newUnit.style.opacity = "1";
+            // A. BACKGROUND MARK (The big "P")
+            createEl('background-mark', "P", {left: '5%', top: '10%'});
 
-            stage.appendChild(newUnit);
+            // B. MAIN HEADLINE
+            const slogan = slogans[Math.floor(Math.random() * slogans.length)];
+            createEl('headline', slogan, {
+                left: (Math.random() > 0.5 ? '5%' : '10%'),
+                top: (Math.random() * 40 + 10) + '%'
+            });
+
+            // C. SMALL DETAILS (2 units)
+            for(let i=0; i<2; i++) {
+                const detail = details[Math.floor(Math.random() * details.length)];
+                createEl('detail', detail, {
+                    left: (Math.random() * 60 + 5) + '%',
+                    top: (Math.random() * 80 + 5) + '%'
+                });
+            }
         }
 
-        // Initial launch
-        window.onload = nextStep;
+        function createEl(className, text, pos) {
+            const el = document.createElement('div');
+            el.className = 'element ' + className;
+            el.innerText = text;
+            el.style.left = pos.left;
+            el.style.top = pos.top;
+            el.style.opacity = "1";
+            document.getElementById('canvas').appendChild(el);
+        }
+
+        // Initial Start
+        window.onload = generatePoster;
     </script>
 </body>
 </html>
