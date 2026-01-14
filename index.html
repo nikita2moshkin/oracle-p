@@ -1,110 +1,70 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ORACLE.P | GENERATIVE TERMINAL</title>
-    <style>
-        body, html {
-            margin: 0; padding: 0;
-            width: 100%; height: 100%;
-            background-color: #000;
-            color: #fff;
-            font-family: "Helvetica", "Arial", sans-serif;
-            overflow: hidden;
-            text-transform: uppercase;
+<script>
+    const content = {
+        ad: ["UPGRADE SOUL", "BUY THE VOID", "ETERNITY SALE", "KARMA 0% APR", "ISHTAR APPROVED", "GOD IS OFFLINE", "PAY FOR PRAYER"],
+        brainrot: ["SKIBIDI NIRVANA", "SIGMA EMPTINESS", "DIGITAL GOONING", "RIZZ THE VOID"],
+        system: ["Syncing...", "Error 404", "Loading Afterlife", "v.0.5", "Admin Access Required"],
+        glitch: ["0X000_VOID", "$$$$$$$", "___ERR___", "|||||||||"]
+    };
+
+    function generate() {
+        const canvas = document.getElementById('canvas');
+        const old = document.querySelectorAll('.element');
+        old.forEach(el => { el.classList.add('ghost'); el.style.opacity = "0.1"; });
+
+        const rand = Math.random() * 100;
+        let type = 'ad';
+        
+        // Новые веса (System теперь реально редкая закуска)
+        if (rand > 75) type = 'brainrot';
+        if (rand > 90) type = 'system';
+        if (rand > 97) type = 'glitch';
+
+        const text = content[type][Math.floor(Math.random() * content[type].length)];
+        const el = createEl(type, text);
+
+        // Ценник только для рекламы (Ad)
+        if (type === 'ad' && Math.random() > 0.7) {
+            createEl('price', "$" + (Math.random() * 999).toFixed(2));
         }
 
-        #canvas {
-            position: relative;
-            width: 100vw; height: 100vh;
-        }
-
-        .element {
-            position: absolute;
-            line-height: 0.85;
-            font-weight: 900;
-            word-wrap: break-word;
-            transition: opacity 0.8s ease;
-        }
-
-        /* Styles for Hierarchy */
-        .headline { font-size: 12vw; width: 90%; z-index: 100; letter-spacing: -2px; }
-        .detail { font-size: 3vw; width: 30%; font-weight: 400; opacity: 0.7; z-index: 50; }
-        .background-mark { font-size: 40vw; opacity: 0.15; z-index: 10; font-weight: 900; }
-
-        .ghost { color: #222 !important; z-index: 5 !important; }
-    </style>
-</head>
-<body onclick="generatePoster()">
-
-    <div id="canvas"></div>
-
-    <script>
-        const slogans = [
-            "Consuming is the new praying",
-            "The void is subscription based",
-            "Your soul is a 404 error",
-            "Advertising is the only truth",
-            "Ishtar controls the feed",
-            "Reality is a trial version",
-            "Happiness is a marketing glitch",
-            "The algorithm knows your sins"
-        ];
-
-        const details = [
-            "Optimized for eternity", "User agreement: accepted", 
-            "Non-refundable existence", "Powered by Oracle.P",
-            "Version 2026.01", "Limited time offer"
-        ];
-
-        function generatePoster() {
-            const canvas = document.getElementById('canvas');
-            
-            // 1. Create Ghosting (fade old elements)
-            const oldElements = document.querySelectorAll('.element');
-            oldElements.forEach(el => {
-                el.classList.add('ghost');
-                el.style.opacity = parseFloat(el.style.opacity) * 0.4;
-            });
-
-            // Clean up to keep Kindle fast
-            if (oldElements.length > 20) { canvas.removeChild(oldElements[0]); }
-
-            // 2. GENERATE COMPOSITION
-            
-            // A. BACKGROUND MARK (The big "P")
-            createEl('background-mark', "P", {left: '5%', top: '10%'});
-
-            // B. MAIN HEADLINE
-            const slogan = slogans[Math.floor(Math.random() * slogans.length)];
-            createEl('headline', slogan, {
-                left: (Math.random() > 0.5 ? '5%' : '10%'),
-                top: (Math.random() * 40 + 10) + '%'
-            });
-
-            // C. SMALL DETAILS (2 units)
-            for(let i=0; i<2; i++) {
-                const detail = details[Math.floor(Math.random() * details.length)];
-                createEl('detail', detail, {
-                    left: (Math.random() * 60 + 5) + '%',
-                    top: (Math.random() * 80 + 5) + '%'
-                });
+        // Рандомные линии для "швейцарскости"
+        if (Math.random() > 0.5) {
+            const line = document.createElement('div');
+            line.className = 'shape element';
+            if(Math.random() > 0.5) {
+                line.style.width = '1px'; line.style.height = '100vh';
+            } else {
+                line.style.width = '100vw'; line.style.height = '1px';
             }
+            line.style.left = Math.random() * 100 + '%';
+            line.style.top = Math.random() * 100 + '%';
+            canvas.appendChild(line);
         }
+    }
 
-        function createEl(className, text, pos) {
-            const el = document.createElement('div');
-            el.className = 'element ' + className;
-            el.innerText = text;
-            el.style.left = pos.left;
-            el.style.top = pos.top;
-            el.style.opacity = "1";
-            document.getElementById('canvas').appendChild(el);
+    function createEl(cls, txt) {
+        const div = document.createElement('div');
+        div.className = 'element ' + cls;
+        div.innerText = txt;
+        
+        // Вращение теперь только для крупных элементов
+        if ((cls === 'ad' || cls === 'brainrot') && Math.random() > 0.85) {
+            div.style.transform = "rotate(90deg)";
         }
+        
+        setPosition(div, cls);
+        document.getElementById('canvas').appendChild(div);
+        return div;
+    }
 
-        // Initial Start
-        window.onload = generatePoster;
-    </script>
-</body>
-</html>
+    function setPosition(el, cls) {
+        // Системные данные (закуска) чаще жмутся к углам
+        if (cls === 'system') {
+            el.style.left = (Math.random() > 0.5 ? '2%' : '70%');
+            el.style.top = (Math.random() > 0.5 ? '2%' : '95%');
+        } else {
+            el.style.left = Math.random() * 60 + 5 + '%';
+            el.style.top = Math.random() * 70 + 5 + '%';
+        }
+    }
+</script>
