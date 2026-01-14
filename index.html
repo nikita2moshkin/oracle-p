@@ -3,134 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>ORACLE.P | v.0.5</title>
+    <title>ORACLE.P | POSTER v.0.6</title>
     <style>
-        /* Базовые настройки в стиле Swiss Dark Mode */
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
             background-color: #000; color: #fff;
             font-family: "Helvetica", "Arial", sans-serif;
             overflow: hidden; text-transform: uppercase;
-            -webkit-user-select: none;
         }
 
-        #canvas { position: relative; width: 100vw; height: 100vh; }
+        /* Контейнер со смещением вниз, чтобы не биться об адресную строку */
+        #canvas { 
+            position: relative; 
+            width: 100vw; 
+            height: 90vh; /* Оставляем место под браузер */
+            margin-top: 5vh; 
+        }
 
-        /* Иерархия стилей */
-        .element { position: absolute; font-weight: 900; transition: opacity 0.5s ease; }
-        
-        /* Главное блюдо: Реклама */
-        .ad { font-size: 14vw; line-height: 0.8; letter-spacing: -3px; z-index: 100; width: 90%; }
-        
-        /* Специи: Brainrot */
-        .brainrot { font-size: 9vw; font-weight: 400; font-style: italic; z-index: 80; opacity: 0.9; }
-        
-        /* Закуска: Система (мелкая, в углах) */
-        .system { font-size: 2.5vw; font-weight: 400; opacity: 0.5; z-index: 50; letter-spacing: 2px; }
-        
-        /* Акценты: Ценники и Глюки */
-        .price { font-size: 8vw; background: #fff; color: #000; padding: 2px 10px; z-index: 110; font-weight: 900; }
-        .glitch { font-family: monospace; font-size: 5vw; opacity: 0.4; letter-spacing: 10px; }
+        .element { 
+            position: absolute; 
+            font-weight: 900; 
+            line-height: 0.85; 
+            transition: opacity 0.6s ease;
+        }
 
-        /* Геометрия */
-        .line { position: absolute; background-color: #fff; z-index: 5; }
+        /* Стили слоев */
+        .headline { font-size: 16vw; width: 90%; letter-spacing: -4px; z-index: 100; }
+        .sub { font-size: 4vw; font-weight: 400; opacity: 0.7; z-index: 50; letter-spacing: 1px; }
+        .id-mark { font-size: 30vw; opacity: 0.1; z-index: 10; }
 
-        /* Эффект призрака (Ghosting) */
-        .ghost { color: #1a1a1a !important; background: transparent !important; border-color: #1a1a1a !important; z-index: 1 !important; }
+        .ghost { color: #1a1a1a !important; z-index: 1 !important; }
     </style>
 </head>
-<body onclick="generate()">
+<body onclick="generatePoster()">
 
     <div id="canvas"></div>
 
     <script>
-        // БАЗА ДАННЫХ (Пока заглушки, жду твои фразы)
-        const database = {
-            ad: ["UPGRADE SOUL", "BUY THE VOID", "ETERNITY SALE", "KARMA 0% APR", "ISHTAR APPROVED", "GOD IS OFFLINE", "PAY FOR PRAYER", "PURE NIRVANA"],
-            brainrot: ["SKIBIDI 💀", "SIGMA VOID", "RIZZ OF GOD", "GYATT ISHTAR", "1000 AURA 👁️"],
-            system: ["SYNCING...", "v.0.5.appetizer", "ERROR_404", "LOADING...", "ADMIN_ROOT"],
-            glitch: ["0X000_VOID", "$$$$$$$", "|||||||||", "___ERR___"]
-        };
+        const slogans = [
+            "Reality is a trial version",
+            "The Void is subscription based",
+            "Consuming is the new praying",
+            "Upgrade your karma now",
+            "Pure digital emptiness",
+            "Ishtar is watching you",
+            "No refunds for eternity"
+        ];
 
-        function generate() {
+        const meta = ["Oracle.P / System", "Terminal 01", "GOLGOTHA INC.", "V.0.6", "NON-REFUNDABLE"];
+
+        function generatePoster() {
             const canvas = document.getElementById('canvas');
             
-            // 1. Создаем "призраков" из старых элементов
-            const old = document.querySelectorAll('.element, .line');
-            old.forEach(el => { 
-                el.classList.add('ghost'); 
-                el.style.opacity = "0.1"; 
-            });
+            // 1. Ghosting: превращаем старое в тени
+            const old = document.querySelectorAll('.element');
+            old.forEach(el => { el.classList.add('ghost'); el.style.opacity = "0.15"; });
 
-            // Чистка, чтобы Kindle не тормозил (держим максимум 25 объектов)
-            if (old.length > 25) { canvas.removeChild(old[0]); }
+            // Очистка старых слоев
+            if (old.length > 12) { canvas.removeChild(old[0]); }
 
-            // 2. Логика вероятностей (Твои пропорции)
-            const rand = Math.random() * 100;
-            let type = 'ad';
-            if (rand > 75) type = 'brainrot';
-            if (rand > 90) type = 'system';
-            if (rand > 97) type = 'glitch';
+            // 2. Выбор типа композиции (Layout)
+            const layoutType = Math.floor(Math.random() * 3);
+            const slogan = slogans[Math.floor(Math.random() * slogans.length)];
+            const info = meta[Math.floor(Math.random() * meta.length)];
 
-            // 3. Создаем основной элемент
-            const text = database[type][Math.floor(Math.random() * database[type].length)];
-            const el = createEl(type, text);
-
-            // 4. Добавляем Ценник (только для рекламы, 30% шанс)
-            if (type === 'ad' && Math.random() > 0.7) {
-                createEl('price', "$" + (Math.random() * 999).toFixed(2));
+            if (layoutType === 0) {
+                // Центрированный массивный блок
+                createEl('headline', slogan, { top: '30%', left: '5%', textAlign: 'left' });
+                createEl('sub', info, { top: '5%', left: '5%' });
+            } 
+            else if (layoutType === 1) {
+                // Вертикальное напряжение
+                const el = createEl('headline', slogan, { top: '10%', left: '10%' });
+                el.style.transform = "rotate(90deg)";
+                el.style.transformOrigin = "left top";
+                createEl('sub', info, { bottom: '10%', right: '5%' });
+            } 
+            else {
+                // Разнесенная композиция (Топ/Боттом)
+                createEl('headline', slogan, { bottom: '15%', left: '5%' });
+                createEl('sub', "P", { top: '5%', right: '5%', fontSize: '20vw', opacity: '0.2' });
+                createEl('sub', info, { top: '5%', left: '5%' });
             }
 
-            // 5. Добавляем Швейцарские линии (50% шанс)
-            if (Math.random() > 0.5) {
-                const line = document.createElement('div');
-                line.className = 'line';
-                if(Math.random() > 0.5) {
-                    line.style.width = '1px'; line.style.height = '100vh';
-                } else {
-                    line.style.width = '100vw'; line.style.height = '1px';
-                }
-                line.style.left = Math.random() * 100 + '%';
-                line.style.top = Math.random() * 100 + '%';
-                canvas.appendChild(line);
-            }
-
-            // Попытка скрыть адресную строку Kindle
+            // Пытаемся спрятать адресную строку
             window.scrollTo(0, 1);
         }
 
-        function createEl(cls, txt) {
+        function createEl(cls, txt, styles) {
             const div = document.createElement('div');
             div.className = 'element ' + cls;
             div.innerText = txt;
-            
-            // Вращение (только для крупных, 15% шанс)
-            if ((cls === 'ad' || cls === 'brainrot') && Math.random() > 0.85) {
-                div.style.transform = "rotate(90deg)";
-            }
-            
-            setPosition(div, cls);
+            Object.assign(div.style, styles);
             document.getElementById('canvas').appendChild(div);
             return div;
         }
 
-        function setPosition(el, cls) {
-            const canvas = document.getElementById('canvas');
-            if (cls === 'system') {
-                // Систему (закуску) кидаем по углам
-                el.style.left = (Math.random() > 0.5 ? '2%' : '75%');
-                el.style.top = (Math.random() > 0.5 ? '2%' : '96%');
-            } else {
-                // Все остальное - рандом по центру с отступами
-                el.style.left = Math.random() * 50 + 5 + '%';
-                el.style.top = Math.random() * 60 + 10 + '%';
-            }
-        }
-
-        // Первый запуск при загрузке
         window.onload = () => {
-            generate();
+            generatePoster();
             setTimeout(() => window.scrollTo(0, 1), 500);
         };
     </script>
