@@ -3,7 +3,7 @@
 <head> 
     <meta charset="UTF-8"> 
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"> 
-    <title>ORACLE.P | v.1.0 FINAL</title> 
+    <title>ORACLE.P | v.1.4 FULL SCREEN</title> 
     <style> 
         body, html { 
             margin: 0; padding: 0; width: 100%; height: 100%; 
@@ -27,16 +27,15 @@
         .f-mono { font-family: "Courier New", monospace; font-weight: 400; letter-spacing: -2px; } 
 
         /* Layers */ 
-        .giant-p { font-size: 40vw; font-weight: 900; z-index: 0; opacity: 0.2; } 
-        .hero { font-size: 19vw; font-weight: 900; width: 110%; z-index: 100; letter-spacing: -5px; } 
-        .hero span { display: inline-block; position: relative; } 
+        .giant-p { font-size: 50vw; font-weight: 900; z-index: 0; opacity: 0.2; letter-spacing: -2vw; } 
+        .hero { font-size: 17vw; font-weight: 900; width: 100%; z-index: 100; letter-spacing: -4px; } 
+        .secondary-white { font-size: 10vw; font-weight: 900; color: #fff; z-index: 80; opacity: 0.9; width: 80%; }
         
-        .echo { position: absolute; left: 6px; top: 4px; opacity: 0.35; z-index: -1; }
-
         .sub-text { font-size: 3.8vw; font-weight: 400; color: #888; z-index: 20; letter-spacing: 1px; width: 50%; } 
         .detail { font-size: 5vw; z-index: 50; opacity: 0.8; font-weight: 400; border: 1.5px solid #fff; padding: 2px 8px; } 
 
         .ghost { color: #1a1a1a !important; border-color: #1a1a1a !important; z-index: 5 !important; } 
+        body.invert .secondary-white { color: #000 !important; }
     </style> 
 </head> 
 <body onclick="spawn()"> 
@@ -54,23 +53,23 @@
             "Coca-Cola returned the original recipe", "iPhone (New One)", "Everything must go. Including you.", 
             "Sold my data for a donut.", "Naruto vs Elon Musk!?", "Shrek: Podcast about DMT", 
             "Adam and Eva were smoking pot!", "Fish learned to swim underwater", "Who still remembers Skype?", 
-            "goofy ahh", "Meta-Vegan", "QR CODE 2", "1000 Aura", "One Million Likes", 
-            "Smells Like Trend Spirit", "One Million Likes to Reboot", "Dinosaurs died from cringe", 
-            "Birds are not real: Premium Edition", "Dobby is a free agent", "Sigma Male: 100% Organic", 
-            "Mecca: Now in Metaverse", "Internet Explorer: Still loading...", "We are cooked...", 
-            "42", "Bill was killed (Press F)", "Aliens turned out to be racists", 
+            "goofy ahh / Meta-Vegan / QR CODE 2", "1000 Aura / One Million Likes", 
+            "Smells Like Trend Spirit / One Million Likes to Reboot", "Dinosaurs died from cringe", 
+            "Birds are not real: Premium Edition", "Dobby is a free agent / Sigma Male: 100% Organic", 
+            "Mecca: Now in Metaverse / Internet Explorer: Still loading...", "We are cooked...", 
+            "42 / Bill was killed (Press F)", "Aliens turned out to be racists", 
             "The world is over! Everyone suffers! (except Bali)", "Oops...", "Post-Irony is the new religion", 
-            "WAKE UP, TATARSKY", "Æ", "Don't Live. Watch.", "Big Brother Wants Your Feedback.", 
-            "Reality: A Subscription Service", "The Medium is the Massage", "Narcissus as a Service", 
-            "The Truth is a Moment of the False", "Ubik: The Ultimate Solution", "War is Peace. Debt is Wealth.", 
-            "Hyperreal or Bust", "100% Organic Illusion", "Gluten-Free Ego", "Premium Silence (Ad-Free)", 
-            "The Map is the Territory", "Ancient Egypt was a Simulation", "Break on through to the other side", 
+            "WAKE UP, TATARSKY / Æ", "Don't Live. Watch. / Big Brother Wants Your Feedback.", 
+            "Reality: A Subscription Service", "The Medium is the Massage / Narcissus as a Service", 
+            "The Truth is a Moment of the False", "Ubik: The Ultimate Solution", "War is Peace. Debt is Wealth. / Hyperreal or Bust", 
+            "100% Organic Illusion / Gluten-Free Ego", "Premium Silence (Ad-Free) / The Map is the Territory", 
+            "Ancient Egypt was a Simulation", "Break on through to the other side", 
             "make something legally invalid or ineffective", "I scroll, therefore I am not.", "20% extra bliss (synthetic).", 
-            "HTML IS NOT REAL", "CSS IS PROPAGANDA", "JAVASCRIPT IS A SIN", "Cookies are watching you", 
-            "Is God a Deepfake?", "404: FUTURE NOT FOUND", "Reality.exe is not responding", 
-            "GOD IS A READ-ONLY FILE", "Update your morality to continue", "Alt+F4: The Only Way Out", 
-            "Control + Z: Undo your birth", "System.out.println(\"Why are you here?\")", 
-            "SYSTEM RECOVERY: DELETE EGO", "PLEASE REINSTALL CONSCIOUSNESS", "Your soul is a 404 error", 
+            "HTML IS NOT REAL / CSS IS PROPAGANDA / JAVASCRIPT IS A SIN", "Cookies are watching you / Is God a Deepfake?", 
+            "404: FUTURE NOT FOUND / Reality.exe is not responding", 
+            "GOD IS A READ-ONLY FILE / Update your morality to continue", "Alt+F4: The Only Way Out / Control + Z: Undo your birth", 
+            "System.out.println(\"Why are you here?\")", 
+            "SYSTEM RECOVERY: DELETE EGO / PLEASE REINSTALL CONSCIOUSNESS", "Your soul is a 404 error", 
             "Admin_Root_Ishtar: ACCESS GRANTED"
         ]; 
 
@@ -86,51 +85,66 @@
 
         function spawn() { 
             const canvas = document.getElementById('canvas'); 
-             
-            // Инверсия (5% шанс)
+            
+            // Инверсия (5%)
             document.body.classList.toggle('invert', Math.random() > 0.95);
 
             const old = document.querySelectorAll('.element'); 
             old.forEach(el => { el.classList.add('ghost'); el.style.opacity = "0.1"; }); 
             if (old.length > 25) { canvas.removeChild(old[0]); } 
 
-            // A. THE BIG P (Back layer) 
-            const pPos = [ {top: '-5%', left: '-5%'}, {top: '-5%', right: '-5%'}, {bottom: '-5%', left: '-5%'}, {bottom: '-5%', right: '-5%'} ]; 
-            createEl('giant-p f-sans', "P", pPos[Math.floor(Math.random()*pPos.length)]); 
+            // 1. THE BIG P (Always there, total random distribution)
+            createEl('giant-p f-sans', "P", {
+                top: (Math.random() * 80 - 10) + '%',
+                left: (Math.random() * 80 - 10) + '%'
+            });
 
-            // B. THE HERO SLOGAN 
+            // 2. MAIN HERO
             const slogan = slogans[Math.floor(Math.random() * slogans.length)]; 
-            const hero = createEl('hero f-sans', "", { left: (Math.random() * 15 - 5) + '%', top: (Math.random() * 60 + 15) + '%' }); 
-             
-            slogan.split(' ').forEach(word => { 
-                const span = document.createElement('span'); 
-                span.innerText = word + " "; 
-                if (Math.random() > 0.6) span.className = fontClasses[Math.floor(Math.random() * fontClasses.length)]; 
-                
-                // Эффект эха (30% шанс)
-                if (Math.random() > 0.7) {
-                    const echo = document.createElement('span');
-                    echo.innerText = word; echo.className = 'echo';
-                    span.appendChild(echo);
-                }
-                hero.appendChild(span); 
+            createHero(slogan, 'hero', (Math.random() * 60) + '%', (Math.random() * 70) + '%');
+
+            // 3. SECONDARY WHITE (Smaller but prominent white text)
+            if (Math.random() > 0.3) {
+                const secSlogan = slogans[Math.floor(Math.random() * slogans.length)];
+                createEl('secondary-white f-sans', secSlogan, {
+                    top: (Math.random() * 80) + '%',
+                    left: (Math.random() * 20) + '%',
+                    fontSize: (Math.random() * 5 + 7) + 'vw'
+                });
+            }
+
+            // 4. SUB-TEXT / META
+            createEl('sub-text f-mono', meta[Math.floor(Math.random()*meta.length)], { 
+                left: (Math.random() * 50) + '%', 
+                top: (Math.random() * 90) + '%' 
             }); 
 
-            // C. SUB-TEXT 
-            createEl('sub-text f-mono', meta[Math.floor(Math.random()*meta.length)], { left: (Math.random() > 0.5 ? '5%' : '45%'), bottom: (Math.random() * 30 + 5) + '%' }); 
+            // 5. DETAIL BOXES (Rare: 40% chance)
+            if (Math.random() > 0.6) {
+                createEl('detail ' + fontClasses[Math.floor(Math.random()*3)], meta[Math.floor(Math.random()*meta.length)], { 
+                    right: (Math.random() * 40) + '%', 
+                    top: (Math.random() * 90) + '%' 
+                }); 
+            }
 
-            // D. DETAILS 
-            for(let i=0; i<2; i++) { 
-                createEl('detail ' + fontClasses[Math.floor(Math.random()*3)], meta[Math.floor(Math.random()*meta.length)], { right: (Math.random() * 10) + '%', top: (Math.random() * 95) + '%' }); 
-            } 
             window.scrollTo(0, 1); 
         } 
+
+        function createHero(txt, cls, top, left) {
+            const div = createEl(cls + ' f-sans', "", { top: top, left: left });
+            txt.split(' ').forEach(word => {
+                const span = document.createElement('span');
+                span.innerText = word + " ";
+                if (Math.random() > 0.7) span.className = fontClasses[Math.floor(Math.random() * fontClasses.length)];
+                div.appendChild(span);
+            });
+        }
 
         function createEl(cls, txt, styles) { 
             const div = document.createElement('div'); 
             div.className = 'element ' + cls; 
             if (txt) div.innerText = txt; 
-            if (cls.includes('hero') && Math.random() > 0.9) { 
+            if (cls.includes('hero') && Math.random() > 0.85) { 
                 div.style.transform = "rotate(" + (Math.random() > 0.5 ? '90' : '-90') + "deg)"; 
             } 
             Object.assign(div.style, styles); 
