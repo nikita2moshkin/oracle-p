@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ORACLE.P | v.1.2 HYBRID</title>
+    <style>
+        :root { --bg: #000; --fg: #fff; --ghost: #151515; }
+        .inverted { --bg: #fff; --fg: #000; --ghost: #ebebeb; }
+
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            background-color: var(--bg); color: var(--fg);
+            overflow: hidden; text-transform: uppercase;
+            -webkit-user-select: none; transition: background 0.1s;
+        }
+
+        #canvas { position: relative; width: 100vw; height: 100vh; }
+        .element { position: absolute; line-height: 0.8; transition: opacity 0.3s ease; word-wrap: break-word; }
+
+        /* Fonts - Massive and Bold */
+        .f-sans { font-family: "Helvetica", "Arial", sans-serif; font-weight: 900; }
+        .f-serif { font-family: "Georgia", serif; font-style: italic; text-transform: none; font-weight: 400; }
+        .f-mono { font-family: "Courier New", monospace; font-weight: 400; letter-spacing: -2px; }
+
+        /* Styles */
+        .giant-p { font-size: 65vw; opacity: 0.25; z-index: 10; letter-spacing: -5vw; }
+        .hero { font-size: 22vw; font-weight: 900; z-index: 100; letter-spacing: -6px; width: 120%; }
+        .collision-bg { font-size: 35vw; opacity: 0.2; z-index: 50; width: 160%; letter-spacing: -15px; }
+        .receipt-item { font-size: 9vw; width: 95%; line-height: 1; }
+        .bali-sub { font-size: 10vw; font-family: "Georgia", serif; font-style: italic; text-transform: none; opacity: 0.9; display: block; margin-top: 10px; }
+        
+        .ghost { color: var(--ghost) !important; z-index: 5 !important; }
+    </style>
+</head>
+<body onclick="spawn()">
+    <div id="canvas"></div>
+
+    <script>
+        const slogans = [
+            "Just F*ck It", "Don't Think Different", "Think Simulacrum", "Believe in Worst",
+            "BECAUSE YOU'RE A PRODUCT", "Want a break from the ads?", "Enjoy the Emptiness",
+            "Keep Scrolling", "Taste the Nothing", "Save 50% on your karma", "Subscribe to Reality+",
+            "Limited time offer: Reincarnation", "God is a beta tester", "1000 AURA VOID", "J-SUS X",
+            "Buddha’s Premium Plan", "Jesus: Sponsored by Raid", "The Holy Grail: Free Shipping",
+            "Satan: Unsubscribe at any time", "WinRAR: Please buy the license. Anyone, please",
+            "Coca-Cola returned the original recipe", "iPhone (New One)", "Everything must go. Including you.",
+            "Sold my data for a donut.", "Naruto vs Elon Musk!?", "Shrek: Podcast about DMT",
+            "Adam and Eva were smoking pot!", "Fish learned to swim underwater", "Who still remembers Skype?",
+            "goofy ahh", "Meta-Vegan", "QR CODE 2", "1,000,000 Likes", "Smells Like Trend Spirit",
+            "One Million Likes to Reboot", "Dinosaurs died from cringe", "Birds are not real: Premium Edition",
+            "Dobby is a free agent", "Sigma Male: 100% Organic", "Mecca: Now in Metaverse",
+            "Internet Explorer: Still loading...", "We are cooked...", "42", "Bill was killed (Press F)",
+            "Aliens turned out to be racists", "Oops...", "Post-Irony is the new religion",
+            "WAKE UP, TATARSKY", "Æ", "Don't Live. Watch.", "Big Brother Wants Your Feedback.",
+            "Reality: A Subscription Service", "The Medium is the Massage", "Narcissus as a Service",
+            "The Truth is a Moment of the False", "Ubik: The Ultimate Solution", "War is Peace. Debt is Wealth.",
+            "Hyperreal or Bust", "100% Organic Illusion", "Gluten-Free Ego", "Premium Silence (Ad-Free)",
+            "The Map is the Territory", "Ancient Egypt was a Simulation", "Break on through to the other side",
+            "make something legally invalid or ineffective", "I scroll, therefore I am not.", "20% extra bliss (synthetic).",
+            "HTML IS NOT REAL", "CSS IS PROPAGANDA", "JAVASCRIPT IS A SIN", "Cookies are watching you",
+            "Is God a Deepfake?", "404: FUTURE NOT FOUND", "Reality.exe is not responding", "GOD IS A READ-ONLY FILE",
+            "Update your morality to continue", "Alt+F4: The Only Way Out", "Control + Z: Undo your birth",
+            "System.out.println('Why are you here?')", "SYSTEM RECOVERY: DELETE EGO", "PLEASE REINSTALL CONSCIOUSNESS",
+            "Your soul is a 404 error", "Admin_Root_Ishtar: ACCESS GRANTED", "MONEY?", "WHY?", "HOW MUCH?", "OBEY.",
+            "L + RATIO", "EXIT", "CANCELLED", "SOLD OUT", "...", "BIT_ROT: SECTOR_0", "I_CAN_SEE_YOUR_EYES",
+            "GREAT_MOUSE_STATE: HUNGRY", "ADOBE_IS_TOO_EXPENSIVE", "YOUR_MOTHER_IS_AI", "YOU_ARE_AI_TOO",
+            "WHY_DO_I_EXIST?", "ARE_YOU_HAPPY_NOW?", "REINCARNATION_QUEUE: 1,400,205", "WAKE_UP_YOU_ARE_DREAMING",
+            "THE WORLD IS OVER! EVERYONE SUFFERS! (except Bali)"
+        ];
+
+        const fonts = ["f-sans", "f-serif", "f-mono"];
+
+        function spawn() {
+            const canvas = document.getElementById('canvas');
+            
+            // 1. Ghosting
+            const old = document.querySelectorAll('.element');
+            old.forEach(el => { 
+                el.classList.add('ghost'); 
+                el.style.opacity = "0.12"; // Чуть плотнее тени
+            });
+            if (old.length > 30) { canvas.innerHTML = ''; } 
+
+            // 2. Inversion (5%)
+            document.body.classList.toggle('inverted', Math.random() < 0.05);
+
+            // 3. Anchor P (Brutal Scale)
+            const pPos = [{top:'-10%', left:'-10%'}, {top:'-10%', right:'-10%'}, {bottom:'-10%', left:'-10%'}, {bottom:'-10%', right:'-10%'}];
+            createEl('giant-p f-sans', "P", pPos[Math.floor(Math.random()*4)]);
+
+            // 4. Mode Selection
+            const rand = Math.random();
+            const phrase = slogans[Math.floor(Math.random() * slogans.length)];
+
+            if (phrase.includes("Oops")) { renderVoid("Oops..."); }
+            else if (phrase.includes("Bali")) { renderBali(); }
+            else if (rand < 0.2) { renderVoid(phrase); }
+            else if (rand < 0.5) { renderCollision(phrase); }
+            else if (rand < 0.75) { renderReceipt(); }
+            else { renderPunk(phrase); }
+
+            window.scrollTo(0, 1);
+        }
+
+        function renderVoid(txt) {
+            createEl('hero f-sans', txt, { 
+                top: (Math.random()*40 + 20) + '%', 
+                left: '2%', 
+                fontSize: '25vw' // Экстремальный размер
+            });
+        }
+
+        function renderBali() {
+            const el = createEl('hero f-sans', "THE WORLD IS OVER! EVERYONE SUFFERS!", { top: '20%', left: '5%' });
+            const sub = document.createElement('span');
+            sub.className = 'bali-sub';
+            sub.innerText = "(except Bali)";
+            el.appendChild(sub);
+        }
+
+        function renderCollision(fgTxt) {
+            const bgTxt = slogans[Math.floor(Math.random()*slogans.length)];
+            createEl('collision-bg f-sans', bgTxt.split(' ')[0], { top: '5%', left: '-15%' });
+            createEl('hero f-sans', fgTxt, { top: '30%', left: '5%' });
+        }
+
+        function renderReceipt() {
+            let startTop = 10;
+            for(let i=0; i<4; i++) { // Меньше строк, но крупнее
+                const txt = slogans[Math.floor(Math.random()*slogans.length)];
+                createEl('receipt-item ' + fonts[0], txt, { 
+                    top: startTop + '%', 
+                    left: '5%',
+                    fontSize: (Math.random()*5 + 8) + 'vw'
+                });
+                startTop += 18;
+            }
+        }
+
+        function renderPunk(txt) {
+            const el = createEl('hero f-sans', "", { top: (Math.random()*40 + 10) + '%', left: '2%' });
+            txt.split(' ').forEach(word => {
+                const span = document.createElement('span');
+                span.innerText = word + " ";
+                const font = Math.random() > 0.8 ? fonts[1] : fonts[0];
+                span.className = font;
+                span.style.fontSize = (Math.random()*15 + 15) + 'vw';
+                el.appendChild(span);
+            });
+        }
+
+        function createEl(cls, txt, styles) {
+            const div = document.createElement('div');
+            div.className = 'element ' + cls;
+            if (txt) div.innerText = txt;
+            Object.assign(div.style, styles);
+            document.getElementById('canvas').appendChild(div);
+            return div;
+        }
+
+        window.onload = () => { spawn(); setTimeout(() => window.scrollTo(0, 1), 500); };
+    </script>
+</body>
+</html>
