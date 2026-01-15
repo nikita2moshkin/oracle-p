@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ORACLE.P | v.0.9 FINAL</title>
+    <title>ORACLE.P | v.1.0 FINAL</title>
     <style>
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
@@ -26,7 +26,7 @@
         .hero { font-size: 18vw; font-weight: 900; width: 110%; z-index: 100; letter-spacing: -5px; }
         .hero span { display: inline-block; margin-right: 15px; }
         
-        .sub-text { font-size: 3.5vw; font-weight: 400; color: #aaa; z-index: 20; letter-spacing: 1px; width: 40%; }
+        .sub-text { font-size: 3.5vw; font-weight: 400; color: #888; z-index: 20; letter-spacing: 1px; width: 45%; }
         .detail { font-size: 5vw; z-index: 50; opacity: 0.8; font-weight: 400; border: 1px solid #fff; padding: 2px 8px; }
 
         .ghost { color: #1a1a1a !important; border-color: #1a1a1a !important; z-index: 5 !important; }
@@ -38,34 +38,43 @@
 
     <script>
         const slogans = [
-            "Reality is a trial version",
-            "The Void is subscription based",
-            "Consuming is the new praying",
-            "Happiness is a marketing glitch",
-            "Upgrade your karma",
-            "Ishtar controls the feed",
-            "The algorithm knows your sins",
-            "Buy the truth / Get the void",
-            "Your soul is a 404 error",
-            "God is offline",
-            "1000 Aura"
+            "Just F*ck It", "Just Say Maybe", "Don't Think Different", "Believe in Worst",
+            "Want a break from the ads?", "One Million Likes", "Smells Like Trend Spirit",
+            "Don't be god", "BECAUSE YOU'RE A PRODUCT", "WAKE UP, TATARSKY", "Æ",
+            "Don't Live. Watch.", "Big Brother Wants Your Feedback.", "Reality: A Subscription Service",
+            "Spectacle is the Only Sun", "Soma: 100% Organic Bliss", "The Medium is the Massage",
+            "Narcissus as a Service", "Keep Scrolling", "Taste the Nothing", 
+            "Save 50% on your karma", "Subscribe to Reality+", "Limited time offer: Reincarnation",
+            "God is a beta tester", "1000 AURA VOID", "JUST VOID IT", "THINK SIMULACRUM",
+            "ERROR 666: REALITY NOT FOUND", "SYSTEM RECOVERY: DELETE EGO", "PLEASE REINSTALL CONSCIOUSNESS"
         ];
 
-        const meta = ["ORACLE.P", "SYSTEM_FAILURE", "NON-REFUNDABLE", "LIMIT: ETERNITY", "GOLGOTHA", "USER_ACCEPTED", "$999.00"];
+        const meta = [
+            // Цифровая археология
+            "HEX: 0x53 0x4F 0x55 0x4C", "BIT_ROT: SECTOR_0", "MEMORY_LEAK_IN_ETERNITY",
+            "UNDEFINED_POINTER_TO_GOD", "STACK_OVERFLOW: KARMA", "0x000_VOID_FOUND",
+            
+            // Дизайнерские мета-шутки и шепот
+            "HELVETICA_OR_DEATH", "ADOBE_IS_TOO_EXPENSIVE", "YOUR_MOTHER_IS_AI", 
+            "YOU_ARE_AI_TOO", "WHY_DO_I_EXIST?", "I_CAN_SEE_YOUR_EYES", 
+            "PRAYER_BUFFER_EMPTY", "ARE_YOU_HAPPY_NOW?", "ROOT: /ISHTAR/GATE",
+            
+            // Брендинг и статус
+            "ORACLE.P", "GOLGOTHA INC.", "NON-REFUNDABLE", "ADMIN_ROOT_ISHTAR",
+            "USER_ACCEPTED", "v.1.0_FINAL", "HEX: 0x41 0x4d 0x45 0x4e"
+        ];
+
         const fontClasses = ["f-sans", "f-serif", "f-mono"];
 
         function spawn() {
             const canvas = document.getElementById('canvas');
             
-            // 1. Ghosting
             const old = document.querySelectorAll('.element');
             old.forEach(el => { 
                 el.classList.add('ghost'); 
                 el.style.opacity = "0.1"; 
             });
             if (old.length > 25) { canvas.removeChild(old[0]); }
-
-            // 2. COMPOSITION GENERATION
 
             // A. THE BIG P (Random corner)
             const pPos = [
@@ -77,8 +86,8 @@
             // B. THE HERO SLOGAN
             const slogan = slogans[Math.floor(Math.random() * slogans.length)];
             const hero = createEl('hero f-sans', "", {
-                left: (Math.random() * 20 - 10) + '%',
-                top: (Math.random() * 80) + '%'
+                left: (Math.random() * 20 - 5) + '%',
+                top: (Math.random() * 85) + '%'
             });
             
             slogan.split(' ').forEach(word => {
@@ -88,16 +97,17 @@
                 hero.appendChild(span);
             });
 
-            // C. THE SUB-TEXT (Attached to P logic)
-            createEl('sub-text f-mono', "POWERED BY ORACLE.P // " + meta[Math.floor(Math.random()*meta.length)], {
-                left: '5%', bottom: '5%'
+            // C. THE SUB-TEXT (Whispers and Meta)
+            createEl('sub-text f-mono', meta[Math.floor(Math.random()*meta.length)], {
+                left: (Math.random() > 0.5 ? '5%' : '50%'), 
+                bottom: (Math.random() > 0.5 ? '5%' : '90%')
             });
 
-            // D. RANDOM DETAILS (2-3 items)
+            // D. RANDOM DETAILS (Small metadata blocks)
             for(let i=0; i<2; i++) {
                 createEl('detail ' + fontClasses[Math.floor(Math.random()*3)], meta[Math.floor(Math.random()*meta.length)], {
                     right: (Math.random() * 10) + '%',
-                    top: (Math.random() * 90) + '%'
+                    top: (Math.random() * 95) + '%'
                 });
             }
 
@@ -109,8 +119,7 @@
             div.className = 'element ' + cls;
             if (txt) div.innerText = txt;
             
-            // Random Rotation (15% chance)
-            if (cls.includes('hero') && Math.random() > 0.85) {
+            if (cls.includes('hero') && Math.random() > 0.9) {
                 div.style.transform = "rotate(90deg)";
                 div.style.transformOrigin = "center";
             }
