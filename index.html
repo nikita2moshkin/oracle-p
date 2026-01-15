@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ORACLE.P | v.1.2 FINAL</title>
+    <title>ORACLE.P | v.1.3 CHAOS</title>
     <style>
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
@@ -15,12 +15,13 @@
 
         /* Инверсия */
         body.inverted { background-color: #fff !important; color: #000 !important; }
-        body.inverted .ghost { color: #e0e0e0 !important; }
+        body.inverted .ghost { color: #e0e0e0 !important; opacity: 0.15 !important; }
         body.inverted .detail { border-color: #000 !important; }
+        body.inverted .sub-text { color: #666 !important; }
 
         #canvas { position: relative; width: 100vw; height: 100vh; }
 
-        .element { position: absolute; line-height: 0.8; transition: opacity 0.4s ease; word-wrap: break-word; }
+        .element { position: absolute; line-height: 0.85; transition: opacity 0.4s ease; word-wrap: break-word; }
 
         /* Fonts */
         .f-sans { font-family: "Helvetica", "Arial", sans-serif; font-weight: 900; }
@@ -28,19 +29,21 @@
         .f-mono { font-family: "Courier New", monospace; font-weight: 400; letter-spacing: -2px; }
 
         /* Layer Styles */
-        .giant-p { font-size: 55vw; font-weight: 900; z-index: 10; opacity: 0.25; }
-        .hero { font-size: 20vw; font-weight: 900; width: 110%; z-index: 100; letter-spacing: -5px; }
+        .giant-p { font-size: 40vw; font-weight: 900; z-index: 0; opacity: 0.15; } /* P меньше и прозрачнее */
+        .hero { font-size: 19vw; font-weight: 900; width: 115%; z-index: 100; letter-spacing: -4px; }
         .hero span { display: inline-block; position: relative; }
         
-        /* Эхо-эффект */
-        .echo { position: absolute; left: 10px; top: 5px; opacity: 0.3; z-index: -1; }
+        /* Эхо-эффект (понравился) */
+        .echo { position: absolute; left: 8px; top: 4px; opacity: 0.4; z-index: -1; mix-blend-mode: overlay; }
 
-        .sub-text { font-size: 4vw; font-weight: 400; color: #888; z-index: 20; letter-spacing: 1px; width: 50%; }
-        .detail { font-size: 5vw; z-index: 50; opacity: 0.8; font-weight: 400; border: 1px solid #fff; padding: 2px 8px; }
+        .sub-text { font-size: 4vw; font-weight: 400; color: #aaa; z-index: 50; letter-spacing: 0px; width: 60%; }
+        /* Детали в рамках, как ты хотел */
+        .detail { font-size: 4.5vw; z-index: 60; opacity: 0.9; font-weight: 400; border: 2px solid #fff; padding: 4px 10px; background: #000; }
+        body.inverted .detail { background: #fff; }
 
-        .ghost { color: #1a1a1a !important; border-color: #1a1a1a !important; z-index: 5 !important; }
+        .ghost { color: #222 !important; border-color: #222 !important; z-index: 1 !important; }
         
-        .bali { font-family: "Georgia", serif; font-style: italic; text-transform: none; font-size: 8vw; display: block; margin-top: 10px; opacity: 0.8; }
+        .bali { font-family: "Georgia", serif; font-style: italic; text-transform: none; font-size: 9vw; display: block; margin-top: 15px; opacity: 0.8; }
     </style>
 </head>
 <body onclick="spawn()">
@@ -48,6 +51,7 @@
     <div id="canvas"></div>
 
     <script>
+        // ПОЛНЫЙ СПИСОК СЛОВ
         const slogans = [
             "Just F*ck It", "Don't Think Different", "Think Simulacrum", "Believe in Worst",
             "Want a break from the ads?", "One Million Likes", "Smells Like Trend Spirit",
@@ -74,7 +78,11 @@
             "Is God a Deepfake?", "404: FUTURE NOT FOUND", "Reality.exe is not responding", "GOD IS A READ-ONLY FILE",
             "Update your morality to continue", "Alt+F4: The Only Way Out", "Control + Z: Undo your birth",
             "System.out.println('Why are you here?')", "SYSTEM RECOVERY: DELETE EGO", "PLEASE REINSTALL CONSCIOUSNESS",
-            "Your soul is a 404 error", "Admin_Root_Ishtar: ACCESS GRANTED"
+            "Your soul is a 404 error", "Admin_Root_Ishtar: ACCESS GRANTED",
+            "Your personality is a DLC", "Sponsored by your insecurities", "Monetize your trauma",
+            "Luxury is a mental illness", "Optimized for disappointment", "Customer Support for the Void",
+            "Pre-order the afterlife", "Add to cart: Meaning of Life", "Your attention is our currency",
+            "Reality: Cancel Subscription?", "100% Recyclable Ego", "Buy Now, Repent Later"
         ];
 
         const meta = [
@@ -84,11 +92,8 @@
             "YOU_ARE_AI_TOO", "WHY_DO_I_EXIST?", "I_CAN_SEE_YOUR_EYES", 
             "PRAYER_BUFFER_EMPTY", "ARE_YOU_HAPPY_NOW?", "ROOT: /ISHTAR/GATE",
             "ORACLE.P", "GOLGOTHA INC.", "NON-REFUNDABLE", "ADMIN_ROOT_ISHTAR",
-            "USER_ACCEPTED", "v.1.2_FINAL", "HEX: 0x41 0x4d 0x45 0x4e",
-            "Your personality is a DLC", "Sponsored by your insecurities", "Monetize your trauma",
-            "Luxury is a mental illness", "Optimized for disappointment", "Customer Support for the Void",
-            "Pre-order the afterlife", "Add to cart: Meaning of Life", "Your attention is our currency",
-            "Reality: Cancel Subscription?", "100% Recyclable Ego", "Buy Now, Repent Later"
+            "USER_ACCEPTED", "v.1.3_CHAOS", "HEX: 0x41 0x4d 0x45 0x4e",
+            "MONEY?", "WHY?", "HOW MUCH?", "OBEY.", "L + RATIO", "EXIT", "CANCELLED", "SOLD OUT"
         ];
 
         const fontClasses = ["f-sans", "f-serif", "f-mono"];
@@ -97,70 +102,64 @@
             const canvas = document.getElementById('canvas');
             
             // 5% Шанс инверсии
-            if (Math.random() < 0.05) {
-                document.body.classList.add('inverted');
-            } else {
-                document.body.classList.remove('inverted');
-            }
+            if (Math.random() < 0.05) { document.body.classList.add('inverted'); } 
+            else { document.body.classList.remove('inverted'); }
 
             const old = document.querySelectorAll('.element');
             old.forEach(el => { 
                 el.classList.add('ghost'); 
-                el.style.opacity = "0.1"; 
+                el.style.opacity = "0.12"; 
             });
-            if (old.length > 25) { canvas.removeChild(old[0]); }
+            if (old.length > 30) { canvas.removeChild(old[0]); }
 
-            // A. THE BIG P (Random corner)
+            // A. THE BIG P (Меньше и на фоне)
             const pPos = [
-                {top: '-5%', left: '-5%'}, {top: '-5%', right: '-5%'}, 
-                {bottom: '-5%', left: '-5%'}, {bottom: '-5%', right: '-5%'}
+                {top: '-2%', left: '-2%'}, {top: '-2%', right: '-2%'}, 
+                {bottom: '-2%', left: '-2%'}, {bottom: '-2%', right: '-2%'}
             ];
             createEl('giant-p f-sans', "P", pPos[Math.floor(Math.random()*pPos.length)]);
 
-            // B. THE HERO SLOGAN
+            // B. THE HERO SLOGAN (Рваный стиль)
             let sloganText = slogans[Math.floor(Math.random() * slogans.length)];
             const hero = createEl('hero f-sans', "", {
-                left: (Math.random() * 15) + '%',
-                top: (Math.random() * 60 + 10) + '%'
+                left: (Math.random() * 10) + '%',
+                top: (Math.random() * 50 + 15) + '%'
             });
             
             sloganText.split(' ').forEach(word => {
                 const span = document.createElement('span');
                 span.innerText = word + " ";
                 
-                // Рандомный шрифт для слов
-                if (Math.random() > 0.7) span.className = fontClasses[Math.floor(Math.random() * fontClasses.length)];
+                // Агрессивная смена шрифтов (70% шанс на слово)
+                if (Math.random() > 0.3) span.className = fontClasses[Math.floor(Math.random() * fontClasses.length)];
                 
-                // Эффект "Эхо" (30% шанс для каждого слова)
-                if (Math.random() > 0.7) {
+                // Эхо-эффект (40% шанс)
+                if (Math.random() > 0.6) {
                     const echo = document.createElement('span');
-                    echo.innerText = word;
-                    echo.className = 'echo';
+                    echo.innerText = word; echo.className = 'echo';
                     span.appendChild(echo);
                 }
-
                 hero.appendChild(span);
             });
 
             // Спец-эффект для Бали
             if (sloganText.includes("Everyone suffers")) {
                 const bali = document.createElement('span');
-                bali.innerText = "(except Bali)";
-                bali.className = 'bali';
+                bali.innerText = "(except Bali)"; bali.className = 'bali';
                 hero.appendChild(bali);
             }
 
-            // C. THE SUB-TEXT (Whispers and Meta)
+            // C. SUB-TEXT (Средний слой)
             createEl('sub-text f-mono', meta[Math.floor(Math.random()*meta.length)], {
-                left: (Math.random() > 0.5 ? '5%' : '40%'), 
-                bottom: (Math.random() > 0.5 ? '5%' : '80%')
+                left: (Math.random() * 40 + 5) + '%', 
+                bottom: (Math.random() * 30 + 5) + '%'
             });
 
-            // D. RANDOM DETAILS (Small metadata blocks)
-            for(let i=0; i<2; i++) {
+            // D. DETAILS (Мелкие рамки, 3 штуки для плотности)
+            for(let i=0; i<3; i++) {
                 createEl('detail ' + fontClasses[Math.floor(Math.random()*3)], meta[Math.floor(Math.random()*meta.length)], {
-                    right: (Math.random() * 5 + 5) + '%',
-                    top: (Math.random() * 90) + '%'
+                    right: (Math.random() * 60) + '%',
+                    top: (Math.random() * 80 + 5) + '%'
                 });
             }
 
@@ -172,10 +171,10 @@
             div.className = 'element ' + cls;
             if (txt) div.innerText = txt;
             
-            // Рандомный поворот слогана (10% шанс)
-            if (cls.includes('hero') && Math.random() > 0.9) {
+            // Рандомный поворот слогана (15% шанс)
+            if (cls.includes('hero') && Math.random() > 0.85) {
                 div.style.transform = "rotate(" + (Math.random() > 0.5 ? '90' : '-90') + "deg)";
-                div.style.transformOrigin = "center";
+                div.style.transformOrigin = "left center";
             }
 
             Object.assign(div.style, styles);
