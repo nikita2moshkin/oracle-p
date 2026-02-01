@@ -1,42 +1,44 @@
 <!DOCTYPE html>  
-<html lang="en">  
+<html lang="ru">  
 <head>  
     <meta charset="UTF-8">  
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">  
-    <title>ORACLE.P</title>  
+    <title>ORACLE.P | KINDLE EDITION</title>  
     <style>  
         body, html {  
             margin: 0; padding: 0; width: 100%; height: 100%;  
-            background-color: #000; color: #fff;  
+            background-color: #fff; color: #000; /* Светлый фон по умолчанию лучше для Kindle */
             overflow: hidden; text-transform: uppercase;  
             -webkit-user-select: none;  
-            transition: background-color 0.1s ease;
+            font-family: "Helvetica", "Arial", sans-serif;
         }  
 
-        body.invert { background-color: #fff !important; color: #000 !important; }
-        body.invert .ghost { color: #e8e8e8 !important; border-color: #e8e8e8 !important; }
-        body.invert .sub-text { color: #444 !important; }
-        body.invert .detail { border-color: #000 !important; }
+        /* Инверсия для "вспышки" обновления */
+        body.dark-mode { background-color: #000; color: #fff; }
+        body.dark-mode .detail { border-color: #fff; }
+        body.dark-mode .line { background-color: #fff; }
 
         #canvas { position: relative; width: 100vw; height: 100vh; }  
 
-        .element { position: absolute; line-height: 0.82; transition: opacity 0.4s ease; word-wrap: break-word; }  
+        .element { position: absolute; line-height: 0.9; word-wrap: break-word; }  
 
-        /* Swiss Typography */  
-        .f-sans { font-family: "Helvetica", "Arial", sans-serif; font-weight: 900; } 
-        /* Dada Accents */
+        /* Типографика */  
+        .f-sans { font-weight: 900; letter-spacing: -2px; }  
         .f-serif { font-family: "Georgia", serif; font-style: italic; text-transform: none; font-weight: 400; }  
-        .f-mono { font-family: "Courier New", monospace; font-weight: 400; letter-spacing: -1.5px; }  
+        .f-mono { font-family: "Courier New", monospace; font-weight: 400; letter-spacing: -1px; }  
 
-        /* Grid Layers */  
-        .giant-p { font-size: 45vw; font-weight: 900; z-index: 10; opacity: 0.22; letter-spacing: -2vw; }  
-        .hero { font-size: 15vw; font-weight: 900; width: 100%; z-index: 100; letter-spacing: -4px; }  
-        .hero span { display: inline-block; margin-right: 12px; }  
+        /* Слои */  
+        .giant-p { font-size: 60vw; font-weight: 900; z-index: 1; opacity: 1; line-height: 0.7; }  
+        .hero { font-size: 12vw; font-weight: 900; width: 90%; z-index: 100; letter-spacing: -3px; }  
+        .hero span { display: inline-block; margin-right: 10px; }  
           
-        .sub-text { font-size: 3.2vw; font-weight: 400; color: #888; z-index: 20; letter-spacing: 0.5px; width: 60%; }  
-        .detail { font-size: 4.8vw; z-index: 50; opacity: 0.85; font-weight: 400; border: 1.5px solid #fff; padding: 3px 10px; }  
+        .sub-text { font-size: 4vw; font-weight: 400; z-index: 20; width: 70%; line-height: 1.2; }  
+        .detail { font-size: 3.5vw; z-index: 50; font-weight: 700; border: 2px solid #000; padding: 4px 8px; white-space: nowrap; }  
 
-        .ghost { color: #111 !important; border-color: #111 !important; z-index: 5 !important; }  
+        .line { position: absolute; background-color: #000; z-index: 5; }
+
+        /* Эффект старого слоя (Ghosting) */
+        .ghost { opacity: 0.15 !important; filter: grayscale(1); z-index: 0 !important; }  
     </style>  
 </head>  
 <body onclick="spawn()">  
@@ -47,86 +49,90 @@
         const slogans = [  
             "Just F*ck It", "Don't Think Different", "Think! Think? ", "Believe in Worst", 
             "BECAUSE YOU'RE A PRODUCT", "Want a break from the ads?", "Enjoy the Emptiness", 
-            "Keep Scrolling", "Taste the Nothing", "Save 50% on your karma", "Subscribe to Reality+", 
+            "Keep Scrolling", "Save 50% on your karma", "Subscribe to Reality+", 
             "Limited time offer: Reincarnation", "God is a beta tester", "J-SUS X", 
-            "Buddha’s Premium Plan", "Jesus: Sponsored by Raid: Shadow Legends", 
-            "Satan: Unsubscribe at any time", "WinRAR: Please buy the license. Anyone, please", 
-            "Coca-Cola returned the original recipe", "iPhone!!! (New One)", 
-            "Sold my data for a donut.", "Naruto vs Elon Musk!?", "Shrek: Podcast about DMT", 
-            "Adam and Eva were smoking pot!", "Fish learned to swim underwater", "Who still remembers Skype?", 
-            "goofy ahh / Meta-Vegan / QR CODE 2", "1000 Aura / One Million Likes", 
-            "Smells Like Trend Spirit / One Million Likes to Reboot", "Dinosaurs died from cringe", "Dobby is a free agent / Sigma Male: 100% Organic", "We are cooked...", 
-            "42", "Aliens turned out to be racists(((", 
-            "The world is over! Everyone suffers! (except Bali)", "Oops...",
-            "WAKE UP, TATARSKY / Æ", "Don't Live. Watch. / Big Brother Wants Your Feedback.",  
-            "War is Peace. Debt is Wealth. / Hyperreal or Bust", "100% Organic Illusion / Gluten-Free Ego", 
-            "Premium Silence (Ad-Free)", "Ancient Egypt was a prank", 
-            "Break on through to the other side", "HBJNKxbajkhnHkj", 
-            "Scroll till the END", 
-            "HTML IS NOT REAL / CSS IS PROPAGANDA / JAVASCRIPT IS A SIN", 
-            "Vetetables", "404 B**CH!", 
-            "Update your morality to continue", 
-            "Alt+F4: The Only Way Out", "Control + Z: Undo your birth", "NO INSTA / day 0 ", 
-            "Netflix and Netflix", "Your soul is a cooked", 
-            "Admin_Root_Ishtar: BRUH"
+            "Satan: Unsubscribe at any time", "iPhone!!! (New One)", 
+            "Sold my data for a donut.", "Adam and Eva were smoking pot!", "Who still remembers Skype?", 
+            "1000 Aura / One Million Likes", "Dinosaurs died from cringe", "We are cooked...", 
+            "The world is over! (except Bali)", "WAKE UP, TATARSKY", "Don't Live. Watch.",  
+            "War is Peace. Debt is Wealth.", "100% Organic Illusion", 
+            "HTML IS NOT REAL / CSS IS PROPAGANDA", "404 B**CH!", 
+            "Update your morality", "Control + Z: Undo your birth", "Netflix and Netflix", 
+            "Your soul is cooked", "Admin_Root_Ishtar: BRUH", "ERROR: REALITY NOT FOUND"
         ];  
 
         const meta = [  
-            "MONEY?", "WHY?", "HOW MUCH?", "OBEY.", "MOSHKIN?", "Migros Budget", "CANCELLED", "SOLD OUT", "...", 
-            "HEX: 0x53 0x4F 0x55 0x4C (SOUL)", "GAY", "OMG",
-            "ADOBE_IS_TOO_EXPENSIVE", "YOUR_MOTHER_IS_AI / YOU_ARE_AI_TOO", 
-            "WHY_DO_I_EXIST?", "WAKE_UP_YOU_ARE_DREAMING", "Мир не заканчиваеться на англиском, бразер",
-            "girlfrind is illusion"
-        
+            "MONEY?", "WHY?", "OBEY.", "CANCELLED", "SOLD OUT", "...", 
+            "HEX: 0x53 0x4F 0x55 0x4C", "ADOBE IS TOO EXPENSIVE", 
+            "WAKE UP", "Мир не заканчивается на английском", "USER_NOT_FOUND",
+            "DATA_MINING", "NULL", "VOID", "PURE_ART"
         ];  
 
         const fontClasses = ["f-sans", "f-serif", "f-mono"];  
 
         function spawn() {  
-            const canvas = document.getElementById('canvas');  
+            const canvas = document.getElementById('canvas'); 
             
-            // 5% Chance Inversion
-            document.body.classList.toggle('invert', Math.random() < 0.05);
+            // 10% шанс инверсии темы (помогает "очистить" экран Kindle от артефактов)
+            if (Math.random() < 0.1) {
+                document.body.classList.toggle('dark-mode');
+            }
 
-            const old = document.querySelectorAll('.element');  
-            old.forEach(el => { el.classList.add('ghost'); el.style.opacity = "0.08"; });  
-            if (old.length > 25) { canvas.removeChild(old[0]); }  
+            const old = document.querySelectorAll('.element, .line');  
+            old.forEach(el => { 
+                el.classList.add('ghost'); 
+            });  
+            
+            // Очистка старых элементов, чтобы не перегружать память Kindle
+            if (old.length > 15) { 
+                for(let i=0; i<5; i++) {
+                    if(old[i]) canvas.removeChild(old[i]);
+                }
+            }  
 
-            // A. THE BIG P (More spread)
-            createEl('giant-p f-sans', "P", {
-                top: (Math.random() * 60 - 10) + '%',
-                left: (Math.random() * 60 - 10) + '%'
-            });
+            // 1. ГИГАНТСКАЯ P (Только по углам)
+            const corners = [
+                { top: '-5%', left: '-5%' },
+                { top: '-5%', right: '-5%' },
+                { bottom: '-10%', left: '-5%' },
+                { bottom: '-10%', right: '-5%' }
+            ];
+            const pPos = corners[Math.floor(Math.random() * corners.length)];
+            createEl('giant-p f-sans', "P", pPos);
 
-            // B. THE HERO SLOGAN (Dada spread)
+            // 2. ГРАФИЧЕСКИЙ ЭЛЕМЕНТ (Линия)
+            if (Math.random() > 0.5) {
+                const isVert = Math.random() > 0.5;
+                createLine(isVert);
+            }
+
+            // 3. ОСНОВНОЙ СЛОГАН
             const slogan = slogans[Math.floor(Math.random() * slogans.length)];  
             const hero = createEl('hero f-sans', "", {  
-                left: (Math.random() * 30 - 5) + '%',  
-                top: (Math.random() * 70 + 5) + '%'  
+                left: '5%',  
+                top: (15 + Math.random() * 50) + '%'  
             });  
               
             slogan.split(' ').forEach(word => {  
                 const span = document.createElement('span');  
                 span.innerText = word;  
-                if (Math.random() > 0.6) span.className = fontClasses[Math.floor(Math.random() * fontClasses.length)];  
+                if (Math.random() > 0.7) span.className = fontClasses[Math.floor(Math.random() * fontClasses.length)];  
                 hero.appendChild(span);  
             });  
 
-            // C. THE SUB-TEXT (Sub-headings)  
+            // 4. МЕТА-ДАННЫЕ (Саб-текст)
             createEl('sub-text f-mono', meta[Math.floor(Math.random()*meta.length)], {  
-                left: (Math.random() * 40 + 5) + '%',   
-                top: (Math.random() * 90) + '%'  
+                left: '5%',   
+                bottom: '10%'  
             });  
 
-            // D. RANDOM DETAILS  
+            // 5. ДЕТАЛИ (В рамках) 
             for(let i=0; i<2; i++) {  
                 createEl('detail ' + fontClasses[Math.floor(Math.random()*3)], meta[Math.floor(Math.random()*meta.length)], {  
-                    right: (Math.random() * 15) + '%',  
-                    top: (Math.random() * 90) + '%'  
+                    right: '5%',  
+                    top: (Math.random() * 80 + 5) + '%'  
                 });  
             }  
-
-            window.scrollTo(0, 1);  
         }  
 
         function createEl(cls, txt, styles) {  
@@ -134,9 +140,9 @@
             div.className = 'element ' + cls;  
             if (txt) div.innerText = txt;  
               
-            // Swiss Rotation (20% chance)
-            if (cls.includes('hero') && Math.random() > 0.8) {  
-                div.style.transform = "rotate(" + (Math.random() > 0.5 ? '90' : '-90') + "deg)";  
+            // Поворот швейцарской сетки (на 90 градусов)
+            if (Math.random() > 0.85) {  
+                div.style.transform = "rotate(90deg)";  
                 div.style.transformOrigin = "left top";  
             }  
 
@@ -145,7 +151,24 @@
             return div;  
         }  
 
-        window.onload = () => { spawn(); setTimeout(() => window.scrollTo(0, 1), 500); };  
+        function createLine(isVertical) {
+            const line = document.createElement('div');
+            line.className = 'line';
+            if (isVertical) {
+                line.style.width = '2px';
+                line.style.height = '100vh';
+                line.style.left = (Math.random() * 90 + 5) + '%';
+                line.style.top = '0';
+            } else {
+                line.style.width = '100vw';
+                line.style.height = '2px';
+                line.style.top = (Math.random() * 90 + 5) + '%';
+                line.style.left = '0';
+            }
+            document.getElementById('canvas').appendChild(line);
+        }
+
+        window.onload = () => { spawn(); };  
     </script>  
 </body>  
 </html>
