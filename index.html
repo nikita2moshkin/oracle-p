@@ -7,16 +7,16 @@
     <style>  
         body, html {  
             margin: 0; padding: 0; width: 100%; height: 100%;  
-            background-color: #fff; color: #000; /* Светлый фон по умолчанию лучше для Kindle */
+            background-color: #fff; color: #000; 
             overflow: hidden; text-transform: uppercase;  
             -webkit-user-select: none;  
             font-family: "Helvetica", "Arial", sans-serif;
         }  
 
-        /* Инверсия для "вспышки" обновления */
         body.dark-mode { background-color: #000; color: #fff; }
         body.dark-mode .detail { border-color: #fff; }
         body.dark-mode .line { background-color: #fff; }
+        body.dark-mode .image-container img { filter: invert(1) grayscale(1); }
 
         #canvas { position: relative; width: 100vw; height: 100vh; }  
 
@@ -28,7 +28,14 @@
         .f-mono { font-family: "Courier New", monospace; font-weight: 400; letter-spacing: -1px; }  
 
         /* Слои */  
-        .giant-p { font-size: 60vw; font-weight: 900; z-index: 1; opacity: 1; line-height: 0.7; }  
+        .giant-p { font-size: 60vw; font-weight: 900; z-index: 1; opacity: 1; line-height: 0.7; position: absolute; }  
+        
+        /* Четкая привязка к углам для P */
+        .giant-p.top-left { top: -5%; left: -5%; }
+        .giant-p.top-right { top: -5%; right: -5%; }
+        .giant-p.bottom-left { bottom: -10%; left: -5%; }
+        .giant-p.bottom-right { bottom: -10%; right: -5%; }
+
         .hero { font-size: 12vw; font-weight: 900; width: 90%; z-index: 100; letter-spacing: -3px; }  
         .hero span { display: inline-block; margin-right: 10px; }  
           
@@ -36,9 +43,11 @@
         .detail { font-size: 3.5vw; z-index: 50; font-weight: 700; border: 2px solid #000; padding: 4px 8px; white-space: nowrap; }  
 
         .line { position: absolute; background-color: #000; z-index: 5; }
+        
+        /* Контейнер для изображения */
+        .image-container { position: absolute; z-index: 10; max-width: 50%; opacity: 0.8; }
+        .image-container img { width: 100%; height: auto; display: block; filter: grayscale(1); }
 
-        /* Эффект старого слоя (Ghosting) */
-        .ghost { opacity: 0.15 !important; filter: grayscale(1); z-index: 0 !important; }  
     </style>  
 </head>  
 <body onclick="spawn()">  
@@ -69,44 +78,39 @@
         ];  
 
         const fontClasses = ["f-sans", "f-serif", "f-mono"];  
+        const pCorners = ['top-left', 'top-right', 'bottom-left', 'bottom-right'];
+
+        // !!! ЗАМЕНИТЕ НА СВОЙ URL КАРТИНКИ !!!
+        const imageUrl = 'https://via.placeholder.com/400x300.png?text=IMAGE';
+
 
         function spawn() {  
             const canvas = document.getElementById('canvas'); 
             
-            // 10% шанс инверсии темы (помогает "очистить" экран Kindle от артефактов)
+            // 10% шанс инверсии темы
             if (Math.random() < 0.1) {
                 document.body.classList.toggle('dark-mode');
             }
 
-            const old = document.querySelectorAll('.element, .line');  
-            old.forEach(el => { 
-                el.classList.add('ghost'); 
-            });  
-            
-            // Очистка старых элементов, чтобы не перегружать память Kindle
-            if (old.length > 15) { 
-                for(let i=0; i<5; i++) {
-                    if(old[i]) canvas.removeChild(old[i]);
-                }
-            }  
+            // Полная очистка старых элементов
+            canvas.innerHTML = '';
 
-            // 1. ГИГАНТСКАЯ P (Только по углам)
-            const corners = [
-                { top: '-5%', left: '-5%' },
-                { top: '-5%', right: '-5%' },
-                { bottom: '-10%', left: '-5%' },
-                { bottom: '-10%', right: '-5%' }
-            ];
-            const pPos = corners[Math.floor(Math.random() * corners.length)];
-            createEl('giant-p f-sans', "P", pPos);
+            // 1. ГИГАНТСКАЯ P (С четкой привязкой к углам)
+            const pClass = pCorners[Math.floor(Math.random() * pCorners.length)];
+            const p = createEl('giant-p ' + pClass + ' f-sans', "P", {});
 
-            // 2. ГРАФИЧЕСКИЙ ЭЛЕМЕНТ (Линия)
-            if (Math.random() > 0.5) {
-                const isVert = Math.random() > 0.5;
-                createLine(isVert);
+            // 2. ГРАФИЧЕСКИЕ ЭЛЕМЕНТЫ (Линии)
+            const lineCount = Math.floor(Math.random() * 3); // 0 to 2 lines
+            for (let i = 0; i < lineCount; i++) {
+                createLine(Math.random() > 0.5);
             }
 
-            // 3. ОСНОВНОЙ СЛОГАН
+            // 3. КАРТИНКА С ДИЗЕРИНГОМ (30% шанс)
+            if (Math.random() < 0.3) {
+                createImage(imageUrl);
+            }
+
+            // 4. ОСНОВНОЙ СЛОГАН
             const slogan = slogans[Math.floor(Math.random() * slogans.length)];  
             const hero = createEl('hero f-sans', "", {  
                 left: '5%',  
@@ -120,14 +124,15 @@
                 hero.appendChild(span);  
             });  
 
-            // 4. МЕТА-ДАННЫЕ (Саб-текст)
+            // 5. МЕТА-ДАННЫЕ (Саб-текст)
             createEl('sub-text f-mono', meta[Math.floor(Math.random()*meta.length)], {  
                 left: '5%',   
                 bottom: '10%'  
             });  
 
-            // 5. ДЕТАЛИ (В рамках) 
-            for(let i=0; i<2; i++) {  
+            // 6. ДЕТАЛИ (В рамках) 
+            const detailCount = 1 + Math.floor(Math.random() * 2); // 1 to 3 details
+            for(let i=0; i<detailCount; i++) {  
                 createEl('detail ' + fontClasses[Math.floor(Math.random()*3)], meta[Math.floor(Math.random()*meta.length)], {  
                     right: '5%',  
                     top: (Math.random() * 80 + 5) + '%'  
@@ -140,8 +145,8 @@
             div.className = 'element ' + cls;  
             if (txt) div.innerText = txt;  
               
-            // Поворот швейцарской сетки (на 90 градусов)
-            if (Math.random() > 0.85) {  
+            // Поворот (на 90 градусов) с меньшей вероятностью
+            if (!cls.includes('giant-p') && Math.random() > 0.9) {  
                 div.style.transform = "rotate(90deg)";  
                 div.style.transformOrigin = "left top";  
             }  
@@ -155,17 +160,32 @@
             const line = document.createElement('div');
             line.className = 'line';
             if (isVertical) {
-                line.style.width = '2px';
+                line.style.width = (Math.random() * 3 + 1) + 'px';
                 line.style.height = '100vh';
                 line.style.left = (Math.random() * 90 + 5) + '%';
                 line.style.top = '0';
             } else {
                 line.style.width = '100vw';
-                line.style.height = '2px';
+                line.style.height = (Math.random() * 3 + 1) + 'px';
                 line.style.top = (Math.random() * 90 + 5) + '%';
                 line.style.left = '0';
             }
             document.getElementById('canvas').appendChild(line);
+        }
+
+        function createImage(src) {
+            const container = document.createElement('div');
+            container.className = 'image-container';
+            container.style.top = (Math.random() * 60 + 10) + '%';
+            container.style.left = (Math.random() * 60 + 10) + '%';
+            
+            const img = document.createElement('img');
+            img.src = src;
+            // Простой способ имитировать дизеринг на Kindle - это grayscale
+            // Браузер Kindle сам применит свой алгоритм дизеринга.
+            
+            container.appendChild(img);
+            document.getElementById('canvas').appendChild(container);
         }
 
         window.onload = () => { spawn(); };  
