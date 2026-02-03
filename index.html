@@ -3,196 +3,171 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ORACLE.P | v.1.7 FINAL STABLE</title>
+    <title>ORACLE.P | v.2.0</title>
     <style>
-        :root {
-            --bg: #000000;
-            --fg: #ffffff;
-            --ghost: #1a1a1a;
-            --sub: #888888;
-            --border: #ffffff;
-        }
-
-        body.invert {
-            --bg: #ffffff;
-            --fg: #000000;
-            --ghost: #e5e5e5;
-            --sub: #555555;
-            --border: #000000;
-        }
+        :root { --bg: #000; --fg: #fff; --ghost: #111; --grey: #444; }
+        body.invert { --bg: #fff; --fg: #000; --ghost: #eee; --grey: #888; }
 
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
             background-color: var(--bg); color: var(--fg);
             overflow: hidden; text-transform: uppercase;
-            -webkit-user-select: none;
-            transition: background-color 0.15s ease, color 0.15s ease;
-            display: flex; justify-content: center; align-items: center;
+            -webkit-user-select: none; transition: background 0.1s;
+            font-family: "Helvetica", Arial, sans-serif;
         }
 
-        /* Kindle Safe Area Container */
-        #canvas {
-            position: relative;
-            width: 92vw;
-            height: 88vh;
-            /* outline: 1px solid var(--ghost); /* Раскомментируй для теста границ */
+        #canvas { position: relative; width: 100vw; height: 100vh; overflow: hidden; }
+
+        /* Fonts */
+        .f-swiss { font-weight: 900; }
+        .f-dada { font-family: "Georgia", serif; font-style: italic; text-transform: none; }
+        .f-system { font-family: "Courier New", monospace; letter-spacing: -1px; }
+
+        .element { position: absolute; line-height: 0.8; transition: opacity 0.5s ease; word-wrap: break-word; z-index: 10; }
+        .ghost { color: var(--ghost) !important; z-index: 1 !important; border-color: var(--ghost) !important; }
+
+        /* Grid Lines */
+        .grid-line { position: absolute; background: var(--fg); opacity: 0.15; z-index: 2; }
+
+        /* Layers */
+        .giant-p { font-size: 35vw; opacity: 0.25; z-index: 5; font-weight: 900; }
+        .hero { font-size: 16vw; font-weight: 900; width: 110%; letter-spacing: -4px; z-index: 100; }
+        .sub { font-size: 4vw; color: var(--grey); z-index: 50; }
+        .detail { font-size: 5vw; border: 1px solid var(--fg); padding: 4px; z-index: 60; background: var(--bg); }
+
+        /* Images (Low Quality Look) */
+        .artifact-img { filter: grayscale(1) contrast(300%) brightness(80%); opacity: 0.7; z-index: 5; max-width: 60vw; }
+
+        /* Shake Animation */
+        @keyframes shake {
+            0% { transform: translate(0,0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(2px, -2px); }
+            60% { transform: translate(-2px, -2px); }
+            80% { transform: translate(2px, 2px); }
+            100% { transform: translate(0,0); }
         }
-
-        .element { position: absolute; line-height: 0.85; transition: opacity 0.4s ease; word-wrap: break-word; }
-        .ghost { color: var(--ghost) !important; border-color: var(--ghost) !important; z-index: 1 !important; }
-
-        /* Typography Trio */
-        .f-swiss { font-family: "Helvetica Neue", "Helvetica", Arial, sans-serif; font-weight: 900; letter-spacing: -1px; }
-        .f-dada { font-family: "Georgia", serif; font-style: italic; font-weight: 400; }
-        .f-system { font-family: "Courier New", "Courier", monospace; font-weight: 700; letter-spacing: -2px; }
-
-        /* Layer Styles */
-        .anchor-p { 
-            font-size: 25vw; font-weight: 900; z-index: 10; opacity: 0.3; 
-            font-family: "Helvetica Neue", "Helvetica", Arial, sans-serif;
-            position: absolute;
-        }
-        
-        .hero { font-size: 14vw; z-index: 100; width: 100%; }
-        .hero span { display: inline-block; margin-right: 0.3em; }
-          
-        .sub-text { font-size: 3.5vw; color: var(--sub); z-index: 20; width: 55%; }
-        .detail { font-size: 4.5vw; z-index: 50; opacity: 0.9; border: 2px solid var(--border); padding: 4px 8px; background: var(--bg); }
+        .shaking { animation: shake 0.1s infinite; }
     </style>
 </head>
-<body onclick="spawn()">
+<body onmousedown="startHold()" onmouseup="endHold()" ontouchstart="startHold()" ontouchend="endHold()">
 
     <div id="canvas"></div>
 
     <script>
-        // Structured Data for Logic Application
-        const categories = {
-            icons: [
-                "Just F*ck It", "Don't Think Different", "Think Simulacrum", "Believe in Worst", 
-                "BECAUSE YOU'RE A PRODUCT", "Want a break from the ads?", "Enjoy the Emptiness", 
-                "Keep Scrolling", "Taste the Nothing", "Save 50% on your karma", "Subscribe to Reality+", 
-                "Limited time offer: Reincarnation", "God is a beta tester", "1000 AURA VOID", "J-SUS X", 
-                "Buddha’s Premium Plan", "Jesus: Sponsored by Raid: Shadow Legends", "The Holy Grail: Free Shipping", 
-                "Satan: Unsubscribe at any time", "WinRAR: Please buy the license. Anyone, please", 
-                "Coca-Cola returned the original recipe", "iPhone (New One)", "Everything must go. Including you.", 
-                "Sold my data for a donut."
-            ],
-            brainrot: [
-                "Naruto vs Elon Musk!?", "Shrek: Podcast about DMT", "Adam and Eva were smoking pot!", 
-                "Fish learned to swim underwater", "Who still remembers Skype?", "goofy ahh", "Meta-Vegan", "QR CODE 2", 
-                "1000 Aura", "One Million Likes", "Smells Like Trend Spirit", "One Million Likes to Reboot", 
-                "Dinosaurs died from cringe", "Birds are not real: Premium Edition", "Dobby is a free agent", 
-                "Sigma Male: 100% Organic", "Mecca: Now in Metaverse", "Internet Explorer: Still loading...", 
-                "We are cooked...", "42", "Bill was killed (Press F)", "Aliens turned out to be racists", 
-                "The world is over! Everyone suffers! (except Bali)", "Oops...", "Post-Irony is the new religion"
-            ],
-            philosophical: [
-                "WAKE UP, TATARSKY", "Æ", "Don't Live. Watch.", "Big Brother Wants Your Feedback.", 
-                "Reality: A Subscription Service", "The Medium is the Massage", "Narcissus as a Service", 
-                "The Truth is a Moment of the False", "Ubik: The Ultimate Solution", 
-                "War is Peace. Debt is Wealth.", "Hyperreal or Bust", "100% Organic Illusion", "Gluten-Free Ego", 
-                "Premium Silence (Ad-Free)", "The Map is the Territory", "Ancient Egypt was a Simulation", 
-                "Break on through to the other side", "make something legally invalid or ineffective", 
-                "I scroll, therefore I am not.", "20% extra bliss (synthetic)."
-            ],
-            gaslighting: [
-                "HTML IS NOT REAL", "CSS IS PROPAGANDA", "JAVASCRIPT IS A SIN", 
-                "Cookies are watching you", "Is God a Deepfake?", "404: FUTURE NOT FOUND", "Reality.exe is not responding", 
-                "GOD IS A READ-ONLY FILE", "Update your morality to continue", 
-                "Alt+F4: The Only Way Out", "Control + Z: Undo your birth", "System.out.println(\"Why are you here?\")", 
-                "SYSTEM RECOVERY: DELETE EGO", "PLEASE REINSTALL CONSCIOUSNESS", "Your soul is a 404 error", 
-                "Admin_Root_Ishtar: ACCESS GRANTED"
-            ]
-        };
+        const slogans = [
+            "Just F*ck It", "Don't Think Different", "Think Simulacrum", "Believe in Worst",
+            "BECAUSE YOU'RE A PRODUCT", "Want a break from the ads?", "Enjoy the Emptiness",
+            "Keep Scrolling", "Taste the Nothing", "Save 50% on your karma", "Subscribe to Reality+",
+            "Limited time offer: Reincarnation", "God is a beta tester", "1000 AURA VOID", "J-SUS X",
+            "Buddha’s Premium Plan", "Jesus: Sponsored by Raid", "The Holy Grail: Free Shipping",
+            "Satan: Unsubscribe at any time", "WinRAR: Please buy the license.", "Coca-Cola returned the original recipe",
+            "iPhone (New One)", "Everything must go. Including you.", "Sold my data for a donut.",
+            "Naruto vs Elon Musk!?", "Shrek: Podcast about DMT", "Adam and Eva were smoking pot!",
+            "Aliens turned out to be racists", "The world is over! Everyone suffers! (except Bali)", "Oops...",
+            "WAKE UP, TATARSKY", "Reality: A Subscription Service", "The Medium is the Massage",
+            "War is Peace. Debt is Wealth.", "make something legally invalid", "I scroll, therefore I am not.",
+            "HTML IS NOT REAL", "JAVASCRIPT IS A SIN", "404: FUTURE NOT FOUND", "Reality.exe not responding",
+            "YOUR MOTHER IS AI", "Admin_Root_Ishtar: ACCESS GRANTED"
+        ];
 
-        const meta = [  
-            "MONEY?", "WHY?", "HOW MUCH?", "OBEY.", "L + RATIO", "EXIT", "CANCELLED", "SOLD OUT", "...", 
-            "HEX: 0x53 0x4F 0x55 0x4C (SOUL)", "BIT_ROT: SECTOR_0", "I_CAN_SEE_YOUR_EYES", 
-            "GREAT_MOUSE_STATE: HUNGRY", "ADOBE_IS_TOO_EXPENSIVE", "YOUR_MOTHER_IS_AI", 
-            "YOU_ARE_AI_TOO", "WHY_DO_I_EXIST?", "ARE_YOU_HAPPY_NOW?", 
-            "REINCARNATION_QUEUE: 1,400,205", "WAKE_UP_YOU_ARE_DREAMING"
-        ];  
+        const meta = ["MONEY?", "WHY?", "OBEY.", "L + RATIO", "EXIT", "CANCELLED", "SOLD OUT", "HEX: 0x53 0x4F 0x55 0x4C", "BIT_ROT: SECTOR_0"];
+        
+        // Placeholder for Eye Image (Bad Quality)
+        const images = ["https://img.icons8.com/ios-filled/500/ffffff/visible.png"]; 
 
-        const fontClasses = ["f-swiss", "f-dada", "f-system"];  
-        let lastCategory = '';
+        let holdTimer;
 
-        function getRandomSlogan() {
-            const keys = Object.keys(categories);
-            const cat = keys[Math.floor(Math.random() * keys.length)];
-            lastCategory = cat;
-            return categories[cat][Math.floor(Math.random() * categories[cat].length)];
+        function spawn(isChaos = false) {
+            const canvas = document.getElementById('canvas');
+            
+            // 5% Inversion
+            if (!isChaos) document.body.classList.toggle('invert', Math.random() < 0.05);
+
+            // Ghosting (Keep up to 50 items)
+            const old = document.querySelectorAll('.element, .grid-line');
+            old.forEach(el => { el.classList.add('ghost'); el.style.opacity = "0.08"; });
+            if (old.length > 50) { canvas.innerHTML = ''; drawGrid(); }
+
+            // A. THE P (Corner Snap)
+            const corners = [{t:0, l:0}, {t:0, r:0}, {b:0, l:0}, {b:0, r:0}];
+            const c = corners[Math.floor(Math.random()*4)];
+            createEl('giant-p f-swiss', "P", { top: c.t+'%', left: c.l+'%', right: c.r+'%', bottom: c.b+'%' });
+
+            // B. HERO
+            createEl('hero f-swiss', slogans[Math.floor(Math.random()*slogans.length)], {
+                top: Math.random()*60 + 10 + '%', left: Math.random()*10 + '%'
+            });
+
+            // C. SECONDARY (Grey/Sub)
+            if (Math.random() > 0.4) {
+                createEl('sub f-system', slogans[Math.floor(Math.random()*slogans.length)], {
+                    bottom: Math.random()*20 + '%', left: Math.random()*40 + '%'
+                });
+            }
+
+            // D. ARTIFACT (Image)
+            if (Math.random() > 0.8) {
+                const img = document.createElement('img');
+                img.src = images[0];
+                img.className = 'element artifact-img';
+                img.style.top = Math.random()*50 + '%';
+                img.style.left = Math.random()*50 + '%';
+                canvas.appendChild(img);
+            }
+
+            // E. GRID LINE (Swiss beauty)
+            if (Math.random() > 0.3) {
+                const isH = Math.random() > 0.5;
+                createEl('grid-line', "", {
+                    width: isH ? '100%' : '1px',
+                    height: isH ? '1px' : '100%',
+                    top: Math.random()*100 + '%',
+                    left: Math.random()*100 + '%'
+                });
+            }
+
+            // 3% Chance of CHAOS MODE
+            if (!isChaos && Math.random() < 0.03) {
+                for(let i=0; i<15; i++) setTimeout(() => spawn(true), i * 50);
+            }
         }
 
-        function spawn() {  
-            const canvas = document.getElementById('canvas');  
+        function createEl(cls, txt, styles) {
+            const div = document.createElement('div');
+            div.className = 'element ' + cls;
+            div.innerText = txt;
+            Object.assign(div.style, styles);
+            document.getElementById('canvas').appendChild(div);
+            return div;
+        }
 
-            // 1. Manage Ghosting
-            const old = document.querySelectorAll('.element');  
-            old.forEach(el => { el.classList.add('ghost'); el.style.opacity = "0.06"; });  
-            if (old.length > 30) { canvas.removeChild(old[0]); }  
-
-            // 2. Select Content
-            const sloganTxt = getRandomSlogan();
-
-            // 3. Smart Inversion Logic
-            // Higher chance (35%) if it's a system error/gaslighting, else low chance (5%)
-            const invertChance = lastCategory === 'gaslighting' ? 0.35 : 0.05;
-            document.body.classList.toggle('invert', Math.random() < invertChance);
-
-            // 4. The Anchor P (Precision Placement)
-            // Places P exactly in one of the 4 corners of the safe area
-            const pPositions = [
-                { top: '0', left: '0' }, { top: '0', right: '0' },
-                { bottom: '0', left: '0' }, { bottom: '0', right: '0' }
-            ];
-            createEl('anchor-p', "P", pPositions[Math.floor(Math.random() * pPositions.length)]);
-
-            // 5. Hero Slogan (Typography Mix)
-            const hero = createEl('hero', "", {  
-                left: (Math.random() * 30) + '%',  
-                top: (Math.random() * 70 + 10) + '%'  
-            });  
-              
-            sloganTxt.split(' ').forEach(word => {  
-                const span = document.createElement('span');  
-                span.innerText = word;  
-                // Randomly assign one of the 3 font styles to each word
-                if (Math.random() > 0.5) span.className = fontClasses[Math.floor(Math.random() * fontClasses.length)];  
-                hero.appendChild(span);  
-            });  
-
-            // 6. Sub-text & Details (System Font preference)
-            if (Math.random() > 0.3) {
-                 createEl('sub-text f-system', meta[Math.floor(Math.random()*meta.length)], {  
-                    left: (Math.random() * 45) + '%', top: (Math.random() * 90) + '%'  
-                }); 
+        function drawGrid() {
+            // Initial pretty lines
+            for(let i=0; i<2; i++) {
+                createEl('grid-line', "", { width: '100%', height: '1px', top: (30 + i*40) + '%', left: 0 });
+                createEl('grid-line', "", { width: '1px', height: '100%', left: (30 + i*40) + '%', top: 0 });
             }
+        }
 
-            if (Math.random() > 0.5) {
-                createEl('detail ' + fontClasses[Math.floor(Math.random()*3)], meta[Math.floor(Math.random()*meta.length)], {  
-                    right: (Math.random() * 20) + '%', top: (Math.random() * 92) + '%'  
-                });  
+        function startHold() {
+            holdTimer = setTimeout(() => {
+                document.getElementById('canvas').classList.add('shaking');
+            }, 1500);
+        }
+
+        function endHold() {
+            clearTimeout(holdTimer);
+            const canvas = document.getElementById('canvas');
+            if (canvas.classList.contains('shaking')) {
+                canvas.classList.remove('shaking');
+                spawn(true); // Chaos trigger on release
+            } else {
+                spawn();
             }
+        }
 
-            window.scrollTo(0, 1);  
-        }  
-
-        function createEl(cls, txt, styles) {  
-            const div = document.createElement('div');  
-            div.className = 'element ' + cls;  
-            if (txt) div.innerText = txt;  
-            
-            // Rotation for non-anchor elements
-            if (!cls.includes('anchor') && Math.random() > 0.88) {  
-                div.style.transform = "rotate(" + (Math.random() > 0.5 ? '90' : '-90') + "deg)"; 
-            }  
-
-            Object.assign(div.style, styles);  
-            document.getElementById('canvas').appendChild(div);  
-            return div;  
-        }  
-
-        window.onload = () => { spawn(); setTimeout(() => window.scrollTo(0, 1), 500); };  
-    </script>  
-</body>  
+        window.onload = () => { drawGrid(); spawn(); };
+    </script>
+</body>
 </html>
