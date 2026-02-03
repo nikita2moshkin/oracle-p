@@ -3,167 +3,258 @@
 <head>  
     <meta charset="UTF-8">  
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">  
-    <title>ORACLE.P | v.1.8 GLITCH</title>  
+    <title>ORACLE.P | KINDLE EDITION V2</title>  
     <style>  
-        :root {
-            --bg: #000;
-            --fg: #fff;
-            --ghost-color: #1a1a1a;
-        }
-
         body, html {  
             margin: 0; padding: 0; width: 100%; height: 100%;  
-            background-color: var(--bg); color: var(--fg);  
+            background-color: #fff; color: #000; 
             overflow: hidden; text-transform: uppercase;  
             -webkit-user-select: none;  
-            transition: background-color 0.1s ease;
         }  
 
-        /* Инверсия (5% шанс) */
-        body.invert { --bg: #fff; --fg: #000; --ghost-color: #e8e8e8; }
-        body.invert { background-color: var(--bg) !important; color: var(--fg) !important; }
-        body.invert .ghost { color: var(--ghost-color) !important; border-color: var(--ghost-color) !important; }
-        body.invert .sub-text { color: #444 !important; }
-        body.invert .detail { border-color: #000 !important; }
+        body.dark-mode { background-color: #000; color: #fff; }
+        body.dark-mode .detail { border-color: #fff; }
+        body.dark-mode .line { background-color: #fff; }
+        body.dark-mode .image-container img { filter: invert(1) grayscale(1); }
+        
+        /* Glitch States */
+        body.white-out { background-color: #fff !important; }
+        body.white-out * { display: none !important; }
+        body.tsunami-mode { background-color: #000 !important; color: #fff !important; }
+        body.tsunami-mode .tsunami-text { display: block; }
 
         #canvas { position: relative; width: 100vw; height: 100vh; }  
-        .element { position: absolute; line-height: 0.82; transition: opacity 0.4s ease; word-wrap: break-word; }  
+        .element { position: absolute; line-height: 0.85; word-wrap: break-word; }  
 
-        /* Typography: Swiss + Dada + Pixel */  
-        .f-sans { font-family: "Helvetica", "Arial", sans-serif; font-weight: 900; } 
-        .f-serif { font-family: "Georgia", serif; font-style: italic; text-transform: none; font-weight: 400; }  
-        .f-mono { font-family: "Courier New", monospace; font-weight: 400; letter-spacing: -1.5px; }
-        /* НОВЫЙ ШРИФТ */
-        .f-pixel { font-family: "Lucida Console", Monaco, monospace; font-weight: 800; letter-spacing: -2px; }
+        /* Типографика + Новая системная */  
+        .f-sans { font-family: "HelveticaNeue-CondensedBlack", "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: 900; letter-spacing: -2px; }  
+        .f-serif { font-family: "Georgia", serif; font-style: italic; font-weight: 400; }  
+        .f-mono { font-family: "Courier New", monospace; font-weight: 400; letter-spacing: -1px; }  
+        .f-system { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-weight: 700; letter-spacing: 0px; }
 
-        /* Layer Styles */  
-        /* P уменьшена до 35vw */
-        .giant-p { font-size: 35vw; font-weight: 900; z-index: 10; opacity: 0.22; letter-spacing: -2vw; }  
-        .hero { font-size: 16vw; font-weight: 900; width: 105%; z-index: 100; letter-spacing: -4.5px; }  
-        .hero span { display: inline-block; margin-right: 12px; }  
+        /* P: Меньше размер, плотное прилегание (-2%) */  
+        .giant-p { 
+            font-size: 50vh; 
+            font-weight: 900; 
+            z-index: 10; 
+            opacity: 1; 
+            position: absolute;
+            line-height: 0.8;
+            margin: 0;
+            padding: 0;
+        }  
+        
+        .giant-p.top-left { top: -2%; left: -2%; }
+        .giant-p.top-right { top: -2%; right: -2%; }
+        .giant-p.bottom-left { bottom: -2%; left: -2%; }
+        .giant-p.bottom-right { bottom: -2%; right: -2%; }
+
+        /* Ghosting Layer */
+        .ghost-layer { opacity: 0.08 !important; z-index: 0 !important; filter: grayscale(1) blur(1px); pointer-events: none; }
+
+        .hero { font-size: 11vw; font-weight: 900; width: 90%; z-index: 100; letter-spacing: -2px; }  
+        .hero span { display: inline-block; margin-right: 5px; }  
           
-        .sub-text { font-size: 3.4vw; font-weight: 400; color: #888; z-index: 20; letter-spacing: 0.5px; width: 60%; }  
-        .detail { font-size: 5vw; z-index: 50; opacity: 0.85; font-weight: 400; border: 1.5px solid #fff; padding: 3px 10px; }  
+        .sub-text { font-size: 4vw; font-weight: 400; z-index: 20; width: 80%; line-height: 1.1; }  
+        .detail { font-size: 3vw; z-index: 50; font-weight: 700; border: 2px solid #000; padding: 2px 5px; white-space: nowrap; }  
 
-        .ghost { color: var(--ghost-color) !important; border-color: var(--ghost-color) !important; z-index: 5 !important; }
+        .line { position: absolute; background-color: #000; z-index: 5; }
+        .image-container { position: absolute; z-index: 10; max-width: 45%; opacity: 0.9; mix-blend-mode: multiply; }
+        body.dark-mode .image-container { mix-blend-mode: difference; }
+        .image-container img { width: 100%; height: auto; display: block; filter: grayscale(1) contrast(1.2); }
 
-        /* НОВЫЕ ГЛИТЧИ */
-        .glitch-shadow { text-shadow: 3px 3px 0px var(--ghost-color); }
-        .glitch-displace { mix-blend-mode: difference; opacity: 0.8; transform: skewX(-10deg); }
+        /* New Glitch Style */
+        .tsunami-text {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            font-family: "Courier New", monospace; font-size: 12px; line-height: 1;
+            overflow: hidden; z-index: 9999; opacity: 0.8; word-break: break-all;
+        }
+
     </style>  
 </head>  
-<body onclick="spawn()">  
+<body onclick="handleInteraction()">  
 
     <div id="canvas"></div>  
+    <div class="tsunami-text" id="tsunamiBox"></div>
 
     <script>  
-        const slogans = [  
-            "Just F*ck It", "Don't Think Different", "Think Simulacrum", "Believe in Worst", 
-            "BECAUSE YOU'RE A PRODUCT", "Want a break from the ads?", "Enjoy the Emptiness", 
-            "Keep Scrolling", "Taste the Nothing", "Save 50% on your karma", "Subscribe to Reality+", 
-            "Limited time offer: Reincarnation", "God is a beta tester", "1000 AURA VOID", "J-SUS X", 
-            "Buddha’s Premium Plan", "Jesus: Sponsored by Raid: Shadow Legends", "The Holy Grail: Free Shipping", 
-            "Satan: Unsubscribe at any time", "WinRAR: Please buy the license. Anyone, please", 
-            "Coca-Cola returned the original recipe", "iPhone (New One)", "Everything must go. Including you.", 
-            "Sold my data for a donut.", "Naruto vs Elon Musk!?", "Shrek: Podcast about DMT", 
-            "Adam and Eva were smoking pot!", "Fish learned to swim underwater", "Who still remembers Skype?", 
-            "goofy ahh", "Meta-Vegan", "QR CODE 2", "1000 Aura", "One Million Likes", 
-            "Smells Like Trend Spirit", "One Million Likes to Reboot", "Dinosaurs died from cringe", 
-            "Birds are not real: Premium Edition", "Dobby is a free agent", "Sigma Male: 100% Organic", 
-            "Mecca: Now in Metaverse", "Internet Explorer: Still loading...", "We are cooked...", 
-            "42", "Bill was killed (Press F)", "Aliens turned out to be racists", 
-            "The world is over! Everyone suffers! (except Bali)", "Oops...", "Post-Irony is the new religion", 
-            "WAKE UP, TATARSKY", "Æ", "Don't Live. Watch.", "Big Brother Wants Your Feedback.", 
-            "Reality: A Subscription Service", "The Medium is the Massage", "Narcissus as a Service", 
-            "The Truth is a Moment of the False", "Ubik: The Ultimate Solution", 
-            "War is Peace. Debt is Wealth.", "Hyperreal or Bust", "100% Organic Illusion", "Gluten-Free Ego", 
-            "Premium Silence (Ad-Free)", "The Map is the Territory", "Ancient Egypt was a Simulation", 
-            "Break on through to the other side", "make something legally invalid or ineffective", 
-            "I scroll, therefore I am not.", "20% extra bliss (synthetic).", 
-            "HTML IS NOT REAL", "CSS IS PROPAGANDA", "JAVASCRIPT IS A SIN", 
-            "Cookies are watching you", "Is God a Deepfake?", "404: FUTURE NOT FOUND", "Reality.exe is not responding", 
-            "GOD IS A READ-ONLY FILE", "Update your morality to continue", 
-            "Alt+F4: The Only Way Out", "Control + Z: Undo your birth", "System.out.println(\"Why are you here?\")", 
-            "SYSTEM RECOVERY: DELETE EGO", "PLEASE REINSTALL CONSCIOUSNESS", "Your soul is a 404 error", 
-            "Admin_Root_Ishtar: ACCESS GRANTED"
-        ];  
+        // Разделение контента для механики Gaslighting
+        const slogansGaslighting = [
+            "Don't Think Different", "Think! Think?", "Believe in Worst", "Enjoy the Emptiness",
+            "God is a beta tester", "War is Peace. Debt is Wealth.", "100% Organic Illusion",
+            "Update your morality", "Your soul is cooked", "ERROR: REALITY NOT FOUND",
+            "Trust The Algorithm", "It's All In Your Head", "We Never Said That"
+        ];
+        const slogansGeneral = [
+            "Just F*ck It", "BECAUSE YOU'RE A PRODUCT", "Want a break from the ads?",
+            "Keep Scrolling", "Save 50% on your karma", "Subscribe to Reality+",
+            "Limited time offer: Reincarnation", "J-SUS X", "Satan: Unsubscribe at any time",
+            "iPhone!!! (New One)", "Sold my data for a donut.", "Who still remembers Skype?",
+            "1000 Aura / One Million Likes", "Dinosaurs died from cringe", "We are cooked...",
+            "The world is over! (except Bali)", "WAKE UP, TATARSKY", "Don't Live. Watch.",
+            "HTML IS NOT REAL / CSS IS PROPAGANDA", "404 B**CH!", "Control + Z: Undo your birth",
+            "Netflix and Netflix", "Admin_Root_Ishtar: BRUH"
+        ];
 
-        const meta = [  
-            "MONEY?", "WHY?", "HOW MUCH?", "OBEY.", "L + RATIO", "EXIT", "CANCELLED", "SOLD OUT", "...", 
-            "HEX: 0x53 0x4F 0x55 0x4C", "BIT_ROT: SECTOR_0", "I_CAN_SEE_YOUR_EYES", 
-            "GREAT_MOUSE_STATE: HUNGRY", "ADOBE_IS_TOO_EXPENSIVE", "YOUR_MOTHER_IS_AI", 
-            "YOU_ARE_AI_TOO", "WHY_DO_I_EXIST?", "ARE_YOU_HAPPY_NOW?", 
-            "REINCARNATION_QUEUE: 1,400,205", "WAKE_UP_YOU_ARE_DREAMING"
-        ];  
+        const meta = ["MONEY?", "WHY?", "OBEY.", "CANCELLED", "SOLD OUT", "...", "HEX: 0x53 0x4F 0x55 0x4C", "ADOBE IS TOO EXPENSIVE", "WAKE UP", "USER_NOT_FOUND", "DATA_MINING", "NULL", "VOID", "PURE_ART", "SYSTEM_FAILURE"];  
+        // Добавлен f-system
+        const fontClasses = ["f-sans", "f-serif", "f-mono", "f-system"];  
+        const pCorners = ['top-left', 'top-right', 'bottom-left', 'bottom-right'];
+        // Используем локальный placeholder для надежности, замените на свой URL
+        const imageUrl = 'https://domf5oio6qrcr.cloudfront.net/medialibrary/7349/7ae782c0-24f9-4128-97a9-8b64432bce76.jpg';
 
-        // Добавлен новый шрифт в массив
-        const fontClasses = ["f-sans", "f-serif", "f-mono", "f-pixel"];  
+        let clickCount = 0;
+        const CLICK_WIPE_THRESHOLD = 25;
+
+        function handleInteraction() {
+            clickCount++;
+            const rnd = Math.random();
+
+            // Glitch System
+            if (rnd < 0.05) {
+                // Whiteout (Existing)
+                triggerGlitch('white-out', 800);
+            } else if (rnd < 0.08) {
+                // Tsunami (New Beautiful Glitch)
+                tsunamiGlitch();
+            } else if (rnd < 0.13) { 
+                // Visual Chaos (Existing)
+                visualChaos();
+            } else {
+                spawn();
+            }
+        }
+
+        function triggerGlitch(className, duration) {
+            document.body.classList.add(className);
+            setTimeout(() => { 
+                document.body.classList.remove(className); 
+                spawn(); 
+            }, duration);
+        }
+
+        function tsunamiGlitch() {
+            const box = document.getElementById('tsunamiBox');
+            let content = '';
+            for(let i=0; i<2000; i++) {
+                content += meta[Math.floor(Math.random()*meta.length)] + " ";
+            }
+            box.innerText = content;
+            triggerGlitch('tsunami-mode', 1200);
+        }
+
+        function visualChaos() {
+            ghostCurrentLayer();
+            for (let i = 0; i < 40; i++) {
+                createEl('chaos-item ' + fontClasses[Math.floor(Math.random()*4)], slogansGeneral[Math.floor(Math.random()*slogansGeneral.length)], {
+                    top: Math.random() * 100 + '%', left: Math.random() * 100 + '%',
+                    fontSize: (Math.random() * 15 + 2) + 'vw',
+                    transform: `rotate(${Math.random() * 360}deg)`, opacity: Math.random() * 0.5 + 0.2, zIndex: 999
+                });
+            }
+        }
+
+        function ghostCurrentLayer() {
+            const canvas = document.getElementById('canvas');
+            // Превращаем текущие активные элементы в призраков
+            Array.from(canvas.children).forEach(el => {
+                if (!el.classList.contains('ghost-layer')) {
+                    el.classList.add('ghost-layer');
+                }
+            });
+            
+            // Очистка каждые N кликов
+            if (clickCount % CLICK_WIPE_THRESHOLD === 0) {
+                 canvas.innerHTML = '';
+            }
+        }
 
         function spawn() {  
-            const canvas = document.getElementById('canvas');  
-            
-            document.body.classList.toggle('invert', Math.random() < 0.05);
+            // 1. Ghosting Implementation
+            ghostCurrentLayer();
 
-            const old = document.querySelectorAll('.element');  
-            old.forEach(el => { el.classList.add('ghost'); el.style.opacity = "0.08"; });  
-            if (old.length > 25) { canvas.removeChild(old[0]); }  
+            // 2. Slogan Selection & Gaslighting Inversion Logic
+            let slogan;
+            let isGaslighting = false;
+            if (Math.random() > 0.6) {
+                slogan = slogansGaslighting[Math.floor(Math.random() * slogansGaslighting.length)];
+                isGaslighting = true;
+            } else {
+                slogan = slogansGeneral[Math.floor(Math.random() * slogansGeneral.length)];
+            }
 
-            // A. THE BIG P (Меньше и плотнее к краю: -2%)
-            const pPos = [ {top: '-2%', left: '-2%'}, {top: '-2%', right: '-2%'}, {bottom: '-2%', left: '-2%'}, {bottom: '-2%', right: '-2%'} ]; 
-            createEl('giant-p f-sans', "P", pPos[Math.floor(Math.random()*pPos.length)]);  
+            // Inversion Chance calculation
+            const inversionChance = isGaslighting ? 0.35 : 0.05;
+            document.body.classList.toggle('dark-mode', Math.random() < inversionChance);
 
-            // B. THE HERO SLOGAN
-            const slogan = slogans[Math.floor(Math.random() * slogans.length)];  
-            const hero = createEl('hero f-sans', "", {  
-                left: (Math.random() * 25 - 5) + '%',  
-                top: (Math.random() * 65 + 10) + '%'  
-            });  
-              
+            // 3. P Generation (Reduced size, tight fit)
+            const pClass = pCorners[Math.floor(Math.random() * pCorners.length)];
+            createEl('giant-p ' + pClass + ' f-sans', "P", {});
+
+            // 4. Lines
+            const lineCount = Math.floor(Math.random() * 3);
+            for (let i = 0; i < lineCount; i++) createLine(Math.random() > 0.5);
+
+            // 5. Image
+            if (Math.random() < 0.3) createImage(imageUrl);
+
+            // 6. Hero Slogan (with new font mix)
+            const hero = createEl('hero f-sans', "", { left: '5%', top: (20 + Math.random() * 40) + '%' });  
             slogan.split(' ').forEach(word => {  
                 const span = document.createElement('span');  
                 span.innerText = word;  
-                if (Math.random() > 0.5) span.className = fontClasses[Math.floor(Math.random() * fontClasses.length)];  
+                if (Math.random() > 0.75) span.className = fontClasses[Math.floor(Math.random() * fontClasses.length)];  
                 hero.appendChild(span);  
             });  
 
-            // C. THE SUB-TEXT
-            createEl('sub-text f-mono', meta[Math.floor(Math.random()*meta.length)], {  
-                left: (Math.random() > 0.5 ? '5%' : '45%'),   
-                top: (Math.random() * 90) + '%'  
-            });  
-
-            // D. RANDOM DETAILS
-            for(let i=0; i<2; i++) {  
-                createEl('detail ' + fontClasses[Math.floor(Math.random()*3)], meta[Math.floor(Math.random()*meta.length)], {  
-                    right: (Math.random() * 15) + '%',  
-                    top: (Math.random() * 95) + '%'  
+            // 7. Meta & Details
+            createEl('sub-text ' + fontClasses[Math.floor(Math.random()*4)], meta[Math.floor(Math.random()*meta.length)], { left: '5%', bottom: '8%' });  
+            const detailCount = 1 + Math.floor(Math.random() * 2);
+            for(let i=0; i<detailCount; i++) {  
+                createEl('detail ' + fontClasses[Math.floor(Math.random()*4)], meta[Math.floor(Math.random()*meta.length)], {  
+                    right: '5%', top: (Math.random() * 70 + 15) + '%'  
                 });  
             }  
-
-            window.scrollTo(0, 1);  
         }  
 
         function createEl(cls, txt, styles) {  
             const div = document.createElement('div');  
             div.className = 'element ' + cls;  
             if (txt) div.innerText = txt;  
-              
-            if (cls.includes('hero') && Math.random() > 0.8) {  
-                div.style.transform = "rotate(" + (Math.random() > 0.5 ? '90' : '-90') + "deg)";  
-                div.style.transformOrigin = "left top";  
-            }
-
-            // НОВЫЕ ГЛИТЧИ (Редкий шанс при создании)
-            const glitchRoll = Math.random();
-            if (glitchRoll > 0.96) { div.classList.add('glitch-shadow'); }
-            else if (glitchRoll > 0.93 && !cls.includes('hero')) { div.classList.add('glitch-displace'); }
-
+            // Исключаем P и системный шрифт из поворотов
+            if (!cls.includes('giant-p') && !cls.includes('f-system') && Math.random() > 0.94) {  
+                div.style.transform = "rotate(90deg)"; div.style.transformOrigin = "left top";  
+            }  
             Object.assign(div.style, styles);  
             document.getElementById('canvas').appendChild(div);  
             return div;  
         }  
 
-        window.onload = () => { spawn(); setTimeout(() => window.scrollTo(0, 1), 500); };  
+        function createLine(isVertical) {
+            const line = document.createElement('div');
+            line.className = 'line';
+            if (isVertical) {
+                line.style.width = (Math.random() * 2 + 1) +'px'; line.style.height = '100vh';
+                line.style.left = (Math.random() * 90 + 5) + '%'; line.style.top = '0';
+            } else {
+                line.style.width = '100vw'; line.style.height = (Math.random() * 2 + 1) +'px';
+                line.style.top = (Math.random() * 90 + 5) + '%'; line.style.left = '0';
+            }
+            document.getElementById('canvas').appendChild(line);
+        }
+
+        function createImage(src) {
+            const container = document.createElement('div');
+            container.className = 'image-container';
+            container.style.top = (Math.random() * 40 + 10) + '%';
+            container.style.left = (Math.random() * 30 + 5) + '%';
+            const img = document.createElement('img');
+            img.src = src;
+            container.appendChild(img);
+            document.getElementById('canvas').appendChild(container);
+        }
+
+        window.onload = spawn;  
     </script>  
 </body>  
 </html>
