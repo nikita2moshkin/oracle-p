@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">  
     <title>ORACLE.P | KINDLE EDITION</title>  
     <style>  
-        /* Основной режим: DARK MODE (Черный фон, белый текст) */
         body, html {  
             margin: 0; padding: 0; width: 100%; height: 100%;  
             background-color: #000; color: #fff; 
@@ -14,21 +13,15 @@
             font-family: "Helvetica Neue", "Arial", sans-serif;
         }  
 
-        /* Редкий светлый режим (10%) */
         body.white-mode { background-color: #fff; color: #000; }
         body.white-mode .detail { border-color: #000; }
         body.white-mode .line { background-color: #000; }
         body.white-mode .image-container img { filter: grayscale(1); }
 
-        /* Глитч: Белый экран (Тот самый первый баг) */
+        /* Базовые глитчи */
         body.glitch-white { background-color: #fff !important; }
         body.glitch-white * { visibility: hidden !important; }
-
-        /* Глитч: Растяжение */
-        body.glitch-stretch .element {
-            transform: scaleX(2) skewX(20deg);
-            opacity: 0.3;
-        }
+        body.glitch-stretch .element { transform: scaleX(3) skewX(30deg); opacity: 0.2; }
 
         #canvas { position: relative; width: 100vw; height: 100vh; }  
         .element { position: absolute; line-height: 0.8; word-wrap: break-word; }  
@@ -39,30 +32,31 @@
         .f-serif { font-family: "Georgia", serif; font-style: italic; font-weight: 400; text-transform: none; }  
         .f-mono { font-family: "Courier New", monospace; font-weight: 400; letter-spacing: -2px; }  
 
-        /* Буква P: 80vh, жесткая привязка к краям */  
+        /* P: Уменьшена до 65vh для эстетики, жесткие углы */  
         .giant-p { 
-            font-size: 80vh; 
+            font-size: 65vh; 
             font-weight: 900; 
             z-index: 0; 
             position: absolute;
             line-height: 0.7;
+            transition: all 0.1s ease-in-out;
         }  
         
-        .giant-p.top-left { top: -8%; left: -5%; }
-        .giant-p.top-right { top: -8%; right: -5%; text-align: right; }
-        .giant-p.bottom-left { bottom: -18%; left: -5%; }
-        .giant-p.bottom-right { bottom: -18%; right: -5%; text-align: right; }
+        .giant-p.top-left { top: -2%; left: -2%; }
+        .giant-p.top-right { top: -2%; right: -2%; text-align: right; }
+        .giant-p.bottom-left { bottom: -10%; left: -2%; }
+        .giant-p.bottom-right { bottom: -10%; right: -2%; text-align: right; }
 
-        /* Ghosting (Наслоение) */
-        .ghost { opacity: 0.3; z-index: -1; }
-
-        .hero { font-size: 14vw; font-weight: 900; width: 95%; z-index: 100; letter-spacing: -4px; }  
-        .sub-text { font-size: 5vw; font-weight: 400; z-index: 20; width: 85%; }  
-        .detail { font-size: 4vw; z-index: 50; font-weight: 700; border: 4px solid #fff; padding: 4px 10px; }  
-
+        .ghost { opacity: 0.25; z-index: -1; }
+        .hero { font-weight: 900; z-index: 100; letter-spacing: -4px; }  
+        .detail { z-index: 50; font-weight: 700; border: 4px solid #fff; padding: 4px 10px; white-space: nowrap; }  
+        
         .line { position: absolute; background-color: #fff; z-index: 5; }
-        .image-container { position: absolute; z-index: 10; max-width: 70%; filter: invert(1) grayscale(1); }
+        .image-container { position: absolute; z-index: 10; filter: invert(1) grayscale(1); opacity: 0.8; }
         .image-container img { width: 100%; height: auto; display: block; }
+
+        /* Элементы старого хаоса */
+        .chaos-item { position: absolute; z-index: 999; pointer-events: none; mix-blend-mode: difference; }
 
     </style>  
 </head>  
@@ -86,17 +80,19 @@
             "Your soul is cooked", "Admin_Root_Ishtar: BRUH", "ERROR: REALITY NOT FOUND"
         ];  
 
-        const meta = ["MONEY?", "WHY?", "OBEY.", "CANCELLED", "SOLD OUT", "HEX: 0x53 0x4F 0x55 0x4C", "ADOBE IS TOO EXPENSIVE", "WAKE UP", "USER_NOT_FOUND", "DATA_MINING", "VOID", "PURE_ART"];  
+        const meta = ["MONEY?", "WHY?", "OBEY.", "CANCELLED", "SOLD OUT", "0x53 0x4F 0x55 0x4C", "WAKE UP", "VOID", "PURE_ART"];  
         const fontClasses = ["f-sans", "f-impact", "f-serif", "f-mono"];  
         const pCorners = ['top-left', 'top-right', 'bottom-left', 'bottom-right'];
         const imageUrl = 'https://domf5oio6qrcr.cloudfront.net/medialibrary/7349/7ae782c0-24f9-4128-97a9-8b64432bce76.jpg';
 
         function handleInteraction() {
             const rnd = Math.random();
-            if (rnd < 0.05) { // 5% Первый баг (Белый экран)
+            if (rnd < 0.05) { 
                 triggerEffect('glitch-white', 600);
-            } else if (rnd < 0.08) { // 3% Растяжение
-                triggerEffect('glitch-stretch', 300);
+            } else if (rnd < 0.10) { 
+                visualChaos(); 
+            } else if (rnd < 0.13) {
+                triggerEffect('glitch-stretch', 400);
             } else {
                 spawn();
             }
@@ -107,51 +103,88 @@
             setTimeout(() => { document.body.classList.remove(cls); spawn(); }, ms);
         }
 
-        function spawn() {  
-            const canvas = document.getElementById('canvas'); 
-            const isWhiteMode = Math.random() < 0.1; // 10% шанс на белый фон
-            
-            document.body.className = isWhiteMode ? 'white-mode' : '';
+        function visualChaos() {
+            const canvas = document.getElementById('canvas');
             canvas.innerHTML = '';
-
-            // 1. ГРАФИКА: Линии (Увеличено количество)
-            const lineCount = Math.floor(Math.random() * 6) + 4;
-            for (let i = 0; i < lineCount; i++) createLine(Math.random() > 0.5);
-
-            // 2. БУКВА P (80vh, Impact/Sans)
-            const pClass = pCorners[Math.floor(Math.random() * pCorners.length)];
-            const pFont = Math.random() > 0.4 ? 'f-impact' : 'f-sans';
-            createEl('giant-p ' + pClass + ' ' + pFont, "P", {});
+            document.body.classList.remove('white-mode');
             
-            // Наслоение P (Ghosting)
-            if (Math.random() > 0.7) {
-                createEl('giant-p ghost ' + pClass + ' ' + pFont, "P", {
-                    transform: `translate(${Math.random()*20}px, ${Math.random()*20}px)`
+            for (let i = 0; i < 45; i++) {
+                createEl('chaos-item ' + fontClasses[Math.floor(Math.random()*4)], slogans[Math.floor(Math.random()*slogans.length)], {
+                    top: Math.random() * 100 + '%',
+                    left: Math.random() * 100 + '%',
+                    fontSize: (Math.random() * 18 + 2) + 'vw',
+                    transform: `rotate(${Math.random() * 360}deg) scale(${Math.random() * 2})`,
+                    opacity: Math.random(),
+                    color: Math.random() > 0.5 ? '#fff' : '#555'
                 });
             }
+            createEl('giant-p f-impact', "P", { top: '50%', left: '50%', transform: 'translate(-50%, -50%)', fontSize: '130vw', opacity: 0.1 });
+        }
 
-            // 3. КАРТИНКА (40%)
-            if (Math.random() < 0.4) createImage(imageUrl);
+        function spawn() {  
+            const canvas = document.getElementById('canvas'); 
+            const vibe = Math.random(); // 0.0-0.3: Minimal, 0.3-0.8: Swiss, 0.8-1.0: Full Dada
+            
+            document.body.className = (Math.random() < 0.1) ? 'white-mode' : '';
+            canvas.innerHTML = '';
 
-            // 4. СЛОГАН
+            // 1. ЛИНИИ (Вероятность зависит от vibe)
+            if (vibe > 0.2) {
+                const lineCount = vibe > 0.8 ? Math.floor(Math.random() * 12) + 5 : Math.floor(Math.random() * 4) + 1;
+                for (let i = 0; i < lineCount; i++) createLine(Math.random() > 0.5);
+            }
+
+            // 2. БУКВА P (Уменьшена до 65vh)
+            const pClass = pCorners[Math.floor(Math.random() * pCorners.length)];
+            const pFont = Math.random() > 0.5 ? 'f-impact' : 'f-sans';
+            createEl('giant-p ' + pClass + ' ' + pFont, "P", {});
+            
+            // Наслоения (Dada vibe)
+            if (vibe > 0.7) {
+                for(let i=0; i<3; i++) {
+                    createEl('giant-p ghost ' + pClass + ' ' + pFont, "P", {
+                        transform: `translate(${Math.random()*60-30}px, ${Math.random()*60-30}px)`,
+                        opacity: (0.1 + Math.random() * 0.2).toString()
+                    });
+                }
+            }
+
+            // 3. КАРТИНКА (Шанс выше в Dada)
+            if (Math.random() < (vibe > 0.8 ? 0.7 : 0.3)) createImage(imageUrl);
+
+            // 4. СЛОГАН (Разные размеры)
             const slogan = slogans[Math.floor(Math.random() * slogans.length)];  
-            const hero = createEl('hero f-impact', "", { left: '5%', top: (15 + Math.random() * 50) + '%' });  
+            const heroSize = vibe > 0.8 ? (Math.random() * 10 + 15) : (Math.random() * 5 + 10);
+            const hero = createEl('hero f-impact', "", { 
+                left: '5%', 
+                top: (15 + Math.random() * 55) + '%',
+                fontSize: heroSize + 'vw'
+            });  
+            
             slogan.split(' ').forEach(word => {  
                 const span = document.createElement('span');  
                 span.innerText = word;  
                 span.style.display = "inline-block";
-                span.style.marginRight = "12px";
-                if (Math.random() > 0.8) span.className = fontClasses[Math.floor(Math.random() * fontClasses.length)];  
+                span.style.marginRight = "10px";
+                if (vibe > 0.6 && Math.random() > 0.7) {
+                    span.className = fontClasses[Math.floor(Math.random() * 4)];
+                    span.style.transform = `rotate(${Math.random()*20-10}deg)`;
+                }
                 hero.appendChild(span);  
             });  
 
-            // 5. МЕТА И ДЕТАЛИ
-            createEl('sub-text f-mono', meta[Math.floor(Math.random()*meta.length)], { left: '5%', bottom: '5%' });  
+            // 5. МЕТА И ASCII
+            const ascii = ["█▓▒░", " / / / ", " [!] ", " >>> ", "ERR_"];
+            createEl('sub-text f-mono', meta[Math.floor(Math.random()*meta.length)] + " " + ascii[Math.floor(Math.random()*ascii.length)], { 
+                left: '5%', bottom: '5%', fontSize: '4.5vw' 
+            });  
             
-            const detailCount = 2 + Math.floor(Math.random() * 3);
+            const detailCount = vibe > 0.8 ? 8 : 2;
             for(let i=0; i<detailCount; i++) {  
                 createEl('detail ' + fontClasses[Math.floor(Math.random()*4)], meta[Math.floor(Math.random()*meta.length)], {  
-                    right: '5%', top: (Math.random() * 85 + 5) + '%'  
+                    right: (Math.random()*10 + 2) + '%', 
+                    top: (Math.random() * 90) + '%',
+                    transform: vibe > 0.9 ? `rotate(${Math.random()*360}deg)` : 'none'
                 });  
             }  
         }  
@@ -168,13 +201,13 @@
         function createLine(isVertical) {
             const line = document.createElement('div');
             line.className = 'line';
-            const thickness = (Math.random() * 4 + 1) + 'px';
+            const thickness = Math.random() > 0.8 ? (Math.random() * 15 + 5) + 'px' : (Math.random() * 2 + 1) + 'px';
             if (isVertical) {
                 line.style.width = thickness; line.style.height = '100vh';
-                line.style.left = (Math.random() * 100) + '%'; line.style.top = '0';
+                line.style.left = (Math.random() * 100) + '%';
             } else {
                 line.style.width = '100vw'; line.style.height = thickness;
-                line.style.top = (Math.random() * 100) + '%'; line.style.left = '0';
+                line.style.top = (Math.random() * 100) + '%';
             }
             document.getElementById('canvas').appendChild(line);
         }
@@ -182,8 +215,9 @@
         function createImage(src) {
             const container = document.createElement('div');
             container.className = 'image-container';
+            container.style.width = (Math.random() * 40 + 30) + '%';
             container.style.top = (Math.random() * 60) + '%';
-            container.style.left = (Math.random() * 50) + '%';
+            container.style.left = (Math.random() * 60) + '%';
             const img = document.createElement('img');
             img.src = src;
             container.appendChild(img);
