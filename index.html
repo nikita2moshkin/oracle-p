@@ -1,166 +1,169 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ORACLE.P | v.2.0</title>
-    <style>
-        body, html {
-            margin: 0; padding: 0; width: 100%; height: 100%;
-            background-color: #000; color: #fff;
-            overflow: hidden; text-transform: uppercase;
-            -webkit-user-select: none;
-            transition: background-color 0.1s ease;
+<!DOCTYPE html>  
+<html lang="ru">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">  
+    <title>ORACLE.P | v.1.8 GLITCH</title>  
+    <style>  
+        :root {
+            --bg: #000;
+            --fg: #fff;
+            --ghost-color: #1a1a1a;
         }
 
-        /* Инверсия (5% шанс или при безумии) */
-        body.invert { background-color: #fff !important; color: #000 !important; }
-        body.invert .ghost { color: #e5e5e5 !important; border-color: #e5e5e5 !important; }
+        body, html {  
+            margin: 0; padding: 0; width: 100%; height: 100%;  
+            background-color: var(--bg); color: var(--fg);  
+            overflow: hidden; text-transform: uppercase;  
+            -webkit-user-select: none;  
+            transition: background-color 0.1s ease;
+        }  
+
+        /* Инверсия (5% шанс) */
+        body.invert { --bg: #fff; --fg: #000; --ghost-color: #e8e8e8; }
+        body.invert { background-color: var(--bg) !important; color: var(--fg) !important; }
+        body.invert .ghost { color: var(--ghost-color) !important; border-color: var(--ghost-color) !important; }
+        body.invert .sub-text { color: #444 !important; }
         body.invert .detail { border-color: #000 !important; }
 
-        #canvas { position: relative; width: 100vw; height: 100vh; }
-        .element { position: absolute; line-height: 0.8; transition: opacity 0.4s ease; word-wrap: break-word; }
+        #canvas { position: relative; width: 100vw; height: 100vh; }  
+        .element { position: absolute; line-height: 0.82; transition: opacity 0.4s ease; word-wrap: break-word; }  
 
-        /* Fonts */
-        .f-sans { font-family: "Helvetica", Arial, sans-serif; font-weight: 900; }
-        .f-serif { font-family: "Georgia", serif; font-style: italic; text-transform: none; font-weight: 400; }
-        .f-mono { font-family: "Courier New", monospace; font-weight: 400; letter-spacing: -2px; }
+        /* Typography: Swiss + Dada + Pixel */  
+        .f-sans { font-family: "Helvetica", "Arial", sans-serif; font-weight: 900; } 
+        .f-serif { font-family: "Georgia", serif; font-style: italic; text-transform: none; font-weight: 400; }  
+        .f-mono { font-family: "Courier New", monospace; font-weight: 400; letter-spacing: -1.5px; }
+        /* НОВЫЙ ШРИФТ */
+        .f-pixel { font-family: "Lucida Console", Monaco, monospace; font-weight: 800; letter-spacing: -2px; }
 
-        /* Layer Styles */
-        .giant-p { font-size: 80vw; font-weight: 900; z-index: 10; opacity: 0.25; pointer-events: none; }
-        .hero { font-size: 18vw; font-weight: 900; width: 110%; z-index: 100; letter-spacing: -5px; }
-        .hero span { display: inline-block; margin-right: 15px; }
-        
-        .sub-text { font-size: 3.5vw; font-weight: 400; color: #888; z-index: 20; letter-spacing: 1px; width: 45%; }
-        .detail { font-size: 5vw; z-index: 50; opacity: 0.8; font-weight: 400; border: 1.5px solid #fff; padding: 2px 8px; background: inherit; }
+        /* Layer Styles */  
+        /* P уменьшена до 35vw */
+        .giant-p { font-size: 35vw; font-weight: 900; z-index: 10; opacity: 0.22; letter-spacing: -2vw; }  
+        .hero { font-size: 16vw; font-weight: 900; width: 105%; z-index: 100; letter-spacing: -4.5px; }  
+        .hero span { display: inline-block; margin-right: 12px; }  
+          
+        .sub-text { font-size: 3.4vw; font-weight: 400; color: #888; z-index: 20; letter-spacing: 0.5px; width: 60%; }  
+        .detail { font-size: 5vw; z-index: 50; opacity: 0.85; font-weight: 400; border: 1.5px solid #fff; padding: 3px 10px; }  
 
-        /* Pixellated Image Artifacts */
-        .artifact-img { 
-            filter: grayscale(1) contrast(500%) brightness(150%) blur(0.5px);
-            image-rendering: pixelated;
-            max-width: 70vw; opacity: 0.6; z-index: 5;
-        }
+        .ghost { color: var(--ghost-color) !important; border-color: var(--ghost-color) !important; z-index: 5 !important; }
 
-        .ghost { color: #1a1a1a !important; border-color: #1a1a1a !important; z-index: 5 !important; }
-    </style>
-</head>
-<body onmousedown="startHold()" onmouseup="endHold()" ontouchstart="startHold()" ontouchend="endHold()">
+        /* НОВЫЕ ГЛИТЧИ */
+        .glitch-shadow { text-shadow: 3px 3px 0px var(--ghost-color); }
+        .glitch-displace { mix-blend-mode: difference; opacity: 0.8; transform: skewX(-10deg); }
+    </style>  
+</head>  
+<body onclick="spawn()">  
 
-    <div id="canvas"></div>
+    <div id="canvas"></div>  
 
-    <script>
-        const slogans = [
-            "Just F*ck It", "Don't Think Different", "Think Simulacrum", "Believe in Worst",
-            "BECAUSE YOU'RE A PRODUCT", "Want a break from the ads?", "Enjoy the Emptiness",
-            "Keep Scrolling", "Taste the Nothing", "Save 50% on your karma", "Subscribe to Reality+",
-            "Limited time offer: Reincarnation", "God is a beta tester", "1000 AURA VOID", "J-SUS X",
-            "Buddha’s Premium Plan", "Jesus: Sponsored by Raid", "The Holy Grail: Free Shipping",
-            "Satan: Unsubscribe at any time", "WinRAR: Please buy the license.", "Coca-Cola returned the original recipe",
-            "iPhone (New One)", "Everything must go.", "Sold my data for a donut.", "Naruto vs Elon Musk!?",
-            "Shrek: Podcast about DMT", "Adam and Eva were smoking pot!", "Aliens turned out to be racists",
-            "The world is over! (except Bali)", "Oops...", "Post-Irony is the new religion",
-            "WAKE UP, TATARSKY", "Reality: A Subscription Service", "404: FUTURE NOT FOUND",
-            "HTML IS NOT REAL", "Admin_Root_Ishtar: ACCESS GRANTED"
-        ];
+    <script>  
+        const slogans = [  
+            "Just F*ck It", "Don't Think Different", "Think Simulacrum", "Believe in Worst", 
+            "BECAUSE YOU'RE A PRODUCT", "Want a break from the ads?", "Enjoy the Emptiness", 
+            "Keep Scrolling", "Taste the Nothing", "Save 50% on your karma", "Subscribe to Reality+", 
+            "Limited time offer: Reincarnation", "God is a beta tester", "1000 AURA VOID", "J-SUS X", 
+            "Buddha’s Premium Plan", "Jesus: Sponsored by Raid: Shadow Legends", "The Holy Grail: Free Shipping", 
+            "Satan: Unsubscribe at any time", "WinRAR: Please buy the license. Anyone, please", 
+            "Coca-Cola returned the original recipe", "iPhone (New One)", "Everything must go. Including you.", 
+            "Sold my data for a donut.", "Naruto vs Elon Musk!?", "Shrek: Podcast about DMT", 
+            "Adam and Eva were smoking pot!", "Fish learned to swim underwater", "Who still remembers Skype?", 
+            "goofy ahh", "Meta-Vegan", "QR CODE 2", "1000 Aura", "One Million Likes", 
+            "Smells Like Trend Spirit", "One Million Likes to Reboot", "Dinosaurs died from cringe", 
+            "Birds are not real: Premium Edition", "Dobby is a free agent", "Sigma Male: 100% Organic", 
+            "Mecca: Now in Metaverse", "Internet Explorer: Still loading...", "We are cooked...", 
+            "42", "Bill was killed (Press F)", "Aliens turned out to be racists", 
+            "The world is over! Everyone suffers! (except Bali)", "Oops...", "Post-Irony is the new religion", 
+            "WAKE UP, TATARSKY", "Æ", "Don't Live. Watch.", "Big Brother Wants Your Feedback.", 
+            "Reality: A Subscription Service", "The Medium is the Massage", "Narcissus as a Service", 
+            "The Truth is a Moment of the False", "Ubik: The Ultimate Solution", 
+            "War is Peace. Debt is Wealth.", "Hyperreal or Bust", "100% Organic Illusion", "Gluten-Free Ego", 
+            "Premium Silence (Ad-Free)", "The Map is the Territory", "Ancient Egypt was a Simulation", 
+            "Break on through to the other side", "make something legally invalid or ineffective", 
+            "I scroll, therefore I am not.", "20% extra bliss (synthetic).", 
+            "HTML IS NOT REAL", "CSS IS PROPAGANDA", "JAVASCRIPT IS A SIN", 
+            "Cookies are watching you", "Is God a Deepfake?", "404: FUTURE NOT FOUND", "Reality.exe is not responding", 
+            "GOD IS A READ-ONLY FILE", "Update your morality to continue", 
+            "Alt+F4: The Only Way Out", "Control + Z: Undo your birth", "System.out.println(\"Why are you here?\")", 
+            "SYSTEM RECOVERY: DELETE EGO", "PLEASE REINSTALL CONSCIOUSNESS", "Your soul is a 404 error", 
+            "Admin_Root_Ishtar: ACCESS GRANTED"
+        ];  
 
-        const meta = ["MONEY?", "WHY?", "OBEY.", "L + RATIO", "EXIT", "HEX: 0x53 0x4F 0x55 0x4C", "BIT_ROT: SECTOR_0", "I_CAN_SEE_YOUR_EYES"];
-        
-        // Массив для твоих будущих картинок
-        const imageLinks = [
-            "https://api.dicebear.com/7.x/shapes/svg?seed=soul" // Заглушка (искусственная форма)
-        ];
+        const meta = [  
+            "MONEY?", "WHY?", "HOW MUCH?", "OBEY.", "L + RATIO", "EXIT", "CANCELLED", "SOLD OUT", "...", 
+            "HEX: 0x53 0x4F 0x55 0x4C", "BIT_ROT: SECTOR_0", "I_CAN_SEE_YOUR_EYES", 
+            "GREAT_MOUSE_STATE: HUNGRY", "ADOBE_IS_TOO_EXPENSIVE", "YOUR_MOTHER_IS_AI", 
+            "YOU_ARE_AI_TOO", "WHY_DO_I_EXIST?", "ARE_YOU_HAPPY_NOW?", 
+            "REINCARNATION_QUEUE: 1,400,205", "WAKE_UP_YOU_ARE_DREAMING"
+        ];  
 
-        let holdInterval;
-        let isHolding = false;
+        // Добавлен новый шрифт в массив
+        const fontClasses = ["f-sans", "f-serif", "f-mono", "f-pixel"];  
 
-        function spawn(forceChaos = false) {
-            const canvas = document.getElementById('canvas');
+        function spawn() {  
+            const canvas = document.getElementById('canvas');  
             
-            // Инверсия (5% шанс)
-            if (!forceChaos) document.body.classList.toggle('invert', Math.random() < 0.05);
+            document.body.classList.toggle('invert', Math.random() < 0.05);
 
-            const old = document.querySelectorAll('.element');
-            old.forEach(el => { el.classList.add('ghost'); el.style.opacity = "0.1"; });
-            if (old.length > 30) { canvas.removeChild(old[0]); }
+            const old = document.querySelectorAll('.element');  
+            old.forEach(el => { el.classList.add('ghost'); el.style.opacity = "0.08"; });  
+            if (old.length > 25) { canvas.removeChild(old[0]); }  
 
-            // A. THE BIG P (Snapped to corners)
-            const pPos = [
-                {top: '-15%', left: '-10%'}, {top: '-15%', right: '-10%'},
-                {bottom: '-15%', left: '-10%'}, {bottom: '-15%', right: '-10%'}
-            ];
-            createEl('giant-p f-sans', "P", pPos[Math.floor(Math.random()*pPos.length)]);
+            // A. THE BIG P (Меньше и плотнее к краю: -2%)
+            const pPos = [ {top: '-2%', left: '-2%'}, {top: '-2%', right: '-2%'}, {bottom: '-2%', left: '-2%'}, {bottom: '-2%', right: '-2%'} ]; 
+            createEl('giant-p f-sans', "P", pPos[Math.floor(Math.random()*pPos.length)]);  
 
             // B. THE HERO SLOGAN
-            const slogan = slogans[Math.floor(Math.random() * slogans.length)];
-            const hero = createEl('hero f-sans', "", {
-                left: (Math.random() * 20 - 5) + '%',
-                top: (Math.random() * 75 + 5) + '%'
-            });
-            
-            slogan.split(' ').forEach(word => {
-                const span = document.createElement('span');
-                span.innerText = word;
-                if (Math.random() > 0.6) span.className = ["f-sans", "f-serif", "f-mono"][Math.floor(Math.random()*3)];
-                hero.appendChild(span);
-            });
+            const slogan = slogans[Math.floor(Math.random() * slogans.length)];  
+            const hero = createEl('hero f-sans', "", {  
+                left: (Math.random() * 25 - 5) + '%',  
+                top: (Math.random() * 65 + 10) + '%'  
+            });  
+              
+            slogan.split(' ').forEach(word => {  
+                const span = document.createElement('span');  
+                span.innerText = word;  
+                if (Math.random() > 0.5) span.className = fontClasses[Math.floor(Math.random() * fontClasses.length)];  
+                hero.appendChild(span);  
+            });  
 
             // C. THE SUB-TEXT
-            createEl('sub-text f-mono', meta[Math.floor(Math.random()*meta.length)], {
-                left: (Math.random() > 0.5 ? '5%' : '50%'),
-                bottom: (Math.random() * 10 + 5) + '%'
-            });
+            createEl('sub-text f-mono', meta[Math.floor(Math.random()*meta.length)], {  
+                left: (Math.random() > 0.5 ? '5%' : '45%'),   
+                top: (Math.random() * 90) + '%'  
+            });  
 
-            // D. RANDOM DETAILS & IMAGES
-            if (Math.random() > 0.7) {
-                createEl('detail f-mono', meta[Math.floor(Math.random()*meta.length)], {
-                    right: (Math.random() * 10) + '%',
-                    top: (Math.random() * 90) + '%'
-                });
+            // D. RANDOM DETAILS
+            for(let i=0; i<2; i++) {  
+                createEl('detail ' + fontClasses[Math.floor(Math.random()*3)], meta[Math.floor(Math.random()*meta.length)], {  
+                    right: (Math.random() * 15) + '%',  
+                    top: (Math.random() * 95) + '%'  
+                });  
+            }  
+
+            window.scrollTo(0, 1);  
+        }  
+
+        function createEl(cls, txt, styles) {  
+            const div = document.createElement('div');  
+            div.className = 'element ' + cls;  
+            if (txt) div.innerText = txt;  
+              
+            if (cls.includes('hero') && Math.random() > 0.8) {  
+                div.style.transform = "rotate(" + (Math.random() > 0.5 ? '90' : '-90') + "deg)";  
+                div.style.transformOrigin = "left top";  
             }
 
-            // Шанс появления картинки
-            if (Math.random() > 0.85) {
-                const img = document.createElement('img');
-                img.src = imageLinks[0];
-                img.className = 'element artifact-img';
-                img.style.left = Math.random() * 50 + '%';
-                img.style.top = Math.random() * 50 + '%';
-                canvas.appendChild(img);
-            }
-        }
+            // НОВЫЕ ГЛИТЧИ (Редкий шанс при создании)
+            const glitchRoll = Math.random();
+            if (glitchRoll > 0.96) { div.classList.add('glitch-shadow'); }
+            else if (glitchRoll > 0.93 && !cls.includes('hero')) { div.classList.add('glitch-displace'); }
 
-        function createEl(cls, txt, styles) {
-            const div = document.createElement('div');
-            div.className = 'element ' + cls;
-            if (txt) div.innerText = txt;
-            
-            // Угол поворота (в хаосе сильнее)
-            const rotation = isHolding ? (Math.random() * 360) : (Math.random() > 0.9 ? 90 : 0);
-            if (rotation !== 0) {
-                div.style.transform = `rotate(${rotation}deg)`;
-                div.style.transformOrigin = "center";
-            }
+            Object.assign(div.style, styles);  
+            document.getElementById('canvas').appendChild(div);  
+            return div;  
+        }  
 
-            Object.assign(div.style, styles);
-            document.getElementById('canvas').appendChild(div);
-            return div;
-        }
-
-        // Логика зажатия
-        function startHold() {
-            isHolding = true;
-            holdInterval = setInterval(() => {
-                spawn(true); // Chaos spawn
-            }, 150);
-        }
-
-        function endHold() {
-            isHolding = false;
-            clearInterval(holdInterval);
-            spawn(); // Финальный чистый спавн
-        }
-
-        window.onload = () => { spawn(); setTimeout(() => window.scrollTo(0, 1), 500); };
-    </script>
-</body>
+        window.onload = () => { spawn(); setTimeout(() => window.scrollTo(0, 1), 500); };  
+    </script>  
+</body>  
 </html>
