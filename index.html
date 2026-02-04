@@ -20,21 +20,24 @@
         .element { position: absolute; word-wrap: break-word; line-height: 0.75; opacity: 0; transition: opacity 0.2s; }  
         .visible { opacity: 1 !important; }
 
-        /* 8 ШРИФТОВЫХ СТИЛЕЙ */  
-        .f1 { font-family: "Impact", sans-serif; font-weight: 800; letter-spacing: -2px; } 
+        /* УЛУЧШЕННЫЕ ШРИФТОВЫЕ СТИЛИ */  
+        /* f1: Сделал интервал чуть свободнее (-1px вместо -2px) */
+        .f1 { font-family: "Impact", sans-serif; font-weight: 800; letter-spacing: -1px; } 
         .f2 { font-family: "Helvetica Neue", sans-serif; font-weight: 200; letter-spacing: 4px; } 
         .f3 { font-family: "Georgia", serif; font-style: italic; text-transform: none; } 
-        .f4 { font-family: "Courier New", monospace; font-weight: 400; letter-spacing: -3px; } 
-        .f5 { font-family: "Arial Black", sans-serif; font-weight: 800; transform: scaleX(0.7); transform-origin: left; } 
+        /* f4: Текст перестал "слипаться" (-1px вместо -3px) */
+        .f4 { font-family: "Courier New", monospace; font-weight: 400; letter-spacing: -1px; } 
+        /* f5: Чуть меньше сжатие по горизонтали (0.85 вместо 0.7) */
+        .f5 { font-family: "Arial Black", sans-serif; font-weight: 800; transform: scaleX(0.85); transform-origin: left; } 
         .f6 { font-family: "Helvetica", sans-serif; font-weight: 900; } 
         .f7 { font-family: "Courier", monospace; font-weight: 700; border-bottom: 2px solid currentColor; } 
-        .f8 { font-family: "Arial Black", sans-serif; font-weight: 900; letter-spacing: 15px; transform: scaleX(1.6); transform-origin: left; } /* EXTRA WIDE */
+        /* f8: Умеренное растяжение для читаемости (интервал 8px вместо 15px, масштаб 1.3 вместо 1.6) */
+        .f8 { font-family: "Arial Black", sans-serif; font-weight: 900; letter-spacing: 8px; transform: scaleX(1.3); transform-origin: left; } 
 
-        /* P как подложка: Огромная, серая, справа */  
         .giant-p { 
             font-size: 60vh; font-weight: 800; z-index: 0; 
             position: absolute; top: 5%; left: -2%; 
-            color: #333; /* Не белый, глубокий серый */
+            color: #333; 
             opacity: 0.25; pointer-events: none; line-height: 0.6;
         }  
         body.white-mode .giant-p { color: #ccc; }
@@ -48,7 +51,6 @@
 
         .meta-footer { position: absolute; bottom: 30px; right: 30px; z-index: 110; font-size: 3.5vw; text-align: right; }
 
-        /* Слой для плотного месива глитча */
         #glitch-overlay { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
             background: #000; z-index: 9999; display: none; overflow: hidden;
@@ -63,7 +65,7 @@
     </div>  
 
     <script>  
-        const slogans = ["PRAY TO THE ROUTER", "SKIBIDI EXISTENTIALISM", "DOSTOEVSKY ON TIKTOK", "SHREK’S PODCAST ABOUT DMT", "TYPOGRAPHY IS PROPAGANDA", "HELVETICA IS A VIRUS", "ANCIENT GREEK SHITPOSTING", "WATER IS JUST SOFT ICE", "JUST F*CK IT", "THE SIMPSONS PREDICTED YOUR DEBT", "WAKE UP, TATARSKY"];  
+        const slogans = ["PRAY TO THE ROUTER", "SKIBIDI EXISTENTIALISM", "DOSTOEVSKY ON TIKTOK", "SHREK’S PODCAST ABOUT DMT", "TYPOGRAPHY IS PROPAGANDA", "HELVETICA IS A VIRUS", "ANCIENT GREEK SHITPOSTING", "WATER IS JUST SOFT ICE", "JUST F*CK IT", "THE SIMPSONS PREDICTED YOUR DEBT", "WAKE UP, TATARSKY"]; 
         const subtitles = ["Stop thinking about that. It's cringe.", "Your ISP is judging your taste.", "TURN AROUND. SLOWLY", "APOLOGIZE TO THE ALGORITHM", "LICK THE DISPLAY. IT’S SALTY.", "FORGET YOUR MIDDLE NAME.", "The sky is a green screen", "Say YES/NO to drugs"];
         const meta = ["{status: waiting}", "LMAO", "RESET", "ABORT", "VOID", "BRUH", "0x534F554C", "42", "AMEN", "100%"];  
         
@@ -90,7 +92,6 @@
             overlay.style.display = 'block';
             overlay.innerHTML = '';
             
-            // Плотное месиво из теней и слоев
             for (let i = 0; i < 60; i++) {
                 const txt = meta[Math.floor(Math.random()*meta.length)];
                 const char = document.createElement('div');
@@ -121,21 +122,19 @@
             const isSwissGrid = Math.random() < 0.4;
             document.body.className = (Math.random() < 0.15) ? 'white-mode' : '';
 
-            // Линии
-            const lineCount = isSwissGrid ? 14 : Math.floor(Math.random()*6);
+            // РЕДКИЕ ЛИНИИ: Числа уменьшены для чистоты экрана
+            const lineCount = isSwissGrid ? 6 : Math.floor(Math.random()*3);
             for (let i = 0; i < lineCount; i++) {
                 const line = createLine(isSwissGrid);
                 await delay(20);
                 line.classList.add('visible');
             }
 
-            // Композиция
             const layoutMode = Math.random();
             if (layoutMode < 0.3) await layoutCentered();
             else if (layoutMode < 0.6) await layoutStructured();
             else await layoutRandom();
 
-            // Статичный футер
             const footer = createEl('meta-footer f-mono', meta[Math.floor(Math.random()*meta.length)], {});
             await delay(50);
             footer.classList.add('visible');
@@ -185,7 +184,6 @@
 
         function createTextBlock(txt, isHero, styles) {
             const block = createEl(isHero ? 'hero' : 'sub-hero', '', styles);
-            // Варьируем масштаб заголовка от длины текста
             const baseSize = isHero ? (txt.length > 15 ? 10 : 16) : (Math.random()*3 + 4);
             block.style.fontSize = baseSize + 'vw';
             
