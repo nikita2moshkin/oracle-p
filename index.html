@@ -15,33 +15,28 @@
 
         body.white-mode { background-color: #fff; color: #000; }
         body.white-mode .line { background-color: #000; }
-        body.glitch-white { background-color: #fff !important; }
-        body.glitch-white * { visibility: hidden !important; }
-        body.glitch-stretch .element { transform: scaleX(4) skewX(20deg); opacity: 0.1; }
-
+        
         #canvas { position: relative; width: 100vw; height: 100vh; overflow: hidden; }  
         .element { position: absolute; line-height: 0.8; word-wrap: break-word; }  
 
-        /* Типографика */  
+        /* Шрифты для конфликта */  
         .f-sans { font-family: "Helvetica Neue", "Arial", sans-serif; font-weight: 900; letter-spacing: -3px; }
         .f-impact { font-family: "Impact", "Arial Black", sans-serif; font-weight: 900; letter-spacing: -1px; } 
         .f-serif { font-family: "Georgia", serif; font-style: italic; font-weight: 400; text-transform: none; }  
         .f-mono { font-family: "Courier New", monospace; font-weight: 400; letter-spacing: -2px; }  
 
-        .giant-p { font-size: 38vh; font-weight: 900; z-index: 0; position: absolute; line-height: 0.7; opacity: 0.5; }  
-        .giant-p.top-left { top: -2%; left: -2%; }
-        .giant-p.top-right { top: -2%; right: -3%; text-align: right; }
-        .giant-p.bottom-left { bottom: 5%; left: -2%; }
-        .giant-p.bottom-right { bottom: 5%; right: -3%; text-align: right; }
+        .giant-p { font-size: 38vh; font-weight: 900; z-index: 0; position: absolute; line-height: 0.7; opacity: 0.4; }  
+        
+        .hero { font-weight: 900; z-index: 100; letter-spacing: -4px; max-width: 95%; }  
+        .hero span { display: inline-block; margin-right: 15px; } /* Для разных шрифтов в слове */
 
-        .hero { font-weight: 900; z-index: 100; letter-spacing: -4px; max-width: 90%; }  
         .sub-hero { font-weight: 700; z-index: 90; letter-spacing: -1px; opacity: 0.85; max-width: 80%; }
         
         .line { position: absolute; background-color: #fff; z-index: 5; }
         .image-container { position: absolute; z-index: 10; filter: invert(1) grayscale(1); }
         .image-container img { width: 100%; height: auto; display: block; image-rendering: pixelated; }
         
-        .chaos-item { position: absolute; z-index: 999; pointer-events: none; mix-blend-mode: difference; }
+        .artifact { font-family: "Courier New", monospace; font-size: 12px; opacity: 0.6; z-index: 5; }
     </style>  
 </head>  
 <body onclick="handleInteraction()">  
@@ -53,22 +48,18 @@
             "PRAY TO THE ROUTER", "SKIBIDI EXISTENTIALISM", "DOSTOEVSKY ON TIKTOK", 
             "SHREK’S PODCAST ABOUT DMT", "TYPOGRAPHY IS PROPAGANDA.", "HELVETICA IS A VIRUS.",
             "ANCIENT GREEK SHITPOSTING", "WATER IS JUST SOFT ICE.", "JUST F*CK IT", 
-            "THE SIMPSONS PREDICTED YOUR DEBT.", "WAKE UP, TATARSKY"
+            "THE SIMPSONS PREDICTED YOUR DEBT.", "WAKE UP, TATARSKY", "STALIN IN BALENCIAGA"
         ];  
         
         const subtitles = [
             "Stop thinking about that. It's cringe.", "Your ISP is judging your taste.",
             "TURN AROUND. SLOWLY. (prank)", "APOLOGIZE TO THE ALGORITHM.",
-            "LICK THE DISPLAY. IT’S SALTY.", "the algorithm knows what you did in 2014",
-            "FORGET YOUR MIDDLE NAME.", "Are you proud of your cookies?",
+            "LICK THE DISPLAY. IT’S SALTY.", "FORGET YOUR MIDDLE NAME.",
             "[exporting your childhood trauma to Excel]", "The sky is a green screen.",
             "Say YES/NO to drugs", "Error: reality not found"
         ];
 
-        const meta = [
-            "{status: waiting for your death}", "(processing your sins...)", "LMAO", "RESET", "ABORT", 
-            "(error: aesthetic not found)", "VOID", "0x534F554C", "42", "AMEN", "100%", "BRUH"
-        ];  
+        const meta = ["{status: waiting}", "LMAO", "RESET", "ABORT", "VOID", "BRUH", "0x534F554C"];  
         
         const imageLibrary = [
             'https://24smi.org/public/media/290x360/celebrity/2016/04/29/1461942758-vanga.jpg',
@@ -76,92 +67,69 @@
             'https://images-cdn.ubuy.co.in/63a07047a023683963549705-laminated-pop-art-che-guevara-portrait.jpg',
             'https://png.pngtree.com/png-vector/20231017/ourmid/pngtree-fresh-apple-fruit-red-png-image_10203073.png',
             'https://i.pinimg.com/originals/7e/eb/7a/7eeb7aabf1fd4b18f99f77a70c69a34b.png',
-            'https://images3.cgb.fr/images/billets/b94/b94_4375a.jpg',
             'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Anonymous_emblem.svg/1280px-Anonymous_emblem.svg.png',
-            'https://png.pngtree.com/png-vector/20240131/ourmid/pngtree-ancient-greek-philosopher-statue-isolated-generative-ai-png-image_11577715.png',
-            'https://i.pinimg.com/736x/c2/3a/ff/c23afff1465017eefcd54111cb4d3522.jpg',
-            'https://png.pngtree.com/png-clipart/20230916/original/pngtree-ancient-human-evolution-into-apes-png-image_12257784.png',
-            'https://hanoverfoods.com/wp-content/uploads/2024/03/ORG-Grain-Pretzel_28oz_14623_Side-2-1024x1024-1.png',
-            'https://scx2.b-cdn.net/gfx/news/hires/2015/dopamine.png'
+            'https://cdn.shopify.com/s/files/1/0589/0034/9093/files/cucaracha_americana_480x480.png?v=1697905680',
+            'https://png.pngtree.com/png-vector/20230919/ourmid/pngtree-fresh-nile-tilapia-or-pla-nin-in-thai-freshwater-fish-isolated-png-image_10086755.png',
+            'https://schaeffer.usc.edu/wp-content/uploads/2024/10/Figure1V2.png',
+            'https://pngimg.com/d/copyright_PNG52.png',
+            'https://www.pngall.com/wp-content/uploads/15/Old-Computer-PNG-Cutout.png'
+            
         ];
 
         let clickCounter = 0;
         const fontClasses = ["f-sans", "f-impact", "f-serif", "f-mono"];  
-        const pCorners = ['top-left', 'top-right', 'bottom-left', 'bottom-right'];
 
         function handleInteraction() {
             clickCounter++;
-            const rnd = Math.random();
-            if (clickCounter > 5) {
-                if (rnd < 0.04) return triggerEffect('glitch-white', 400);
-                if (rnd < 0.07) return visualChaos(); 
-            }
             spawn();
-        }
-
-        function triggerEffect(cls, ms) {
-            document.body.classList.add(cls);
-            setTimeout(() => { document.body.classList.remove(cls); spawn(); }, ms);
-        }
-
-        function visualChaos() {
-            const canvas = document.getElementById('canvas');
-            canvas.innerHTML = '';
-            for (let i = 0; i < 25; i++) {
-                createEl('chaos-item ' + fontClasses[Math.floor(Math.random()*4)], meta[Math.floor(Math.random()*meta.length)], {
-                    top: Math.random() * 100 + '%', left: Math.random() * 100 + '%',
-                    fontSize: (Math.random() * 10 + 2) + 'vw', transform: `rotate(${Math.random() * 360}deg)`, opacity: Math.random()
-                });
-            }
         }
 
         function spawn() {  
             const canvas = document.getElementById('canvas'); 
-            const isStrict = Math.random() < 0.3; // 30% шанс на "ровный" постер
-            
-            document.body.className = (Math.random() < 0.15) ? 'white-mode' : '';
+            const isStrict = Math.random() < 0.2; 
+            document.body.className = (Math.random() < 0.1) ? 'white-mode' : '';
             canvas.innerHTML = '';
 
             // 1. ЛИНИИ
-            const lineCount = Math.floor(Math.random() * 5);
-            for (let i = 0; i < lineCount; i++) createLine();
+            for (let i = 0; i < Math.floor(Math.random() * 6); i++) createLine();
 
             // 2. БУКВА P
-            const pClass = pCorners[Math.floor(Math.random() * pCorners.length)];
-            const pTransform = isStrict ? 'none' : `skew(${(Math.random()*30-15)}deg) rotate(${(Math.random()*20-10)}deg)`;
-            createEl('giant-p ' + pClass + ' f-impact', "P", { transform: pTransform });
+            const pTransform = isStrict ? 'none' : `skew(${(Math.random()*40-20)}deg) rotate(${(Math.random()*30-15)}deg)`;
+            createEl('giant-p f-impact', "P", { 
+                left: (Math.random()*80-10)+'%', top: (Math.random()*70-10)+'%',
+                transform: pTransform 
+            });
 
-            // 3. КАРТИНКИ (Логика 1-3 штуки)
-            const imgRnd = Math.random();
-            let imagesToSpawn = 0;
-            if (imgRnd < 0.05) imagesToSpawn = 3;      // Редко 3
-            else if (imgRnd < 0.15) imagesToSpawn = 2; // Иногда 2
-            else if (imgRnd < 0.45) imagesToSpawn = 1; // Часто 1
-
-            for(let i = 0; i < imagesToSpawn; i++) {
-                createImage(imageLibrary[Math.floor(Math.random() * imageLibrary.length)]);
+            // 3. КАРТИНКИ (1-3 штуки, шанс на СУПЕР-БОЛЬШУЮ)
+            const imgCount = Math.random() < 0.1 ? 3 : (Math.random() < 0.4 ? 1 : 0);
+            for(let i = 0; i < imgCount; i++) {
+                const isSuperBig = Math.random() < 0.2;
+                createImage(imageLibrary[Math.floor(Math.random() * imageLibrary.length)], isSuperBig);
             }
 
-            // 4. ТЕКСТОВАЯ КОМПОЗИЦИЯ
-            const layers = Math.floor(Math.random() * 3) + 1; 
-            for(let i = 0; i < layers; i++) {
-                const isHero = (i === 0);
-                const list = isHero ? slogans : subtitles;
-                const font = fontClasses[Math.floor(Math.random() * fontClasses.length)];
-                const rot = isStrict ? 0 : (Math.random() * 6 - 3); 
-                
-                createEl(isHero ? `hero ${font}` : `sub-hero ${font}`, list[Math.floor(Math.random()*list.length)], {
-                    left: (Math.random() * 15 + 5) + '%',
-                    top: (10 + (i * 25) + Math.random() * 15) + '%',
-                    fontSize: isHero ? (Math.random() * 5 + 11) + 'vw' : (Math.random() * 2 + 5) + 'vw',
-                    transform: `rotate(${rot}deg)`
-                });
-            }
+            // 4. ТЕКСТ С КОНФЛИКТОМ ШРИФТОВ
+            const slogan = slogans[Math.floor(Math.random()*slogans.length)];
+            const hero = createEl('hero', '', {
+                left: '5%', top: (15 + Math.random() * 20) + '%',
+                fontSize: (Math.random() * 4 + 12) + 'vw',
+                transform: isStrict ? 'none' : `rotate(${(Math.random()*4-2)}deg)`
+            });
 
-            // 5. МЕТА
-            createEl('sub-text f-mono', meta[Math.floor(Math.random()*meta.length)], { 
-                left: '5%', bottom: '4%', fontSize: '3.5vw', opacity: 0.7 
-            });  
+            slogan.split(' ').forEach(word => {
+                const span = document.createElement('span');
+                span.innerText = word;
+                span.className = fontClasses[Math.floor(Math.random()*fontClasses.length)];
+                hero.appendChild(span);
+            });
+
+            // 5. ПОДЗАГОЛОВОК
+            createEl('sub-hero f-serif', subtitles[Math.floor(Math.random()*subtitles.length)], {
+                left: '8%', top: '65%', fontSize: '6vw'
+            });
+
+            // 6. АРТЕФАКТЫ (Фейковые данные)
+            createEl('artifact', `[${Math.random().toString(16).substr(2, 8).toUpperCase()}]`, { right: '5%', top: '2%' });
+            createEl('artifact', `LOADING_SOUL... ${Math.floor(Math.random()*100)}%`, { left: '5%', bottom: '2%' });
         }  
 
         function createEl(cls, txt, styles) {  
@@ -177,23 +145,23 @@
             const line = document.createElement('div');
             line.className = 'line';
             const isVert = Math.random() > 0.5;
-            const thick = (Math.random() * 2 + 1) + 'px';
             if (isVert) {
-                line.style.width = thick; line.style.height = '100vh';
+                line.style.width = '1px'; line.style.height = '100vh';
                 line.style.left = (Math.random() * 100) + '%';
             } else {
-                line.style.width = '100vw'; line.style.height = thick;
+                line.style.width = '100vw'; line.style.height = '1px';
                 line.style.top = (Math.random() * 100) + '%';
             }
             document.getElementById('canvas').appendChild(line);
         }
 
-        function createImage(src) {
+        function createImage(src, isSuperBig) {
             const container = document.createElement('div');
             container.className = 'image-container';
-            container.style.width = (Math.random() * 15 + 15) + '%'; // Чуть меньше размер для мульти-фото
-            container.style.top = (Math.random() * 60 + 5) + '%';
-            container.style.left = (Math.random() * 70) + '%';
+            container.style.width = isSuperBig ? (Math.random() * 40 + 50) + '%' : (Math.random() * 20 + 15) + '%';
+            container.style.top = (Math.random() * 60) + '%';
+            container.style.left = (Math.random() * 60) + '%';
+            container.style.zIndex = isSuperBig ? '1' : '50';
             const img = document.createElement('img');
             img.src = src;
             container.appendChild(img);
