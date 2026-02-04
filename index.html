@@ -1,217 +1,225 @@
-<!DOCTYPE html>  
-<html lang="ru">  
-<head>  
-    <meta charset="UTF-8">  
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">  
-    <title>ORACLE.P | KINDLE EDITION</title>  
-    <style>  
-        body, html {  
-            margin: 0; padding: 0; width: 100%; height: 100%;  
-            background-color: #000; color: #fff; 
-            overflow: hidden; text-transform: uppercase;  
-            -webkit-user-select: none;  
-            font-family: "Helvetica Neue", "Arial", sans-serif;
-        }  
+<!DOCTYPE html>   
+<html lang="ru">   
+<head>   
+    <meta charset="UTF-8">   
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">   
+    <title>ORACLE.P | KINDLE EDITION</title>   
+    <style>   
+        body, html {   
+            margin: 0; padding: 0; width: 100%; height: 100%;   
+            background-color: #000; color: #fff;  
+            overflow: hidden; text-transform: uppercase;   
+            -webkit-user-select: none;   
+            font-family: "Helvetica Neue", "Arial", sans-serif; 
+        }   
 
-        body.white-mode { background-color: #fff; color: #000; }
-        body.white-mode .line { background-color: #000; }
-        body.glitch-white { background-color: #fff !important; }
-        body.glitch-white * { visibility: hidden !important; }
+        body.white-mode { background-color: #fff; color: #000; } 
+        body.white-mode .line, body.white-mode .grid-line { background-color: #000; } 
+        body.glitch-white { background-color: #fff !important; } 
+        body.glitch-white * { visibility: hidden !important; } 
+        body.glitch-stretch .element { transform: scaleX(4) skewX(20deg); opacity: 0.1; } 
 
-        #canvas { position: relative; width: 100vw; height: 100vh; overflow: hidden; }  
-        .element { position: absolute; line-height: 0.8; word-wrap: break-word; transition: none; }  
+        #canvas { position: relative; width: 100vw; height: 100vh; overflow: hidden; }   
+        .element { position: absolute; line-height: 0.8; word-wrap: break-word; }   
 
-        /* Расширенная библиотека шрифтов */  
-        .f-sans { font-family: "Helvetica Neue", "Arial", sans-serif; font-weight: 900; letter-spacing: -3px; }
-        .f-impact { font-family: "Impact", "Arial Black", sans-serif; font-weight: 900; letter-spacing: -1px; } 
-        .f-serif { font-family: "Georgia", "Times New Roman", serif; font-style: italic; font-weight: 400; text-transform: none; }  
-        .f-mono { font-family: "Courier New", monospace; font-weight: 400; letter-spacing: -2px; }  
-        .f-times { font-family: "Times New Roman", serif; font-weight: 900; text-transform: uppercase; letter-spacing: 5px; }
-        .f-narrow { font-family: "Trebuchet MS", sans-serif; font-stretch: condensed; font-weight: 800; transform: scaleX(0.7); }
+        /* Типографика */   
+        .f-sans { font-family: "Helvetica Neue", "Arial", sans-serif; font-weight: 900; letter-spacing: -3px; } 
+        .f-impact { font-family: "Impact", "Arial Black", sans-serif; font-weight: 900; letter-spacing: -1px; }  
+        .f-serif { font-family: "Georgia", serif; font-style: italic; font-weight: 400; text-transform: none; }   
+        .f-mono { font-family: "Courier New", monospace; font-weight: 400; letter-spacing: -2px; }   
 
-        /* Фиксированная P */
-        .giant-p { 
-            font-size: 55vh; font-weight: 900; z-index: 0; 
-            position: absolute; line-height: 0.7; opacity: 0.6;
-            top: -10vh; left: -5vw; font-family: "Impact", sans-serif;
-        }  
+        /* Сетка */
+        .grid-line { position: absolute; background-color: #fff; opacity: 0.15; z-index: 1; }
 
-        .hero { font-weight: 900; z-index: 100; letter-spacing: -4px; max-width: 95%; }  
-        .sub-hero { font-weight: 700; z-index: 90; letter-spacing: -1px; opacity: 0.85; max-width: 90%; }
-        
-        .line { position: absolute; background-color: #fff; z-index: 5; }
-        .image-container { position: absolute; z-index: 10; filter: invert(1) grayscale(1); }
-        .image-container img { width: 100%; height: auto; display: block; image-rendering: pixelated; }
-        
-        .chaos-item { position: absolute; z-index: 999; pointer-events: none; }
-        .vertical { writing-mode: vertical-rl; text-orientation: mixed; }
-    </style>  
-</head>  
-<body onclick="handleInteraction()">  
+        .giant-p { font-weight: 900; z-index: 2; position: absolute; line-height: 0.7; opacity: 0.5; pointer-events: none; }   
+        .giant-p.top-left { top: -5%; left: -5%; } 
+        .giant-p.top-right { top: -5%; right: -5%; text-align: right; } 
+        .giant-p.bottom-left { bottom: 0%; left: -5%; } 
+        .giant-p.bottom-right { bottom: 0%; right: -5%; text-align: right; } 
 
-    <div id="canvas"></div>  
+        .hero { font-weight: 900; z-index: 100; letter-spacing: -4px; max-width: 90%; }   
+        .sub-hero { font-weight: 700; z-index: 90; letter-spacing: -1px; opacity: 0.85; max-width: 80%; } 
+          
+        .line { position: absolute; background-color: #fff; z-index: 5; } 
+        .image-container { position: absolute; z-index: 10; filter: invert(1) grayscale(1); } 
+        .image-container img { width: 100%; height: auto; display: block; image-rendering: pixelated; } 
+          
+        .chaos-item { position: absolute; z-index: 999; pointer-events: none; mix-blend-mode: difference; } 
+    </style>   
+</head>   
+<body onclick="handleInteraction()">   
 
-    <script>  
-        const slogans = [
-            "PRAY TO THE ROUTER", "SKIBIDI EXISTENTIALISM", "DOSTOEVSKY ON TIKTOK", 
-            "SHREK’S PODCAST ABOUT DMT", "TYPOGRAPHY IS PROPAGANDA.", "HELVETICA IS A VIRUS.",
-            "ANCIENT GREEK SHITPOSTING", "WATER IS JUST SOFT ICE.", "JUST F*CK IT", 
-            "THE SIMPSONS PREDICTED YOUR DEBT.", "WAKE UP, TATARSKY", "POST-IRONIC REHAB"
-        ];  
-        
-        const subtitles = [
-            "Stop thinking about that. It's cringe.", "Your ISP is judging your taste.",
-            "TURN AROUND. SLOWLY.", "APOLOGIZE TO THE ALGORITHM.",
-            "LICK THE DISPLAY. IT’S SALTY.", "the algorithm knows what you did",
-            "FORGET YOUR MIDDLE NAME.", "Are you proud of your cookies?",
-            "[exporting trauma to Excel]", "The sky is a green screen.",
-            "Say YES/NO to drugs", "Error: reality not found", "YOU ARE A DATA POINT"
-        ];
+    <div id="canvas"></div>   
 
-        const meta = [
-            "{status: waiting}", "(processing sins...)", "LMAO", "RESET", "ABORT", 
-            "VOID", "0x534F554C", "42", "AMEN", "100%", "BRUH", "IDK"
-        ];  
-        
-        const imageLibrary = [
-            'https://24smi.org/public/media/290x360/celebrity/2016/04/29/1461942758-vanga.jpg',
-            'https://i.redd.it/2m5h881d4uh81.jpg',
-            'https://images-cdn.ubuy.co.in/63a07047a023683963549705-laminated-pop-art-che-guevara-portrait.jpg',
-            'https://png.pngtree.com/png-vector/20231017/ourmid/pngtree-fresh-apple-fruit-red-png-image_10203073.png',
-            'https://i.pinimg.com/originals/7e/eb/7a/7eeb7aabf1fd4b18f99f77a70c69a34b.png',
-            'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Anonymous_emblem.svg/1280px-Anonymous_emblem.svg.png'
-        ];
+    <script>   
+        const slogans = [ 
+            "PRAY TO THE ROUTER", "SKIBIDI EXISTENTIALISM", "DOSTOEVSKY ON TIKTOK",  
+            "SHREK’S PODCAST ABOUT DMT", "TYPOGRAPHY IS PROPAGANDA.", "HELVETICA IS A VIRUS.", 
+            "ANCIENT GREEK SHITPOSTING", "WATER IS JUST SOFT ICE.", "JUST F*CK IT",  
+            "THE SIMPSONS PREDICTED YOUR DEBT.", "WAKE UP, TATARSKY" 
+        ];   
+          
+        const subtitles = [ 
+            "Stop thinking about that. It's cringe.", "Your ISP is judging your taste.", 
+            "TURN AROUND. SLOWLY. (prank)", "APOLOGIZE TO THE ALGORITHM.", 
+            "LICK THE DISPLAY. IT’S SALTY.", "the algorithm knows what you did in 2014", 
+            "FORGET YOUR MIDDLE NAME.", "Are you proud of your cookies?", 
+            "[exporting your childhood trauma to Excel]", "The sky is a green screen.", 
+            "Say YES/NO to drugs", "Error: reality not found" 
+        ]; 
 
-        let clickCounter = 0;
-        const fontClasses = ["f-sans", "f-impact", "f-serif", "f-mono", "f-times", "f-narrow"];  
+        const meta = [ 
+            "{status: waiting for your death}", "(processing your sins...)", "LMAO", "RESET", "ABORT",  
+            "(error: aesthetic not found)", "VOID", "0x534F554C", "42", "AMEN", "100%", "BRUH" 
+        ];   
+          
+        const imageLibrary = [ 
+            'https://24smi.org/public/media/290x360/celebrity/2016/04/29/1461942758-vanga.jpg', 
+            'https://i.redd.it/2m5h881d4uh81.jpg', 
+            'https://images-cdn.ubuy.co.in/63a07047a023683963549705-laminated-pop-art-che-guevara-portrait.jpg', 
+            'https://png.pngtree.com/png-vector/20231017/ourmid/pngtree-fresh-apple-fruit-red-png-image_10203073.png', 
+            'https://i.pinimg.com/originals/7e/eb/7a/7eeb7aabf1fd4b18f99f77a70c69a34b.png', 
+            'https://images3.cgb.fr/images/billets/b94/b94_4375a.jpg', 
+            'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Anonymous_emblem.svg/1280px-Anonymous_emblem.svg.png' 
+        ]; 
 
-        function handleInteraction() {
-            clickCounter++;
-            const rnd = Math.random();
-            if (clickCounter > 5) {
-                if (rnd < 0.04) return triggerEffect('glitch-white', 400);
-                if (rnd < 0.07) return visualChaos(); 
-            }
-            spawn();
-        }
+        let clickCounter = 0; 
+        const fontClasses = ["f-sans", "f-impact", "f-serif", "f-mono"];   
+        const pCorners = ['top-left', 'top-right', 'bottom-left', 'bottom-right']; 
 
-        function triggerEffect(cls, ms) {
-            document.body.classList.add(cls);
-            setTimeout(() => { document.body.classList.remove(cls); spawn(); }, ms);
-        }
+        function handleInteraction() { 
+            clickCounter++; 
+            const rnd = Math.random(); 
+            if (clickCounter > 5) { 
+                if (rnd < 0.04) return triggerEffect('glitch-white', 400); 
+                if (rnd < 0.07) return visualChaos();  
+            } 
+            spawn(); 
+        } 
 
-        function glitchText(text) {
-            if (Math.random() > 0.3) return text; // 30% шанс на поломку шрифта внутри слова
-            return text.split(' ').map(word => {
-                const font = fontClasses[Math.floor(Math.random() * fontClasses.length)];
-                return `<span class="${font}">${word}</span>`;
-            }).join(' ');
-        }
+        function triggerEffect(cls, ms) { 
+            document.body.classList.add(cls); 
+            setTimeout(() => { document.body.classList.remove(cls); spawn(); }, ms); 
+        } 
 
-        function visualChaos() {
-            const canvas = document.getElementById('canvas');
-            canvas.innerHTML = '';
-            for (let i = 0; i < 35; i++) {
-                createEl('chaos-item ' + fontClasses[Math.floor(Math.random()*fontClasses.length)], meta[Math.floor(Math.random()*meta.length)], {
-                    top: Math.random() * 100 + '%', left: Math.random() * 100 + '%',
-                    fontSize: (Math.random() * 12 + 2) + 'vw', transform: `rotate(${Math.random() * 360}deg)`, opacity: Math.random()
-                });
-            }
-        }
-
-        function spawn() {  
+        function visualChaos() { 
             const canvas = document.getElementById('canvas'); 
-            const isStrict = Math.random() < 0.25; 
+            canvas.innerHTML = ''; 
+            for (let i = 0; i < 25; i++) { 
+                createEl('chaos-item ' + fontClasses[Math.floor(Math.random()*4)], meta[Math.floor(Math.random()*meta.length)], { 
+                    top: Math.random() * 100 + '%', left: Math.random() * 100 + '%', 
+                    fontSize: (Math.random() * 10 + 2) + 'vw', transform: `rotate(${Math.random() * 360}deg)`, opacity: Math.random() 
+                }); 
+            } 
+        }
+
+        function createGrid() {
+            const canvas = document.getElementById('canvas');
+            const density = [5, 10, 20][Math.floor(Math.random() * 3)]; 
+            for (let i = 0; i <= 100; i += density) {
+                const v = document.createElement('div');
+                v.className = 'grid-line';
+                v.style.width = '1px'; v.style.height = '100%'; v.style.left = i + '%';
+                canvas.appendChild(v);
+                const h = document.createElement('div');
+                h.className = 'grid-line';
+                h.style.height = '1px'; h.style.width = '100%'; h.style.top = i + '%';
+                canvas.appendChild(h);
+            }
+        }
+
+        function spawn() {   
+            const canvas = document.getElementById('canvas');  
+            const isStrict = Math.random() < 0.3; 
             
-            document.body.className = (Math.random() < 0.15) ? 'white-mode' : '';
-            canvas.innerHTML = '';
+            document.body.className = (Math.random() < 0.15) ? 'white-mode' : ''; 
+            canvas.innerHTML = ''; 
 
-            // 1. БУКВА P (ФИКСИРОВАННАЯ)
-            createEl('giant-p', "P", {});
+            // 0. СЕТКА (Генерируется фоном)
+            if (Math.random() > 0.3) createGrid();
 
-            // 2. ЛИНИИ (БОЛЬШЕ ПРИ STRICT)
-            const lineCount = isStrict ? Math.floor(Math.random() * 10 + 5) : Math.floor(Math.random() * 5);
-            for (let i = 0; i < lineCount; i++) createLine();
+            // 1. ЛИНИИ 
+            const lineCount = Math.floor(Math.random() * 5); 
+            for (let i = 0; i < lineCount; i++) createLine(); 
 
-            // 3. КАРТИНКИ (ДО 4 ШТУК)
-            let imagesToSpawn = Math.floor(Math.random() * 4);
-            for(let i = 0; i < imagesToSpawn; i++) {
-                createImage(imageLibrary[Math.floor(Math.random() * imageLibrary.length)]);
-            }
+            // 2. БУКВА P (Улучшенная логика размера и поворота)
+            const pClass = pCorners[Math.floor(Math.random() * pCorners.length)]; 
+            const pTransform = isStrict ? 'none' : `skew(${(Math.random()*30-15)}deg) rotate(${(Math.random()*20-10)}deg)`; 
+            createEl('giant-p ' + pClass + ' f-impact', "P", { 
+                transform: pTransform,
+                fontSize: (Math.random() * 15 + 35) + 'vh' // Вариативность размера
+            }); 
 
-            // 4. ТЕКСТОВАЯ КОМПОЗИЦИЯ (УВЕЛИЧЕНО КОЛИЧЕСТВО СЛОЕВ)
-            const layers = Math.floor(Math.random() * 6) + 2; 
-            for(let i = 0; i < layers; i++) {
-                const isHero = (i < 2); // Первые два могут быть крупными
-                const list = isHero ? slogans : subtitles;
-                const font = fontClasses[Math.floor(Math.random() * fontClasses.length)];
-                const isVert = Math.random() < 0.2; // 20% шанс на вертикальный текст
+            // 3. КАРТИНКИ
+            const imgRnd = Math.random(); 
+            let imagesToSpawn = 0; 
+            if (imgRnd < 0.05) imagesToSpawn = 3;  
+            else if (imgRnd < 0.15) imagesToSpawn = 2; 
+            else if (imgRnd < 0.45) imagesToSpawn = 1; 
+
+            for(let i = 0; i < imagesToSpawn; i++) { 
+                createImage(imageLibrary[Math.floor(Math.random() * imageLibrary.length)]); 
+            } 
+
+            // 4. ТЕКСТОВАЯ КОМПОЗИЦИЯ 
+            const layers = Math.floor(Math.random() * 3) + 1;  
+            for(let i = 0; i < layers; i++) { 
+                const isHero = (i === 0); 
+                const list = isHero ? slogans : subtitles; 
+                const font = fontClasses[Math.floor(Math.random() * fontClasses.length)]; 
+                const rot = isStrict ? 0 : (Math.random() * 6 - 3);  
                 
-                let rot = isStrict ? 0 : (Math.random() * 40 - 20);
-                if (isVert) rot = 90;
+                createEl(isHero ? `hero ${font}` : `sub-hero ${font}`, list[Math.floor(Math.random()*list.length)], { 
+                    left: (Math.random() * 15 + 5) + '%', 
+                    top: (10 + (i * 25) + Math.random() * 15) + '%', 
+                    fontSize: isHero ? (Math.random() * 5 + 11) + 'vw' : (Math.random() * 2 + 5) + 'vw', 
+                    transform: `rotate(${rot}deg)` 
+                }); 
+            } 
 
-                const el = createEl(
-                    `${isHero ? 'hero' : 'sub-hero'} ${font} ${isVert ? 'vertical' : ''}`, 
-                    '', 
-                    {
-                        left: (Math.random() * 80) + '%',
-                        top: (Math.random() * 80) + '%',
-                        fontSize: isHero ? (Math.random() * 8 + 10) + 'vw' : (Math.random() * 3 + 4) + 'vw',
-                        transform: `rotate(${rot}deg)`,
-                        zIndex: Math.floor(Math.random() * 200)
-                    }
-                );
-                el.innerHTML = glitchText(list[Math.floor(Math.random()*list.length)]);
-            }
+            // 5. МЕТА 
+            createEl('sub-text f-mono', meta[Math.floor(Math.random()*meta.length)], {  
+                left: '5%', bottom: '4%', fontSize: '3.5vw', opacity: 0.7  
+            });   
+        }   
 
-            // 5. МНОЖЕСТВЕННАЯ МЕТА (ГРЯЗЬ)
-            for(let i = 0; i < 4; i++) {
-                createEl('sub-text f-mono', meta[Math.floor(Math.random()*meta.length)], { 
-                    left: (Math.random() * 90) + '%', bottom: (Math.random() * 20) + '%', 
-                    fontSize: '3vw', opacity: 0.5, transform: `rotate(${Math.random()*360}deg)`
-                });
-            }
-        }  
+        function createEl(cls, txt, styles) {   
+            const div = document.createElement('div');   
+            div.className = 'element ' + cls;   
+            if (txt) div.innerText = txt;   
+            Object.assign(div.style, styles);   
+            document.getElementById('canvas').appendChild(div);   
+            return div;   
+        }   
 
-        function createEl(cls, txt, styles) {  
-            const div = document.createElement('div');  
-            div.className = 'element ' + cls;  
-            if (txt) div.innerText = txt;  
-            Object.assign(div.style, styles);  
-            document.getElementById('canvas').appendChild(div);  
-            return div;  
-        }  
+        function createLine() { 
+            const line = document.createElement('div'); 
+            line.className = 'line'; 
+            const isVert = Math.random() > 0.5; 
+            const thick = (Math.random() * 2 + 1) + 'px'; 
+            if (isVert) { 
+                line.style.width = thick; line.style.height = '100vh'; 
+                line.style.left = (Math.random() * 100) + '%'; 
+            } else { 
+                line.style.width = '100vw'; line.style.height = thick; 
+                line.style.top = (Math.random() * 100) + '%'; 
+            } 
+            document.getElementById('canvas').appendChild(line); 
+        } 
 
-        function createLine() {
-            const line = document.createElement('div');
-            line.className = 'line';
-            const isVert = Math.random() > 0.5;
-            const thick = (Math.random() * 3 + 1) + 'px';
-            if (isVert) {
-                line.style.width = thick; line.style.height = '100vh';
-                line.style.left = (Math.random() * 100) + '%';
-            } else {
-                line.style.width = '100vw'; line.style.height = thick;
-                line.style.top = (Math.random() * 100) + '%';
-            }
-            document.getElementById('canvas').appendChild(line);
-        }
+        function createImage(src) { 
+            const container = document.createElement('div'); 
+            container.className = 'image-container'; 
+            container.style.width = (Math.random() * 15 + 15) + '%'; 
+            container.style.top = (Math.random() * 60 + 5) + '%'; 
+            container.style.left = (Math.random() * 70) + '%'; 
+            const img = document.createElement('img'); 
+            img.src = src; 
+            container.appendChild(img); 
+            document.getElementById('canvas').appendChild(container); 
+        } 
 
-        function createImage(src) {
-            const container = document.createElement('div');
-            container.className = 'image-container';
-            const size = (Math.random() * 30 + 10);
-            container.style.width = size + '%';
-            container.style.top = (Math.random() * 80) + '%';
-            container.style.left = (Math.random() * 80) + '%';
-            container.style.zIndex = Math.floor(Math.random() * 50);
-            const img = document.createElement('img');
-            img.src = src;
-            container.appendChild(img);
-            document.getElementById('canvas').appendChild(container);
-        }
-
-        window.onload = spawn;  
-    </script>  
-</body>  
+        window.onload = spawn;   
+    </script>   
+</body>   
 </html>
