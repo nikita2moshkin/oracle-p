@@ -3,7 +3,7 @@
 <head>  
     <meta charset="UTF-8">  
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">  
-    <title>ORACLE.P | ECAL SWISS SYSTEM 2.0</title>  
+    <title>ORACLE.P | ECAL SWISS SYSTEM</title>  
     <style>  
         body, html {  
             margin: 0; padding: 0; width: 100%; height: 100%;  
@@ -17,10 +17,10 @@
         body.white-mode .line { background-color: #000; }
         
         #canvas { position: relative; width: 100vw; height: 100vh; overflow: hidden; }  
-        .element { position: absolute; word-wrap: break-word; line-height: 0.85; opacity: 0; transition: opacity 0.4s cubic-bezier(0.23, 1, 0.32, 1); }  
+        .element { position: absolute; word-wrap: break-word; line-height: 0.85; opacity: 0; transition: opacity 0.5s ease-in-out; }  
         .visible { opacity: 1 !important; }
 
-        /* ТИПОГРАФИКА */  
+        /* ТИПОГРАФИКА ECAL */  
         .f1 { font-family: "Impact", sans-serif; font-weight: 800; letter-spacing: -0.02em; } 
         .f2 { font-family: "Helvetica Neue", sans-serif; font-weight: 200; letter-spacing: 0.05em; } 
         .f3 { font-family: "Georgia", serif; font-style: italic; text-transform: none; } 
@@ -30,27 +30,25 @@
         .f7 { font-family: "Courier", monospace; font-weight: 700; border-bottom: 0.1em solid currentColor; } 
         .f8 { font-family: "Arial Black", sans-serif; font-weight: 900; letter-spacing: 0.1em; transform: scaleX(1.1); transform-origin: left; } 
 
-        /* ФОНОВЫЙ ГИГАНТ */
+        /* ЦЕНТРАЛЬНЫЙ СИМВОЛ */
         .giant-bg { 
             font-size: 85vh; font-weight: 900; position: absolute;
             top: 50%; left: 50%; transform: translate(-50%, -50%);
-            color: #222; opacity: 0.15; z-index: 0; pointer-events: none;
+            color: #222; opacity: 0.18; z-index: 0; pointer-events: none;
         }
-        body.white-mode .giant-bg { color: #eee; }
+        body.white-mode .giant-bg { color: #ddd; }
 
-        /* КРАЕВЫЕ ЭЛЕМЕНТЫ */
-        .edge-text { font-size: 1.2vw; z-index: 100; white-space: nowrap; padding: 10px; }
-        .vertical { writing-mode: vertical-rl; transform: rotate(180deg); }
-
-        .line { position: absolute; background-color: rgba(255,255,255,0.2); z-index: 1; }
+        /* ГРАФИКА */
+        .line { position: absolute; background-color: rgba(255,255,255,0.15); z-index: 1; }
+        .image-container { position: absolute; z-index: 5; filter: grayscale(1) contrast(1.2); mix-blend-mode: difference; }
         
-        /* КАРТИНКИ */
-        .image-container { position: absolute; z-index: 2; filter: grayscale(1) contrast(1.2); mix-blend-mode: difference; }
-        .image-shadow { opacity: 0.1 !important; filter: grayscale(1) blur(2px); mix-blend-mode: normal; z-index: 0; }
-        .image-container img { width: 100%; height: auto; display: block; image-rendering: auto; }
+        /* СТИЛЬ ДЛЯ ТЕНЕВЫХ ФОНОВЫХ КАРТИНОК */
+        .image-shadow { opacity: 0.12 !important; filter: grayscale(1) blur(1px); mix-blend-mode: normal; z-index: -1; }
+        .image-container img { width: 100%; height: auto; display: block; }
 
-        .hero { z-index: 105; max-width: 90%; }
-        .meta-footer { position: absolute; bottom: 20px; right: 20px; z-index: 110; font-size: 1.2vw; opacity: 0.5; }
+        .hero { z-index: 100; max-width: 90%; }
+        .edge-text { font-size: 1.3vw; z-index: 110; padding: 15px; white-space: nowrap; }
+        .vertical { writing-mode: vertical-rl; transform: rotate(180deg); }
 
         #glitch-overlay { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
@@ -64,34 +62,28 @@
     <div id="canvas"></div>  
 
     <script>  
-        const slogans = ["PRAY TO THE ROUTER", "SKIBIDI EXISTENTIALISM", "DOSTOEVSKY ON TIKTOK", "SHREK’S PODCAST ABOUT DMT", "TYPOGRAPHY IS PROPAGANDA", "HELVETICA IS A VIRUS", "ANCIENT GREEK SHITPOSTING", "WATER IS JUST SOFT ICE", "THE SIMPSONS PREDICTED YOUR DEBT", "WAKE UP, TATARSKY"]; 
-        const math = ["E = mc²", "∇ × E = -∂B/∂t", "∮ B · dl = μ₀I", "iℏ ∂/∂t Ψ = ĤΨ", "S = k ln W", "x = (-b±√D)/2a", "Rμν - 1/2Rgμν = Tμν", "lim (1 + 1/n)ⁿ = e"];
-        const subtitles = ["Stop thinking.", "Your ISP is judging you.", "TURN AROUND.", "APOLOGIZE TO THE ALGORITHM", "LICK THE DISPLAY.", "FORGET EVERYTHING.", "The sky is a green screen", "10101010101", "CRINGE IS A CONCEPT"];
-        const meta = ["{system: active}", "LMAO", "RESET", "ABORT", "VOID", "0x534F554C", "42", "AMEN", "STATUS: 200 OK"];  
+        // ТЕКСТЫ ОБНОВЛЕНЫ
+        const slogans = ["PRAY TO THE ROUTER", "SKIBIDI EXISTENTIALISM", "DOSTOEVSKY ON TIKTOK", "SHREK’S PODCAST ABOUT DMT", "TYPOGRAPHY IS PROPAGANDA.", "HELVETICA IS A VIRUS.", "ANCIENT GREEK SHITPOSTING", "WATER IS JUST SOFT ICE.", "JUST F*CK IT", "THE SIMPSONS PREDICTED YOUR DEBT.", "WAKE UP, TATARSKY"]; 
+        const subtitles = ["Stop thinking about that. It's cringe.", "Your ISP is judging your taste.", "TURN AROUND. SLOWLY. (prank)", "APOLOGIZE TO THE ALGORITHM.", "LICK THE DISPLAY. IT’S SALTY.", "the algorithm knows what you did in 2014", "FORGET YOUR MIDDLE NAME.", "Are you proud of your cookies?", "[exporting your childhood trauma to Excel]", "The sky is a green screen.", "Say YES/NO to drugs", "Error: reality not found"];
+        const math = ["E = mc²", "∇ × E = -∂B/∂t", "iℏ ∂/∂t Ψ = ĤΨ", "Rμν - 1/2Rgμν = Tμν", "S = k ln W", "λ = h/p"];
+        const meta = ["{system: active}", "LMAO", "RESET", "ABORT", "VOID", "0x534F554C", "42", "AMEN"];  
         
-        // КАТЕГОРИИ ИЗОБРАЖЕНИЙ
-        const images = {
-            vintage: [
-                'https://images-cdn.ubuy.co.in/63a07047a023683963549705-laminated-pop-art-che-guevara-portrait.jpg',
-                'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Anonymous_emblem.svg/1280px-Anonymous_emblem.svg.png',
-                'https://i.natgeofe.com/n/7359f8ee-124c-467c-a177-dd8dd3b18380/all-seeing-eye.jpg',
-                'https://upload.wikimedia.org/wikipedia/commons/2/2c/Octavian_Smigelschi_-_Serafim_%28Cat._Blaj%29%2C_1903.png',
-                'https://leonardodavinci.it/wp-content/uploads/2021/10/Leonardo-da-Vinci-Uomo-vitruviano.png'
-            ],
-            biology: [
-                'https://static.vecteezy.com/system/resources/previews/053/687/197/non_2x/severely-rotten-apple-with-dark-mold-and-extensive-decay-on-transparent-background-png.png',
-                'https://www.davincisciencecenter.org/wp-content/uploads/2024/03/Rat-Snake-02.png',
-                'https://remihogar.es/cdn/shop/articles/cucaracha-oriental-blatta-orienta_480x.png?v=1761727332',
-                'https://3dgladiator.com/wp-content/themes/dddgladiator/assets/img/teeth-model/intro-model.png'
-            ],
-            objects: [
-                'https://png.pngtree.com/png-vector/20231017/ourmid/pngtree-fresh-apple-fruit-red-png-image_10203073.png',
-                'https://static.vecteezy.com/system/resources/thumbnails/029/347/022/small/one-hundred-dollar-bill-falling-or-floating-on-empty-background-transparent-png.png',
-                'https://theairgunstore.com/wp-content/uploads/2024/06/5.8125_S25_links_ret_2000_1125_0-removebg-preview.png',
-                'https://health-styles.com.ua/wp-content/uploads/2017/04/calcium-vitamin-d3-650-mg-400-iu-easy-absorption-100-tablets.png',
-                'https://images.selency.com/1652fe40-fc81-41ea-858a-5719bfa79a89?width=332&height=332'
-            ]
-        };
+        const imageLibrary = [
+            'https://images-cdn.ubuy.co.in/63a07047a023683963549705-laminated-pop-art-che-guevara-portrait.jpg',
+            'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Anonymous_emblem.svg/1280px-Anonymous_emblem.svg.png',
+            'https://png.pngtree.com/png-vector/20231017/ourmid/pngtree-fresh-apple-fruit-red-png-image_10203073.png',
+            'https://i.natgeofe.com/n/7359f8ee-124c-467c-a177-dd8dd3b18380/all-seeing-eye.jpg',
+            'https://static.vecteezy.com/system/resources/previews/053/687/197/non_2x/severely-rotten-apple-with-dark-mold-and-extensive-decay-on-transparent-background-png.png',
+            'https://upload.wikimedia.org/wikipedia/commons/2/2c/Octavian_Smigelschi_-_Serafim_%28Cat._Blaj%29%2C_1903.png',
+            'https://leonardodavinci.it/wp-content/uploads/2021/10/Leonardo-da-Vinci-Uomo-vitruviano.png',
+            'https://www.davincisciencecenter.org/wp-content/uploads/2024/03/Rat-Snake-02.png',
+            'https://remihogar.es/cdn/shop/articles/cucaracha-oriental-blatta-orienta_480x.png?v=1761727332',
+            'https://static.vecteezy.com/system/resources/thumbnails/029/347/022/small/one-hundred-dollar-bill-falling-or-floating-on-empty-background-transparent-png.png',
+            'https://3dgladiator.com/wp-content/themes/dddgladiator/assets/img/teeth-model/intro-model.png',
+            'https://theairgunstore.com/wp-content/uploads/2024/06/5.8125_S25_links_ret_2000_1125_0-removebg-preview.png',
+            'https://health-styles.com.ua/wp-content/uploads/2017/04/calcium-vitamin-d3-650-mg-400-iu-easy-absorption-100-tablets.png',
+            'https://images.selency.com/1652fe40-fc81-41ea-858a-5719bfa79a89?width=332&height=332'
+        ];
 
         let isLocked = false;
         const fontClasses = ["f1", "f2", "f3", "f4", "f5", "f6", "f7", "f8"];
@@ -107,12 +99,12 @@
             isLocked = true;
             const overlay = document.getElementById('glitch-overlay');
             overlay.style.display = 'block'; overlay.innerHTML = '';
-            for (let i = 0; i < 25; i++) {
-                const char = createEl('element visible ' + fontClasses[Math.floor(Math.random()*8)], meta[Math.floor(Math.random()*meta.length)], {
-                    left: Math.random()*100+'%', top: Math.random()*100+'%', fontSize: Math.random()*15+'vw', color: '#fff'
+            for (let i = 0; i < 20; i++) {
+                createEl('element visible ' + fontClasses[Math.floor(Math.random()*8)], meta[Math.floor(Math.random()*meta.length)], {
+                    left: Math.random()*100+'%', top: Math.random()*100+'%', fontSize: Math.random()*10+'vw'
                 }, overlay);
             }
-            await delay(1200);
+            await delay(1000);
             overlay.style.display = 'none'; isLocked = false;
             sequentialSpawn();
         }
@@ -123,77 +115,69 @@
             const isChaos = Math.random() < 0.4;
             document.body.className = (Math.random() < 0.15) ? 'white-mode' : '';
 
-            // Центр: P или ?
-            const bgChar = (Math.random() < 0.1) ? "?" : "P";
-            createEl('giant-bg f6 visible', bgChar, {});
+            // 1. ЦЕНТРАЛЬНЫЙ СИМВОЛ (P или ?)
+            const centerChar = Math.random() < 0.1 ? "?" : "P";
+            createEl('giant-bg f6 visible', centerChar, {});
 
-            // "Теневое" полноэкранное изображение
+            // 2. ФОНОВАЯ ТЕНЬ (Большая картинка с низкой прозрачностью)
             if (Math.random() < 0.3) {
-                const list = [...images.vintage, ...images.biology];
-                const img = createImage(list[Math.floor(Math.random()*list.length)], true);
-                img.classList.add('image-shadow');
-                img.style.width = '120vw'; img.style.left = '-10vw'; img.style.top = '-10vh';
-                img.classList.add('visible');
+                const shadowImg = createImage(imageLibrary[Math.floor(Math.random()*imageLibrary.length)], 'shadow');
+                shadowImg.classList.add('visible');
             }
 
-            // Математика и Сетка
+            // 3. ЛИНИИ И ФОРМУЛЫ
             const lineCount = isChaos ? 2 : 5;
             for (let i = 0; i < lineCount; i++) createLine(!isChaos).classList.add('visible');
             
             if (!isChaos) {
-                for(let i=0; i<4; i++) {
+                for(let i=0; i<3; i++) {
                     createEl('element f4 visible', math[Math.floor(Math.random()*math.length)], {
-                        left: Math.random()*85+'%', top: Math.random()*90+'%', fontSize: '1vw', opacity: 0.3
+                        left: Math.random()*80+'%', top: Math.random()*90+'%', fontSize: '1.2vw', opacity: 0.3
                     });
                 }
             }
 
-            // Выбор композиции
-            isChaos ? await layoutChaos() : await layoutSwiss();
-
-            createEl('meta-footer f4 visible', meta[Math.floor(Math.random()*meta.length)], {});
+            // 4. КОМПОЗИЦИЯ ТЕКСТА
+            if (isChaos) await layoutChaos(); else await layoutSwiss();
         }  
 
         async function layoutSwiss() {
-            // Привязка к краям
-            createEl('edge-text f2 visible', slogans[Math.floor(Math.random()*slogans.length)], { top: '0', left: '0' });
-            createEl('edge-text f6 vertical visible', "ORACLE.SYSTEM", { right: '0', top: '0' });
-            createEl('edge-text f4 visible', "CALCIUM: " + Math.random().toFixed(4), { bottom: '0', left: '0' });
+            // Текст по краям
+            createEl('edge-text f6 visible', slogans[Math.floor(Math.random()*slogans.length)], { top: '0', left: '0' });
+            createEl('edge-text f2 vertical visible', subtitles[Math.floor(Math.random()*subtitles.length)], { right: '0', top: '0' });
 
-            const block = createTextBlock(slogans[Math.floor(Math.random()*slogans.length)], true, { left: '15%', top: '35%' });
+            const block = createTextBlock(slogans[Math.floor(Math.random()*slogans.length)], true, { left: '10%', top: '40%' });
             block.classList.add('visible');
             
-            if (Math.random() > 0.4) {
-                const img = createImage(images.objects[Math.floor(Math.random()*images.objects.length)], false);
-                img.style.right = '15%'; img.style.top = '20%';
+            if (Math.random() > 0.5) {
+                const img = createImage(imageLibrary[Math.floor(Math.random()*imageLibrary.length)], 'normal');
+                img.style.right = '10%'; img.style.top = '15%';
                 img.classList.add('visible');
             }
         }
 
         async function layoutChaos() {
-            const categories = Object.keys(images);
-            const currentCat = images[categories[Math.floor(Math.random()*categories.length)]];
-
-            for(let i=0; i<5; i++) {
-                const txt = Math.random() > 0.5 ? slogans[Math.floor(Math.random()*slogans.length)] : subtitles[Math.floor(Math.random()*subtitles.length)];
-                const block = createTextBlock(txt, i===0, {
+            for(let i=0; i<4; i++) {
+                const isHero = i === 0;
+                const txt = isHero ? slogans[Math.floor(Math.random()*slogans.length)] : subtitles[Math.floor(Math.random()*subtitles.length)];
+                const block = createTextBlock(txt, isHero, {
                     left: Math.random()*50+'%', top: Math.random()*70+'%',
-                    transform: `rotate(${(Math.random()-0.5)*30}deg)`, zIndex: 20
+                    transform: `rotate(${(Math.random()-0.5)*20}deg)`, zIndex: 10
                 });
                 block.classList.add('visible');
                 
                 if (Math.random() > 0.6) {
-                    const img = createImage(currentCat[Math.floor(Math.random()*currentCat.length)], Math.random() > 0.5);
-                    img.classList.add('visible');
+                    const type = Math.random() > 0.7 ? 'big' : 'normal';
+                    createImage(imageLibrary[Math.floor(Math.random()*imageLibrary.length)], type).classList.add('visible');
                 }
-                await delay(80);
+                await delay(100);
             }
         }
 
         function createTextBlock(txt, isHero, styles) {
             const block = createEl(isHero ? 'hero' : 'sub-hero', '', styles);
-            let baseSize = isHero ? (txt.length > 15 ? 7 : 11) : (Math.random()*2 + 2.5);
-            if (isHero && Math.random() < 0.15) baseSize = 20; 
+            let baseSize = isHero ? (txt.length > 15 ? 8 : 12) : (Math.random()*2 + 3);
+            if (isHero && Math.random() < 0.2) baseSize = 18; 
             
             block.style.fontSize = baseSize + 'vw';
             txt.split(' ').forEach(word => {
@@ -229,12 +213,23 @@
             return line;
         }
 
-        function createImage(src, isBig) {
+        function createImage(src, type) {
             const container = document.createElement('div');
             container.className = 'image-container element';
-            container.style.width = isBig ? (Math.random()*40 + 30) + '%' : (Math.random()*15 + 10) + '%';
-            container.style.top = (Math.random()*70 - 10) + '%';
-            container.style.left = (Math.random()*70 - 10) + '%';
+            
+            if (type === 'shadow') {
+                container.classList.add('image-shadow');
+                container.style.width = '100vw'; container.style.left = '0'; container.style.top = '0';
+            } else if (type === 'big') {
+                container.style.width = (Math.random()*30 + 40) + '%';
+                container.style.top = Math.random()*40 + '%';
+                container.style.left = Math.random()*40 + '%';
+            } else {
+                container.style.width = (Math.random()*15 + 10) + '%';
+                container.style.top = Math.random()*60 + '%';
+                container.style.left = Math.random()*60 + '%';
+            }
+            
             const img = document.createElement('img');
             img.src = src;
             container.appendChild(img);
