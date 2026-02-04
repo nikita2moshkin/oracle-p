@@ -3,7 +3,7 @@
 <head>  
     <meta charset="UTF-8">  
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">  
-    <title>ORACLE.P | KINDLE 14-INCH</title>  
+    <title>ORACLE.P | ECAL FINAL</title>  
     <style>  
         body, html {  
             margin: 0; padding: 0; width: 100%; height: 100%;  
@@ -17,35 +17,39 @@
         body.white-mode .line { background-color: #000; }
         
         #canvas { position: relative; width: 100vw; height: 100vh; overflow: hidden; }  
-        .element { position: absolute; word-wrap: break-word; line-height: 0.8; opacity: 0; transition: opacity 0.3s; }  
+        .element { position: absolute; word-wrap: break-word; line-height: 0.75; opacity: 0; transition: opacity 0.3s; color: currentColor; }  
         .visible { opacity: 1 !important; }
 
-        /* Шрифтовой микс */  
+        /* ШРИФТЫ */  
         .f-heavy { font-family: "Impact", sans-serif; font-weight: 900; letter-spacing: -2px; } 
-        .f-light { font-family: "Helvetica Neue", sans-serif; font-weight: 200; letter-spacing: 3px; } 
+        .f-light { font-family: "Helvetica Neue", sans-serif; font-weight: 200; letter-spacing: 2px; } 
         .f-serif { font-family: "Georgia", serif; font-style: italic; text-transform: none; } 
         .f-mono { font-family: "Courier New", monospace; font-weight: 400; } 
+        .f-wide { font-family: "Arial Black", sans-serif; transform: scaleX(1.8); transform-origin: left; letter-spacing: -1px; }
 
-        /* Статичная P: Меньше, прозрачнее, левее */  
+        /* Статичная P: Фон, призрачный цвет */  
         .giant-p { 
-            font-size: 40vh; font-weight: 900; z-index: 0; 
-            position: absolute; top: 2%; left: -3%; 
-            opacity: 0.15; pointer-events: none; line-height: 0.7;
+            font-size: 60vh; font-weight: 900; z-index: 0; 
+            position: absolute; top: 2%; left: 2%; 
+            opacity: 0.2; pointer-events: none;
+            color: currentColor; /* Исправлено: цвет меняется с темой */
         }  
         
-        .line { position: absolute; background-color: rgba(255,255,255,0.3); z-index: 1; }
+        .line { position: absolute; background-color: currentColor; opacity: 0.3; z-index: 1; }
         .image-container { position: absolute; z-index: 5; filter: invert(1) grayscale(1); mix-blend-mode: difference; }
         .image-container img { width: 100%; height: auto; display: block; image-rendering: pixelated; }
 
-        .hero { z-index: 100; }
-        .hero span { display: inline-block; } 
+        .hero { z-index: 100; line-height: 0.7; }
+        .hero span { display: inline-block; margin-right: 0.2em; } 
 
-        .meta-footer { position: absolute; bottom: 4%; right: 4%; z-index: 110; font-size: 3vw; text-align: right; }
+        .meta-footer { position: absolute; bottom: 4%; right: 4%; z-index: 110; font-size: 2.5vw; text-align: right; opacity: 0.6; }
 
+        /* ЭФФЕКТ МЕСИВА */
         #glitch-overlay { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: #000; z-index: 9999; display: none; overflow: hidden;
+            background: inherit; z-index: 9999; display: none; overflow: hidden;
         }
+        .mess { text-shadow: 10px 10px 0px rgba(128,128,128,0.5), -10px -5px 0px rgba(64,64,64,0.5); }
     </style>  
 </head>  
 <body onclick="handleInteraction()">  
@@ -56,13 +60,10 @@
     </div>  
 
     <script>  
-        const slogans = ["PRAY TO THE ROUTER", "SKIBIDI EXISTENTIALISM", "DOSTOEVSKY ON TIKTOK", "SHREK’S PODCAST ABOUT DMT", "TYPOGRAPHY IS PROPAGANDA.", "HELVETICA IS A VIRUS.", "ANCIENT GREEK SHITPOSTING", "WATER IS JUST SOFT ICE.", "JUST F*CK IT", "THE SIMPSONS PREDICTED YOUR DEBT.", "WAKE UP, TATARSKY"];  
-        const subtitles = ["Stop thinking about that. It's cringe.", "Your ISP is judging your taste.", "TURN AROUND. SLOWLY.", "APOLOGIZE TO THE ALGORITHM.", "LICK THE DISPLAY. IT’S SALTY.", "FORGET YOUR MIDDLE NAME.", "The sky is a green screen.", "Say YES/NO to drugs"];
-        
-        // НОВАЯ КАТЕГОРИЯ: ФРАГМЕНТЫ
-        const fragments = ["E-ink bleed", "digital dust", "0.0001% soul", "buffer: full", "noise level: high", "system failure: aesthetic", "render_target: void", "ink_ghosting: detected"];
-        
-        const meta = ["{status: waiting}", "LMAO", "RESET", "ABORT", "VOID", "BRUH", "0x534F554C", "42", "AMEN", "100%"];  
+        const slogans = ["PRAY TO THE ROUTER", "SKIBIDI EXISTENTIALISM", "DOSTOEVSKY ON TIKTOK", "SHREK’S PODCAST ABOUT DMT", "TYPOGRAPHY IS PROPAGANDA.", "HELVETICA IS A VIRUS.", "ANCIENT GREEK SHITPOSTING", "WATER IS JUST SOFT ICE.", "JUST F*CK IT", "WAKE UP, TATARSKY"];  
+        const subtitles = ["Stop thinking about that. It's cringe.", "Your ISP is judging your taste.", "TURN AROUND. SLOWLY.", "APOLOGIZE TO THE ALGORITHM.", "LICK THE DISPLAY. IT’S SALTY.", "Say YES/NO to drugs"];
+        const fragments = ["E-ink bleed", "digital dust", "0.0001% soul", "buffer: full", "system failure", "ink_ghosting: detected"];
+        const meta = ["{status: waiting}", "LMAO", "RESET", "ABORT", "VOID", "BRUH", "0x534F554C", "42", "100%"];  
         
         const imageLibrary = [
             'https://24smi.org/public/media/290x360/celebrity/2016/04/29/1461942758-vanga.jpg',
@@ -72,7 +73,7 @@
         ];
 
         let isLocked = false;
-        const fontClasses = ["f-heavy", "f-light", "f-serif", "f-mono"];
+        const fontClasses = ["f-heavy", "f-light", "f-serif", "f-mono", "f-wide"];
         const delay = ms => new Promise(res => setTimeout(res, ms));
 
         function handleInteraction() {
@@ -86,14 +87,17 @@
             const overlay = document.getElementById('glitch-overlay');
             overlay.style.display = 'block';
             overlay.innerHTML = '';
-            for (let i = 0; i < 40; i++) {
+            overlay.style.backgroundColor = document.body.style.backgroundColor;
+
+            for (let i = 0; i < 60; i++) {
                 const char = document.createElement('div');
-                char.className = 'element visible ' + fontClasses[Math.floor(Math.random()*4)];
-                char.style.cssText = `left:${Math.random()*100}%; top:${Math.random()*100}%; font-size:${Math.random()*25}vw; color:#fff;`;
-                char.innerText = meta[Math.floor(Math.random()*meta.length)];
+                char.className = 'element visible mess ' + fontClasses[Math.floor(Math.random()*fontClasses.length)];
+                char.style.cssText = `left:${Math.random()*80}%; top:${Math.random()*90}%; font-size:${Math.random()*30}vw; opacity:${Math.random()};`;
+                char.innerText = slogans[Math.floor(Math.random()*slogans.length)];
                 overlay.appendChild(char);
+                if(i % 5 === 0) await delay(20);
             }
-            await delay(2500);
+            await delay(3000);
             overlay.style.display = 'none';
             isLocked = false;
             sequentialSpawn();
@@ -104,96 +108,65 @@
             const p = canvas.querySelector('.giant-p');
             canvas.innerHTML = ''; canvas.appendChild(p);
             
-            const isSwissGrid = Math.random() < 0.35; // 35% шанс на "математику"
-            document.body.className = (Math.random() < 0.1) ? 'white-mode' : '';
+            const isSwissGrid = Math.random() < 0.3;
+            document.body.className = (Math.random() < 0.15) ? 'white-mode' : '';
 
-            // 1. СЕТКА
-            const lineCount = isSwissGrid ? 12 : Math.floor(Math.random()*6);
+            // 1. ЛИНИИ
+            const lineCount = Math.random() < 0.2 ? 0 : (isSwissGrid ? 14 : Math.floor(Math.random()*6));
             for (let i = 0; i < lineCount; i++) {
                 const line = createLine(isSwissGrid);
-                await delay(20);
                 line.classList.add('visible');
+                if (i % 2 === 0) await delay(30);
             }
 
-            // 2. ЭЛЕМЕНТЫ (Композиция)
-            const elementsCount = Math.floor(Math.random() * 4) + 2;
+            // 2. КАРТИНКИ (Шанс 25%)
+            if (Math.random() < 0.25) {
+                const img = createImage();
+                await delay(100);
+                img.classList.add('visible');
+            }
+
+            // 3. ТЕКСТ (Масштабируемый)
+            const elementsCount = Math.floor(Math.random() * 3) + 1;
             for(let i = 0; i < elementsCount; i++) {
-                const rnd = Math.random();
-                if (rnd < 0.2) await spawnImage(isSwissGrid);
-                else if (rnd < 0.7) await spawnText(isSwissGrid);
-                else await spawnFragment(isSwissGrid);
-                await delay(120);
+                await spawnText(isSwissGrid, elementsCount > 2);
+                await delay(150);
             }
 
-            // 3. ФУТЕР
+            // 4. ФУТЕР
             const footer = createEl('meta-footer f-mono', meta[Math.floor(Math.random()*meta.length)], {});
             await delay(50);
             footer.classList.add('visible');
         }  
 
-        async function spawnText(isGrid) {
-            const isHero = Math.random() > 0.6;
-            const txt = isHero ? slogans[Math.floor(Math.random()*slogans.length)] : subtitles[Math.floor(Math.random()*subtitles.length)];
+        async function spawnText(isGrid, isCrowded) {
+            const isHero = !isCrowded || Math.random() > 0.5;
+            const txt = slogans[Math.floor(Math.random()*slogans.length)];
             const isVertical = Math.random() < 0.2;
             const isRotated = Math.random() < 0.15;
             
             const block = createEl(isHero ? 'hero' : 'sub-hero', '', {
-                left: isGrid ? (Math.floor(Math.random()*6)*15 + 5)+'%' : Math.random()*70+'%',
-                top: isGrid ? (Math.floor(Math.random()*8)*10 + 10)+'%' : Math.random()*80+'%',
-                fontSize: (Math.random() * (isHero ? 25 : 8) + 2) + 'vw',
-                transform: isVertical ? 'rotate(90deg)' : (isRotated ? `rotate(${Math.random()*10-5}deg)` : 'none'),
+                left: isGrid ? (Math.floor(Math.random()*6)*15 + 5)+'%' : Math.random()*50+'%',
+                top: isGrid ? (Math.floor(Math.random()*8)*10 + 10)+'%' : Math.random()*70+'%',
+                fontSize: isCrowded ? (Math.random()*5 + 6)+'vw' : (Math.random()*10 + 15)+'vw',
+                transform: isVertical ? 'rotate(90deg)' : (isRotated ? `rotate(${Math.random()*8-4}deg)` : 'none'),
                 transformOrigin: 'left top'
             });
 
             txt.split(' ').forEach(word => {
                 const span = document.createElement('span');
-                span.innerText = word + ' ';
-                span.className = fontClasses[Math.floor(Math.random()*4)];
+                span.innerText = word;
+                span.className = fontClasses[Math.floor(Math.random()*fontClasses.length)];
                 block.appendChild(span);
             });
             block.classList.add('visible');
         }
 
-        async function spawnFragment(isGrid) {
-            const txt = fragments[Math.floor(Math.random()*fragments.length)];
-            const block = createEl('f-mono', txt, {
-                left: Math.random()*90+'%', top: Math.random()*90+'%',
-                fontSize: (Math.random()*3 + 1.5) + 'vw', opacity: 0.7
-            });
-            block.classList.add('visible');
-        }
-
-        async function spawnImage(isGrid) {
-            const isBig = Math.random() > 0.5;
-            const isRotated = Math.random() < 0.15;
-            const container = document.createElement('div');
-            container.className = 'image-container element';
-            container.style.width = isBig ? (Math.random()*40 + 40)+'%' : (Math.random()*15 + 5)+'%';
-            container.style.left = isGrid ? (Math.floor(Math.random()*5)*20)+'%' : Math.random()*60+'%';
-            container.style.top = isGrid ? (Math.floor(Math.random()*5)*15)+'%' : Math.random()*60+'%';
-            if (isRotated) container.style.transform = `rotate(${Math.random()*20-10}deg)`;
-            
-            const img = document.createElement('img');
-            img.src = imageLibrary[Math.floor(Math.random()*imageLibrary.length)];
-            container.appendChild(img);
-            document.getElementById('canvas').appendChild(container);
-            container.classList.add('visible');
-        }
-
-        function createEl(cls, txt, styles) {  
-            const div = document.createElement('div');  
-            div.className = 'element ' + cls;  
-            if (txt) div.innerText = txt;  
-            Object.assign(div.style, styles);  
-            document.getElementById('canvas').appendChild(div);  
-            return div;  
-        }  
-
         function createLine(isGrid) {
             const line = document.createElement('div');
             line.className = 'line element';
             const isVert = Math.random() > 0.5;
-            const thick = (Math.random() * 4 + 1) + 'px';
+            const thick = (Math.random() * 5 + 1) + 'px';
             if (isVert) {
                 line.style.width = thick; line.style.height = '100vh';
                 line.style.left = isGrid ? (Math.floor(Math.random()*12)*(100/12)) + '%' : Math.random()*100 + '%';
@@ -204,6 +177,31 @@
             document.getElementById('canvas').appendChild(line);
             return line;
         }
+
+        function createImage() {
+            const container = document.createElement('div');
+            container.className = 'image-container element';
+            const isBig = Math.random() > 0.4;
+            container.style.width = isBig ? (Math.random()*40 + 50)+'%' : (Math.random()*20 + 10)+'%';
+            container.style.left = Math.random()*50+'%';
+            container.style.top = Math.random()*50+'%';
+            if (Math.random() < 0.2) container.style.transform = `rotate(${Math.random()*20-10}deg)`;
+            
+            const img = document.createElement('img');
+            img.src = imageLibrary[Math.floor(Math.random()*imageLibrary.length)];
+            container.appendChild(img);
+            document.getElementById('canvas').appendChild(container);
+            return container;
+        }
+
+        function createEl(cls, txt, styles) {  
+            const div = document.createElement('div');  
+            div.className = 'element ' + cls;  
+            if (txt) div.innerText = txt;  
+            Object.assign(div.style, styles);  
+            document.getElementById('canvas').appendChild(div);  
+            return div;  
+        }  
 
         window.onload = sequentialSpawn;  
     </script>  
