@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>  
 <html lang="ru">  
 <head>  
@@ -14,28 +13,23 @@
             font-family: "Helvetica Neue", "Arial", sans-serif;
         }  
 
+        /* Режимы экрана */
         body.white-mode { background-color: #fff; color: #000; }
-        body.white-mode .detail { border-color: #000; }
         body.white-mode .line { background-color: #000; }
-        body.white-mode .image-container img { filter: grayscale(1); }
-
         body.glitch-white { background-color: #fff !important; }
         body.glitch-white * { visibility: hidden !important; }
-        body.glitch-stretch .element { transform: scaleX(4) skewX(40deg); opacity: 0.1; }
-
-        /* Эпическая кульминация */
-        body.culmination { background-color: #fff !important; color: #000 !important; transition: all 0.1s; }
-        body.culmination .element { font-size: 20vw !important; left: 0 !important; width: 100% !important; text-align: center; }
+        body.glitch-stretch .element { transform: scaleX(4) skewX(20deg); opacity: 0.1; }
 
         #canvas { position: relative; width: 100vw; height: 100vh; }  
         .element { position: absolute; line-height: 0.8; word-wrap: break-word; }  
 
+        /* Типографика */  
         .f-sans { font-family: "Helvetica Neue", "Arial", sans-serif; font-weight: 900; letter-spacing: -3px; }
         .f-impact { font-family: "Impact", "Arial Black", sans-serif; font-weight: 900; letter-spacing: -1px; } 
         .f-serif { font-family: "Georgia", serif; font-style: italic; font-weight: 400; text-transform: none; }  
         .f-mono { font-family: "Courier New", monospace; font-weight: 400; letter-spacing: -2px; }  
 
-        /* P: 55vh, прозрачность 0.7, плотные углы */  
+        /* P: 55vh, прозрачность 0.7 */  
         .giant-p { 
             font-size: 55vh; 
             font-weight: 900; 
@@ -45,66 +39,68 @@
             opacity: 0.7;
         }  
         
-        .giant-p.top-left { top: -1%; left: -1%; }
-        .giant-p.top-right { top: -1%; right: -1%; text-align: right; }
-        .giant-p.bottom-left { bottom: -8%; left: -1%; }
-        .giant-p.bottom-right { bottom: -8%; right: -1%; text-align: right; }
+        .giant-p.top-left { top: -2%; left: -4%; }
+        .giant-p.top-right { top: -2%; right: -6%; text-align: right; }
+        .giant-p.bottom-left { bottom: -12%; left: -4%; }
+        .giant-p.bottom-right { bottom: -12%; right: -6%; text-align: right; }
 
         .ghost { opacity: 0.2; z-index: -1; }
         .hero { font-weight: 900; z-index: 100; letter-spacing: -4px; }  
         .detail { z-index: 50; font-weight: 700; border: 4px solid #fff; padding: 4px 10px; white-space: nowrap; }  
-        
+        body.white-mode .detail { border-color: #000; }
+
         .line { position: absolute; background-color: #fff; z-index: 5; }
-        .image-container { position: absolute; z-index: 10; filter: invert(1) grayscale(1); opacity: 0.8; }
-        .image-container img { width: 100%; height: auto; display: block; }
+        .image-container { position: absolute; z-index: 10; filter: invert(1) grayscale(1); }
+        
+        /* Эффект пикселизации для изображений */
+        .image-container img { 
+            width: 100%; 
+            height: auto; 
+            display: block;
+            image-rendering: -webkit-optimize-contrast; /* Для старых WebKit/Kindle */
+            image-rendering: pixelated; /* Стандарт */
+            -ms-interpolation-mode: nearest-neighbor;
+        }
+        
         .chaos-item { position: absolute; z-index: 999; pointer-events: none; mix-blend-mode: difference; }
 
     </style>  
 </head>  
 <body onclick="handleInteraction()">  
+
     <div id="canvas"></div>  
+
     <script>  
-        const slogans = ["Just F*ck It", "Don't Think Different", "Think! Think? ", "Believe in Worst", "BECAUSE YOU'RE A PRODUCT", "Want a break from the ads?", "Enjoy the Emptiness", "Keep Scrolling", "Save 50% on your karma", "Subscribe to Reality+", "Limited time offer: Reincarnation", "God is a beta tester", "J-SUS X", "Satan: Unsubscribe at any time", "iPhone!!! (New One)", "Sold my data for a donut.", "Adam and Eva were smoking pot!", "Who still remembers Skype?", "1000 Aura / One Million Likes", "Dinosaurs died from cringe", "We are cooked...", "The world is over! (except Bali)", "WAKE UP, TATARSKY", "Don't Live. Watch.", "War is Peace. Debt is Wealth.", "100% Organic Illusion", "HTML IS NOT REAL / CSS IS PROPAGANDA", "404 B**CH!", "Update your morality", "Control + Z: Undo your birth", "Netflix and Netflix", "Your soul is cooked", "Admin_Root_Ishtar: BRUH", "ERROR: REALITY NOT FOUND"];  
-        const meta = ["MONEY?", "WHY?", "OBEY.", "CANCELLED", "SOLD OUT", "0x53 0x4F 0x55 0x4C", "WAKE UP", "VOID", "PURE_ART"];  
+        // ТЕКСТЫ МЕНЯЙ ЗДЕСЬ
+        const slogans = ["JUST F*CK IT", "UPDATE YOUR MORALITY", "ERROR: REALITY NOT FOUND", "1000 AURA / LIKE", "WAKE UP, TATARSKY", "Want a break from the ads?", "J-SUS X", 
+                        "Naruto vs Elon Musk!?", "Smells Like Trend Spirit", "42", "Skibidi Capitalism", "Who still remembers Skype?", "Shrek: Podcast about DMT", ":(",
+                        "Oops...", "The world is over! Everyone suffers! (except Bali)", "Æ", "Ancient Egypt was a Simulation", "Big Brother Wants Your Feedback." ];  
+        const meta = ["MONEY?", "OBEY.", "VOID", "PURE_ART", "0x534F554C", "42", "Born to scroll. Forced to think.", "AI will not replace you. I will.", "Everything is fine. I'm just a script.", "Cookies are watching you",
+                      "HTML IS NOT REAL", "CSS IS PROPAGANDA", "SOLD OUT", "AMEN", "100%", "SYSTEM RECOVERY: DELETE EGO", "0%", "Delete the Past? [YES] [NO]", "CAPTCHA: Prove you have a soul.", "BRUH"];  
+        
+        // КАРТИНКИ ДОБАВЛЯЙ СЮДА (Ссылки в кавычках через запятую)
+        const imageLibrary = [
+            'https://24smi.org/public/media/290x360/celebrity/2016/04/29/1461942758-vanga.jpg'
+            'https://static.wikia.nocookie.net/p__/images/a/a0/Seraphim.webp/revision/latest?cb=20230905051800&path-prefix=protagonist'
+            'https://images-cdn.ubuy.co.in/63a07047a023683963549705-laminated-pop-art-che-guevara-portrait.jpg'
+            'https://www.tastingtable.com/img/gallery/why-12-million-of-apples-are-rotting-on-an-indian-highway/intro-1664217802.jpg'
+            'https://i.pinimg.com/736x/d7/36/50/d736508d72ccd0ac10fc0c4a0131889a.jpg'
+        ];
+
+        let clickCounter = 0;
         const fontClasses = ["f-sans", "f-impact", "f-serif", "f-mono"];  
         const pCorners = ['top-left', 'top-right', 'bottom-left', 'bottom-right'];
-        const imageUrl = 'https://domf5oio6qrcr.cloudfront.net/medialibrary/7349/7ae782c0-24f9-4128-97a9-8b64432bce76.jpg';
-
-        let clickCount = 0;
-        let chaosStreak = 0;
 
         function handleInteraction() {
-            clickCount++;
-            const canvas = document.getElementById('canvas');
-
-            if (clickCount === 150) {
-                epicCulmination();
-                return;
-            }
-
-            if (chaosStreak > 0) {
-                visualChaos();
-                chaosStreak--;
-                return;
-            }
-
+            clickCounter++;
             const rnd = Math.random();
-            // Гличи и странности только после 10 нажатий
-            if (clickCount > 10) {
-                if (rnd < 0.05) { 
-                    triggerEffect('glitch-white', 600);
-                    return;
-                }
-                if (rnd < 0.07) { // Понижен шанс хаоса (2%)
-                    chaosStreak = Math.floor(Math.random() * 3) + 1;
-                    visualChaos();
-                    chaosStreak--;
-                    return;
-                }
-                if (rnd < 0.10) {
-                    triggerEffect('glitch-stretch', 400);
-                    return;
-                }
+
+            // Глитчи разблокируются только после 10 кликов
+            if (clickCounter > 10) {
+                if (rnd < 0.05) return triggerEffect('glitch-white', 600);
+                if (rnd < 0.15) return visualChaos(); 
+                if (rnd < 0.18) return triggerEffect('glitch-stretch', 400);
+                if (rnd < 0.19) return totalVoid(); // 1% шанс на пустоту
             }
             
             spawn();
@@ -115,6 +111,11 @@
             setTimeout(() => { document.body.classList.remove(cls); spawn(); }, ms);
         }
 
+        function totalVoid() {
+            document.getElementById('canvas').innerHTML = '';
+            document.body.className = ''; 
+        }
+
         function visualChaos() {
             const canvas = document.getElementById('canvas');
             canvas.innerHTML = '';
@@ -123,57 +124,44 @@
                 createEl('chaos-item ' + fontClasses[Math.floor(Math.random()*4)], slogans[Math.floor(Math.random()*slogans.length)], {
                     top: Math.random() * 100 + '%',
                     left: Math.random() * 100 + '%',
-                    fontSize: (Math.random() * 20 + 5) + 'vw',
-                    transform: `rotate(${Math.random() * 360}deg) scale(${Math.random() * 2.5})`,
+                    fontSize: (Math.random() * 20 + 2) + 'vw',
+                    transform: `rotate(${Math.random() * 360}deg)`,
                     opacity: Math.random()
                 });
             }
         }
 
-        function epicCulmination() {
-            const canvas = document.getElementById('canvas');
-            document.body.classList.add('culmination');
-            let i = 0;
-            const interval = setInterval(() => {
-                canvas.innerHTML = '';
-                createEl('f-impact', slogans[Math.floor(Math.random()*slogans.length)], { top: '40%' });
-                if (i++ > 20) {
-                    clearInterval(interval);
-                    document.body.classList.remove('culmination');
-                    clickCount = 0;
-                    spawn();
-                }
-            }, 100);
-        }
-
         function spawn() {  
             const canvas = document.getElementById('canvas'); 
-            const vibe = clickCount <= 10 ? 0.4 : Math.random(); // До 10 клика только Swiss/Minimal
+            const isDada = (clickCounter > 10 && Math.random() > 0.6);
             
-            document.body.className = (vibe < 0.1) ? 'white-mode' : '';
+            document.body.className = (Math.random() < 0.1) ? 'white-mode' : '';
             canvas.innerHTML = '';
 
-            if (vibe > 0.2) {
-                const lineCount = vibe > 0.85 ? Math.floor(Math.random() * 10) + 5 : Math.floor(Math.random() * 3);
-                for (let i = 0; i < lineCount; i++) createLine(Math.random() > 0.5);
-            }
+            // 1. ЛИНИИ
+            const lineCount = isDada ? Math.floor(Math.random() * 10) + 3 : Math.floor(Math.random() * 3);
+            for (let i = 0; i < lineCount; i++) createLine();
 
+            // 2. БУКВА P
             const pClass = pCorners[Math.floor(Math.random() * pCorners.length)];
             createEl('giant-p ' + pClass + ' f-impact', "P", {});
             
-            if (vibe > 0.8) {
+            if (isDada) {
                 createEl('giant-p ghost ' + pClass + ' f-impact', "P", {
                     transform: `translate(${Math.random()*40}px, ${Math.random()*40}px)`
                 });
             }
 
-            if (Math.random() < (vibe > 0.85 ? 0.6 : 0.2)) createImage(imageUrl);
+            // 3. КАРТИНКА (Берется случайно из библиотеки)
+            if (Math.random() < 0.3 && imageLibrary.length > 0) {
+                createImage(imageLibrary[Math.floor(Math.random() * imageLibrary.length)]);
+            }
 
+            // 4. СЛОГАН
             const slogan = slogans[Math.floor(Math.random() * slogans.length)];  
             const hero = createEl('hero f-impact', "", { 
-                left: '5%', 
-                top: (20 + Math.random() * 40) + '%',
-                fontSize: (vibe > 0.85 ? 18 : 12) + 'vw'
+                left: '5%', top: (20 + Math.random() * 50) + '%',
+                fontSize: (isDada ? 16 : 12) + 'vw'
             });  
             
             slogan.split(' ').forEach(word => {  
@@ -181,19 +169,12 @@
                 span.innerText = word;  
                 span.style.display = "inline-block";
                 span.style.marginRight = "10px";
-                if (vibe > 0.85 && Math.random() > 0.7) span.style.transform = `rotate(${Math.random()*15-7}deg)`;
+                if (isDada && Math.random() > 0.7) span.className = fontClasses[Math.floor(Math.random() * 4)];
                 hero.appendChild(span);  
             });  
 
-            createEl('sub-text f-mono', meta[Math.floor(Math.random()*meta.length)], { left: '5%', bottom: '5%' });  
-            
-            const detailCount = vibe > 0.85 ? 6 : 2;
-            for(let i=0; i<detailCount; i++) {  
-                createEl('detail ' + fontClasses[Math.floor(Math.random()*4)], meta[Math.floor(Math.random()*meta.length)], {  
-                    right: '5%', top: (Math.random() * 90) + '%',
-                    transform: vibe > 0.9 ? `rotate(${Math.random()*360}deg)` : 'none'
-                });  
-            }  
+            // 5. МЕТА
+            createEl('sub-text f-mono', meta[Math.floor(Math.random()*meta.length)], { left: '5%', bottom: '5%', fontSize: '4vw' });  
         }  
 
         function createEl(cls, txt, styles) {  
@@ -205,15 +186,16 @@
             return div;  
         }  
 
-        function createLine(isVertical) {
+        function createLine() {
             const line = document.createElement('div');
             line.className = 'line';
-            const thickness = Math.random() > 0.9 ? '10px' : '2px';
-            if (isVertical) {
-                line.style.width = thickness; line.style.height = '100vh';
+            const isVert = Math.random() > 0.5;
+            const thick = (Math.random() * 3 + 1) + 'px';
+            if (isVert) {
+                line.style.width = thick; line.style.height = '100vh';
                 line.style.left = (Math.random() * 100) + '%';
             } else {
-                line.style.width = '100vw'; line.style.height = thickness;
+                line.style.width = '100vw'; line.style.height = thick;
                 line.style.top = (Math.random() * 100) + '%';
             }
             document.getElementById('canvas').appendChild(line);
@@ -222,9 +204,9 @@
         function createImage(src) {
             const container = document.createElement('div');
             container.className = 'image-container';
-            container.style.width = (Math.random() * 30 + 30) + '%';
-            container.style.top = (Math.random() * 60) + '%';
-            container.style.left = (Math.random() * 60) + '%';
+            container.style.width = (Math.random() * 30 + 20) + '%';
+            container.style.top = (Math.random() * 50) + '%';
+            container.style.left = (Math.random() * 50) + '%';
             const img = document.createElement('img');
             img.src = src;
             container.appendChild(img);
@@ -235,5 +217,3 @@
     </script>  
 </body>  
 </html>
-
-```
