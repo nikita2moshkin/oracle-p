@@ -3,43 +3,48 @@
 <head>  
     <meta charset="UTF-8">  
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">  
-    <title>ORACLE.P | ECAL EDITION</title>  
+    <title>ORACLE.P | KINDLE EDITION</title>  
     <style>  
         body, html {  
             margin: 0; padding: 0; width: 100%; height: 100%;  
             background-color: #000; color: #fff; 
             overflow: hidden; text-transform: uppercase;  
             -webkit-user-select: none;  
-            font-family: "Helvetica", "Arial", sans-serif;
+            font-family: "Helvetica Neue", "Arial", sans-serif;
         }  
 
         body.white-mode { background-color: #fff; color: #000; }
-        body.white-mode .line, body.white-mode .grid-line { background-color: #000; }
-        body.white-mode .shape { border-color: #000; }
+        body.white-mode .line { background-color: #000; }
+        body.glitch-white { background-color: #fff !important; }
+        body.glitch-white * { visibility: hidden !important; }
 
         #canvas { position: relative; width: 100vw; height: 100vh; overflow: hidden; }  
-        .element { position: absolute; line-height: 0.8; word-wrap: break-word; z-index: 20; }  
+        .element { position: absolute; line-height: 0.8; word-wrap: break-word; transition: none; }  
 
-        /* --- Расширенная типографика --- */
-        .f-sans { font-family: "Helvetica", "Arial", sans-serif; font-weight: 900; letter-spacing: -3px; }
-        .f-impact { font-family: "Impact", "Arial Black", sans-serif; font-weight: 900; } 
-        .f-serif { font-family: "Georgia", serif; font-style: italic; text-transform: none; }
-        .f-mono { font-family: "Courier New", monospace; letter-spacing: -1px; }
-        .f-condensed { font-family: "Arial Narrow", sans-serif; font-stretch: condensed; font-weight: 900; }
-        .f-slab { font-family: "Lucida Bright", "Georgia", serif; font-weight: 900; }
-        .f-code { font-family: "Consolas", "Monaco", monospace; text-transform: none; background: rgba(128,128,128,0.2); }
+        /* Расширенная библиотека шрифтов */  
+        .f-sans { font-family: "Helvetica Neue", "Arial", sans-serif; font-weight: 900; letter-spacing: -3px; }
+        .f-impact { font-family: "Impact", "Arial Black", sans-serif; font-weight: 900; letter-spacing: -1px; } 
+        .f-serif { font-family: "Georgia", "Times New Roman", serif; font-style: italic; font-weight: 400; text-transform: none; }  
+        .f-mono { font-family: "Courier New", monospace; font-weight: 400; letter-spacing: -2px; }  
+        .f-times { font-family: "Times New Roman", serif; font-weight: 900; text-transform: uppercase; letter-spacing: 5px; }
+        .f-narrow { font-family: "Trebuchet MS", sans-serif; font-stretch: condensed; font-weight: 800; transform: scaleX(0.7); }
 
-        .vertical { transform-origin: left top; transform: rotate(90deg); white-space: nowrap; }
+        /* Фиксированная P */
+        .giant-p { 
+            font-size: 55vh; font-weight: 900; z-index: 0; 
+            position: absolute; line-height: 0.7; opacity: 0.6;
+            top: -10vh; left: -5vw; font-family: "Impact", sans-serif;
+        }  
 
-        /* --- Элементы --- */
-        .giant-p { font-size: 45vh; font-weight: 900; z-index: 5; opacity: 0.4; pointer-events: none; }
-        .hero { font-weight: 900; z-index: 100; letter-spacing: -4px; }
-        .line { position: absolute; background-color: #fff; z-index: 10; }
-        .grid-line { position: absolute; background-color: #fff; opacity: 0.2; z-index: 1; }
-        .shape { position: absolute; border: 2px solid #fff; z-index: 5; }
+        .hero { font-weight: 900; z-index: 100; letter-spacing: -4px; max-width: 95%; }  
+        .sub-hero { font-weight: 700; z-index: 90; letter-spacing: -1px; opacity: 0.85; max-width: 90%; }
         
-        .image-container { position: absolute; z-index: 15; filter: grayscale(1) contrast(1.5); }
-        .image-container img { width: 100%; height: auto; display: block; }
+        .line { position: absolute; background-color: #fff; z-index: 5; }
+        .image-container { position: absolute; z-index: 10; filter: invert(1) grayscale(1); }
+        .image-container img { width: 100%; height: auto; display: block; image-rendering: pixelated; }
+        
+        .chaos-item { position: absolute; z-index: 999; pointer-events: none; }
+        .vertical { writing-mode: vertical-rl; text-orientation: mixed; }
     </style>  
 </head>  
 <body onclick="handleInteraction()">  
@@ -47,100 +52,159 @@
     <div id="canvas"></div>  
 
     <script>  
-        const slogans = ["PRAY TO THE ROUTER", "SKIBIDI EXISTENTIALISM", "DOSTOEVSKY ON TIKTOK", "TYPOGRAPHY IS PROPAGANDA", "HELVETICA IS A VIRUS", "WAKE UP, TATARSKY", "NON-STOP CHAOS", "SYSTEM FAILURE"];  
-        const subtitles = ["Stop thinking. It's cringe.", "Your ISP is judging you.", "APOLOGIZE TO THE ALGORITHM.", "the algorithm knows everything", "Error: reality not found", "0x534F554C"];
-        const fontClasses = ["f-sans", "f-impact", "f-serif", "f-mono", "f-condensed", "f-slab", "f-code"];
+        const slogans = [
+            "PRAY TO THE ROUTER", "SKIBIDI EXISTENTIALISM", "DOSTOEVSKY ON TIKTOK", 
+            "SHREK’S PODCAST ABOUT DMT", "TYPOGRAPHY IS PROPAGANDA.", "HELVETICA IS A VIRUS.",
+            "ANCIENT GREEK SHITPOSTING", "WATER IS JUST SOFT ICE.", "JUST F*CK IT", 
+            "THE SIMPSONS PREDICTED YOUR DEBT.", "WAKE UP, TATARSKY", "POST-IRONIC REHAB"
+        ];  
+        
+        const subtitles = [
+            "Stop thinking about that. It's cringe.", "Your ISP is judging your taste.",
+            "TURN AROUND. SLOWLY.", "APOLOGIZE TO THE ALGORITHM.",
+            "LICK THE DISPLAY. IT’S SALTY.", "the algorithm knows what you did",
+            "FORGET YOUR MIDDLE NAME.", "Are you proud of your cookies?",
+            "[exporting trauma to Excel]", "The sky is a green screen.",
+            "Say YES/NO to drugs", "Error: reality not found", "YOU ARE A DATA POINT"
+        ];
+
+        const meta = [
+            "{status: waiting}", "(processing sins...)", "LMAO", "RESET", "ABORT", 
+            "VOID", "0x534F554C", "42", "AMEN", "100%", "BRUH", "IDK"
+        ];  
+        
         const imageLibrary = [
             'https://24smi.org/public/media/290x360/celebrity/2016/04/29/1461942758-vanga.jpg',
             'https://i.redd.it/2m5h881d4uh81.jpg',
-            'https://www.pngall.com/wp-content/uploads/15/Old-Computer-PNG-Cutout.png',
-            'https://png.pngtree.com/png-vector/20231017/ourmid/pngtree-fresh-apple-fruit-red-png-image_10203073.png'
+            'https://images-cdn.ubuy.co.in/63a07047a023683963549705-laminated-pop-art-che-guevara-portrait.jpg',
+            'https://png.pngtree.com/png-vector/20231017/ourmid/pngtree-fresh-apple-fruit-red-png-image_10203073.png',
+            'https://i.pinimg.com/originals/7e/eb/7a/7eeb7aabf1fd4b18f99f77a70c69a34b.png',
+            'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Anonymous_emblem.svg/1280px-Anonymous_emblem.svg.png'
         ];
 
+        let clickCounter = 0;
+        const fontClasses = ["f-sans", "f-impact", "f-serif", "f-mono", "f-times", "f-narrow"];  
+
         function handleInteraction() {
+            clickCounter++;
+            const rnd = Math.random();
+            if (clickCounter > 5) {
+                if (rnd < 0.04) return triggerEffect('glitch-white', 400);
+                if (rnd < 0.07) return visualChaos(); 
+            }
             spawn();
         }
 
-        function spawn() {  
-            const canvas = document.getElementById('canvas'); 
-            canvas.innerHTML = '';
-            document.body.className = (Math.random() < 0.2) ? 'white-mode' : '';
+        function triggerEffect(cls, ms) {
+            document.body.classList.add(cls);
+            setTimeout(() => { document.body.classList.remove(cls); spawn(); }, ms);
+        }
 
-            // 1. СЕТКА (Grid)
-            if (Math.random() > 0.3) createGrid();
-
-            // 2. ГЕОМЕТРИЯ (Shapes)
-            if (Math.random() > 0.5) spawnShape();
-
-            // 3. БУКВА P
-            createEl('giant-p f-impact', "P", { 
-                left: Math.random() > 0.5 ? '-5%' : '60%', 
-                top: Math.random() > 0.5 ? '-5%' : '50%' 
-            });
-
-            // 4. КАРТИНКИ
-            const imgCount = Math.floor(Math.random() * 3);
-            for(let i = 0; i < imgCount; i++) createImage();
-
-            // 5. ТЕКСТОВЫЕ СЛОИ
-            const layers = Math.floor(Math.random() * 4) + 2; 
-            for(let i = 0; i < layers; i++) {
-                const isVertical = Math.random() < 0.3;
+        function glitchText(text) {
+            if (Math.random() > 0.3) return text; // 30% шанс на поломку шрифта внутри слова
+            return text.split(' ').map(word => {
                 const font = fontClasses[Math.floor(Math.random() * fontClasses.length)];
-                const text = Math.random() > 0.4 ? slogans[Math.floor(Math.random()*slogans.length)] : subtitles[Math.floor(Math.random()*subtitles.length)];
-                
-                createEl(`element ${font} ${isVertical ? 'vertical' : ''}`, text, {
-                    left: (Math.random() * 80) + '%',
-                    top: (Math.random() * 80) + '%',
-                    fontSize: (Math.random() * 8 + 4) + 'vw',
-                    opacity: Math.random() * 0.5 + 0.5
+                return `<span class="${font}">${word}</span>`;
+            }).join(' ');
+        }
+
+        function visualChaos() {
+            const canvas = document.getElementById('canvas');
+            canvas.innerHTML = '';
+            for (let i = 0; i < 35; i++) {
+                createEl('chaos-item ' + fontClasses[Math.floor(Math.random()*fontClasses.length)], meta[Math.floor(Math.random()*meta.length)], {
+                    top: Math.random() * 100 + '%', left: Math.random() * 100 + '%',
+                    fontSize: (Math.random() * 12 + 2) + 'vw', transform: `rotate(${Math.random() * 360}deg)`, opacity: Math.random()
                 });
             }
         }
 
-        function createGrid() {
-            const canvas = document.getElementById('canvas');
-            const density = [5, 10, 20][Math.floor(Math.random() * 3)]; 
-            for (let i = 0; i < 100; i += density) {
-                // Вертикальные
-                const v = document.createElement('div');
-                v.className = 'grid-line';
-                v.style.width = '1px'; v.style.height = '100%'; v.style.left = i + '%';
-                canvas.appendChild(v);
-                // Горизонтальные
-                const h = document.createElement('div');
-                h.className = 'grid-line';
-                h.style.height = '1px'; h.style.width = '100%'; h.style.top = i + '%';
-                canvas.appendChild(h);
-            }
-        }
+        function spawn() {  
+            const canvas = document.getElementById('canvas'); 
+            const isStrict = Math.random() < 0.25; 
+            
+            document.body.className = (Math.random() < 0.15) ? 'white-mode' : '';
+            canvas.innerHTML = '';
 
-        function spawnShape() {
-            createEl('shape', '', {
-                width: Math.random() * 200 + 'px',
-                height: Math.random() * 200 + 'px',
-                left: Math.random() * 80 + '%',
-                top: Math.random() * 80 + '%',
-                borderWidth: Math.floor(Math.random() * 10 + 1) + 'px'
-            });
-        }
+            // 1. БУКВА P (ФИКСИРОВАННАЯ)
+            createEl('giant-p', "P", {});
+
+            // 2. ЛИНИИ (БОЛЬШЕ ПРИ STRICT)
+            const lineCount = isStrict ? Math.floor(Math.random() * 10 + 5) : Math.floor(Math.random() * 5);
+            for (let i = 0; i < lineCount; i++) createLine();
+
+            // 3. КАРТИНКИ (ДО 4 ШТУК)
+            let imagesToSpawn = Math.floor(Math.random() * 4);
+            for(let i = 0; i < imagesToSpawn; i++) {
+                createImage(imageLibrary[Math.floor(Math.random() * imageLibrary.length)]);
+            }
+
+            // 4. ТЕКСТОВАЯ КОМПОЗИЦИЯ (УВЕЛИЧЕНО КОЛИЧЕСТВО СЛОЕВ)
+            const layers = Math.floor(Math.random() * 6) + 2; 
+            for(let i = 0; i < layers; i++) {
+                const isHero = (i < 2); // Первые два могут быть крупными
+                const list = isHero ? slogans : subtitles;
+                const font = fontClasses[Math.floor(Math.random() * fontClasses.length)];
+                const isVert = Math.random() < 0.2; // 20% шанс на вертикальный текст
+                
+                let rot = isStrict ? 0 : (Math.random() * 40 - 20);
+                if (isVert) rot = 90;
+
+                const el = createEl(
+                    `${isHero ? 'hero' : 'sub-hero'} ${font} ${isVert ? 'vertical' : ''}`, 
+                    '', 
+                    {
+                        left: (Math.random() * 80) + '%',
+                        top: (Math.random() * 80) + '%',
+                        fontSize: isHero ? (Math.random() * 8 + 10) + 'vw' : (Math.random() * 3 + 4) + 'vw',
+                        transform: `rotate(${rot}deg)`,
+                        zIndex: Math.floor(Math.random() * 200)
+                    }
+                );
+                el.innerHTML = glitchText(list[Math.floor(Math.random()*list.length)]);
+            }
+
+            // 5. МНОЖЕСТВЕННАЯ МЕТА (ГРЯЗЬ)
+            for(let i = 0; i < 4; i++) {
+                createEl('sub-text f-mono', meta[Math.floor(Math.random()*meta.length)], { 
+                    left: (Math.random() * 90) + '%', bottom: (Math.random() * 20) + '%', 
+                    fontSize: '3vw', opacity: 0.5, transform: `rotate(${Math.random()*360}deg)`
+                });
+            }
+        }  
 
         function createEl(cls, txt, styles) {  
             const div = document.createElement('div');  
-            div.className = cls;  
+            div.className = 'element ' + cls;  
             if (txt) div.innerText = txt;  
             Object.assign(div.style, styles);  
             document.getElementById('canvas').appendChild(div);  
             return div;  
         }  
 
-        function createImage() {
-            const src = imageLibrary[Math.floor(Math.random() * imageLibrary.length)];
+        function createLine() {
+            const line = document.createElement('div');
+            line.className = 'line';
+            const isVert = Math.random() > 0.5;
+            const thick = (Math.random() * 3 + 1) + 'px';
+            if (isVert) {
+                line.style.width = thick; line.style.height = '100vh';
+                line.style.left = (Math.random() * 100) + '%';
+            } else {
+                line.style.width = '100vw'; line.style.height = thick;
+                line.style.top = (Math.random() * 100) + '%';
+            }
+            document.getElementById('canvas').appendChild(line);
+        }
+
+        function createImage(src) {
             const container = document.createElement('div');
             container.className = 'image-container';
-            container.style.width = (Math.random() * 40 + 20) + '%';
-            container.style.top = (Math.random() * 70) + '%';
-            container.style.left = (Math.random() * 60) + '%';
+            const size = (Math.random() * 30 + 10);
+            container.style.width = size + '%';
+            container.style.top = (Math.random() * 80) + '%';
+            container.style.left = (Math.random() * 80) + '%';
+            container.style.zIndex = Math.floor(Math.random() * 50);
             const img = document.createElement('img');
             img.src = src;
             container.appendChild(img);
