@@ -192,3 +192,51 @@
             txt.split(' ').forEach(word => {
                 const span = document.createElement('span');
                 span.innerText = word + ' ';
+                span.className = fontClasses[Math.floor(Math.random()*8)];
+                block.appendChild(span);
+            });
+            return block;
+        }
+
+        function createEl(cls, txt, styles) {  
+            const div = document.createElement('div');  
+            div.className = 'element ' + cls;  
+            if (txt) div.innerText = txt;  
+            Object.assign(div.style, styles);  
+            document.getElementById('canvas').appendChild(div);  
+            return div;  
+        }  
+
+        function createLine(isGrid) {
+            const line = document.createElement('div');
+            line.className = 'line element';
+            const isVert = Math.random() > 0.5;
+            const thick = Math.random() > 0.8 ? '5px' : '1px';
+            if (isVert) {
+                line.style.width = thick; line.style.height = '100vh';
+                line.style.left = isGrid ? (Math.floor(Math.random()*12)*(100/12)) + '%' : Math.random()*100 + '%';
+            } else {
+                line.style.width = '100vw'; line.style.height = thick;
+                line.style.top = isGrid ? (Math.floor(Math.random()*16)*(100/16)) + '%' : Math.random()*100 + '%';
+            }
+            document.getElementById('canvas').appendChild(line);
+            return line;
+        }
+
+        function createImage(src, isBig) {
+            const container = document.createElement('div');
+            container.className = 'image-container element';
+            container.style.width = isBig ? (Math.random()*40 + 50) + '%' : (Math.random()*20 + 10) + '%';
+            container.style.top = Math.random()*50 + '%';
+            container.style.left = Math.random()*50 + '%';
+            const img = document.createElement('img');
+            img.src = src;
+            container.appendChild(img);
+            document.getElementById('canvas').appendChild(container);
+            return container;
+        }
+
+        window.onload = sequentialSpawn;  
+    </script>  
+</body>  
+</html>
