@@ -3,7 +3,7 @@
 <head>  
     <meta charset="UTF-8">  
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">  
-    <title>ORACLE.P | ECAL SUBSTRATE</title>  
+    <title>ORACLE.P | KINDLE EDITION</title>  
     <style>  
         body, html {  
             margin: 0; padding: 0; width: 100%; height: 100%;  
@@ -17,7 +17,9 @@
         body.white-mode .line { background-color: #000; }
         
         #canvas { position: relative; width: 100vw; height: 100vh; overflow: hidden; }  
-        .element { position: absolute; word-wrap: break-word; line-height: 0.75; opacity: 0; transition: opacity 0.2s; }  
+        
+        /* Базовый стиль элементов */
+        .element { position: absolute; word-wrap: break-word; line-height: 0.75; opacity: 0; transition: opacity 0.3s ease; }  
         .visible { opacity: 1 !important; }
 
         /* 8 ШРИФТОВЫХ СТИЛЕЙ */  
@@ -28,27 +30,27 @@
         .f5 { font-family: "Arial Black", sans-serif; font-weight: 900; transform: scaleX(0.7); transform-origin: left; } 
         .f6 { font-family: "Helvetica", sans-serif; font-weight: 900; } 
         .f7 { font-family: "Courier", monospace; font-weight: 700; border-bottom: 2px solid currentColor; } 
-        .f8 { font-family: "Arial Black", sans-serif; font-weight: 900; letter-spacing: 15px; transform: scaleX(1.6); transform-origin: left; } /* EXTRA WIDE */
+        .f8 { font-family: "Arial Black", sans-serif; font-weight: 900; letter-spacing: 12px; transform: scaleX(1.4); transform-origin: left; } /* WIDE */
 
-        /* P как подложка: Огромная, серая, справа */  
+        /* Статичная P: Слева, уменьшена, прозрачный фон */  
         .giant-p { 
-            font-size: 75vh; font-weight: 900; z-index: 0; 
-            position: absolute; top: 10%; right: -10%; 
-            color: #333; /* Не белый, глубокий серый */
-            opacity: 0.25; pointer-events: none; line-height: 0.6;
+            font-size: 45vh; font-weight: 900; z-index: 0; 
+            position: absolute; top: 2%; left: -3%; 
+            opacity: 0.15; pointer-events: none; line-height: 0.7;
+            transform: none !important;
         }  
-        body.white-mode .giant-p { color: #ccc; }
         
-        .line { position: absolute; background-color: rgba(255,255,255,0.4); z-index: 1; }
+        .line { position: absolute; background-color: rgba(255,255,255,0.3); z-index: 1; }
         .image-container { position: absolute; z-index: 5; filter: invert(1) grayscale(1); mix-blend-mode: difference; }
         .image-container img { width: 100%; height: auto; display: block; image-rendering: pixelated; }
 
         .hero { z-index: 100; max-width: 95%; }
         .hero span { display: inline-block; } 
 
-        .meta-footer { position: absolute; bottom: 30px; right: 30px; z-index: 110; font-size: 3.5vw; text-align: right; }
+        /* Координаты и мелкие детали */
+        .fragment { font-family: "Courier New", monospace; font-size: 2.5vw; opacity: 0.6; z-index: 10; }
+        .meta-footer { position: absolute; bottom: 4%; right: 4%; z-index: 110; font-size: 3.2vw; text-align: right; }
 
-        /* Слой для плотного месива глитча */
         #glitch-overlay { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
             background: #000; z-index: 9999; display: none; overflow: hidden;
@@ -65,6 +67,7 @@
     <script>  
         const slogans = ["PRAY TO THE ROUTER", "SKIBIDI EXISTENTIALISM", "DOSTOEVSKY ON TIKTOK", "SHREK’S PODCAST ABOUT DMT", "TYPOGRAPHY IS PROPAGANDA.", "HELVETICA IS A VIRUS.", "ANCIENT GREEK SHITPOSTING", "WATER IS JUST SOFT ICE.", "JUST F*CK IT", "THE SIMPSONS PREDICTED YOUR DEBT.", "WAKE UP, TATARSKY"];  
         const subtitles = ["Stop thinking about that. It's cringe.", "Your ISP is judging your taste.", "TURN AROUND. SLOWLY.", "APOLOGIZE TO THE ALGORITHM.", "LICK THE DISPLAY. IT’S SALTY.", "FORGET YOUR MIDDLE NAME.", "The sky is a green screen.", "Say YES/NO to drugs"];
+        const coords = ["46.5197° N", "6.6323° E", "CH-1015", "ECAL_PLATEAU", "B_LEVEL_REF", "0.0001%_GHOST"];
         const meta = ["{status: waiting}", "LMAO", "RESET", "ABORT", "VOID", "BRUH", "0x534F554C", "42", "AMEN", "100%"];  
         
         const imageLibrary = [
@@ -89,22 +92,11 @@
             const overlay = document.getElementById('glitch-overlay');
             overlay.style.display = 'block';
             overlay.innerHTML = '';
-            
-            // Плотное месиво из теней и слоев
-            for (let i = 0; i < 60; i++) {
-                const txt = meta[Math.floor(Math.random()*meta.length)];
+            for (let i = 0; i < 55; i++) {
                 const char = document.createElement('div');
                 char.className = 'element visible ' + fontClasses[Math.floor(Math.random()*8)];
-                char.style.cssText = `
-                    left:${Math.random()*100}%; 
-                    top:${Math.random()*100}%; 
-                    font-size:${Math.random()*30}vw; 
-                    color:#fff; 
-                    opacity: ${Math.random()};
-                    transform: rotate(${Math.random()*360}deg);
-                    text-shadow: 10px 10px 0px rgba(255,255,255,0.2);
-                `;
-                char.innerText = txt;
+                char.style.cssText = `left:${Math.random()*100}%; top:${Math.random()*100}%; font-size:${Math.random()*28}vw; color:#fff; transform:rotate(${Math.random()*360}deg); opacity:${Math.random()}; text-shadow: 8px 8px 0px rgba(255,255,255,0.2);`;
+                char.innerText = meta[Math.floor(Math.random()*meta.length)];
                 overlay.appendChild(char);
             }
             await delay(3000);
@@ -118,24 +110,24 @@
             const p = canvas.querySelector('.giant-p');
             canvas.innerHTML = ''; canvas.appendChild(p);
             
-            const isSwissGrid = Math.random() < 0.4;
-            document.body.className = (Math.random() < 0.15) ? 'white-mode' : '';
+            const isSwissGrid = Math.random() < 0.35;
+            document.body.className = (Math.random() < 0.1) ? 'white-mode' : '';
 
-            // Линии
-            const lineCount = isSwissGrid ? 14 : Math.floor(Math.random()*6);
+            // 1. Линии
+            const lineCount = isSwissGrid ? 12 : Math.floor(Math.random()*6);
             for (let i = 0; i < lineCount; i++) {
                 const line = createLine(isSwissGrid);
-                await delay(20);
+                await delay(25);
                 line.classList.add('visible');
             }
 
-            // Композиция
+            // 2. Композиция
             const layoutMode = Math.random();
-            if (layoutMode < 0.3) await layoutCentered();
-            else if (layoutMode < 0.6) await layoutStructured();
-            else await layoutRandom();
+            if (layoutMode < 0.2) await layoutCentered();
+            else if (layoutMode < 0.5) await layoutSwiss();
+            else await layoutChaos();
 
-            // Статичный футер
+            // 3. Футер
             const footer = createEl('meta-footer f-mono', meta[Math.floor(Math.random()*meta.length)], {});
             await delay(50);
             footer.classList.add('visible');
@@ -149,44 +141,43 @@
             block.classList.add('visible');
         }
 
-        async function layoutStructured() {
-            const t1 = createTextBlock(slogans[Math.floor(Math.random()*slogans.length)], true, { left: '5%', top: '15%' });
+        async function layoutSwiss() {
+            // Математически выверенная структура
+            const t1 = createTextBlock(slogans[Math.floor(Math.random()*slogans.length)], true, { left: '8%', top: '15%' });
             t1.classList.add('visible');
             await delay(200);
             if (Math.random() > 0.4) {
                 const img = createImage(imageLibrary[Math.floor(Math.random()*imageLibrary.length)], true);
-                img.style.left = '15%'; img.style.top = '30%';
+                img.style.left = '10%'; img.style.top = '35%';
                 img.classList.add('visible');
-                await delay(200);
             }
-            const t2 = createTextBlock(subtitles[Math.floor(Math.random()*subtitles.length)], false, { right: '5%', top: '75%', textAlign: 'right' });
-            t2.classList.add('visible');
+            const c1 = createEl('fragment', coords[Math.floor(Math.random()*coords.length)], { right: '8%', top: '20%' });
+            await delay(100);
+            c1.classList.add('visible');
         }
 
-        async function layoutRandom() {
+        async function layoutChaos() {
             const layers = Math.floor(Math.random()*3) + 1;
             for(let i=0; i<layers; i++) {
                 const isHero = i === 0;
                 const txt = isHero ? slogans[Math.floor(Math.random()*slogans.length)] : subtitles[Math.floor(Math.random()*subtitles.length)];
-                const isVertical = Math.random() < 0.25;
+                const isVertical = Math.random() < 0.2;
                 const block = createTextBlock(txt, isHero, {
-                    left: Math.random()*40+5 + '%', 
-                    top: Math.random()*60+10 + '%',
-                    transform: isVertical ? 'rotate(90deg)' : `rotate(${Math.random()*4-2}deg)`
+                    left: Math.random()*50+5 + '%', top: Math.random()*60+10 + '%',
+                    transform: isVertical ? 'rotate(90deg)' : `rotate(${Math.random()*6-3}deg)`
                 });
                 await delay(150);
                 block.classList.add('visible');
             }
-            if (Math.random() < 0.3) {
-                const img = createImage(imageLibrary[Math.floor(Math.random()*imageLibrary.length)], Math.random() > 0.5);
+            if (Math.random() < 0.35) {
+                const img = createImage(imageLibrary[Math.floor(Math.random()*imageLibrary.length)], Math.random() > 0.6);
                 img.classList.add('visible');
             }
         }
 
         function createTextBlock(txt, isHero, styles) {
             const block = createEl(isHero ? 'hero' : 'sub-hero', '', styles);
-            // Варьируем масштаб заголовка от длины текста
-            const baseSize = isHero ? (txt.length > 15 ? 10 : 16) : (Math.random()*3 + 4);
+            const baseSize = isHero ? (txt.length > 15 ? 10 : 15) : (Math.random()*3 + 4.5);
             block.style.fontSize = baseSize + 'vw';
             
             txt.split(' ').forEach(word => {
@@ -211,7 +202,7 @@
             const line = document.createElement('div');
             line.className = 'line element';
             const isVert = Math.random() > 0.5;
-            const thick = Math.random() > 0.8 ? '5px' : '1px';
+            const thick = Math.random() > 0.85 ? '5px' : '1px';
             if (isVert) {
                 line.style.width = thick; line.style.height = '100vh';
                 line.style.left = isGrid ? (Math.floor(Math.random()*12)*(100/12)) + '%' : Math.random()*100 + '%';
@@ -226,9 +217,10 @@
         function createImage(src, isBig) {
             const container = document.createElement('div');
             container.className = 'image-container element';
-            container.style.width = isBig ? (Math.random()*40 + 50) + '%' : (Math.random()*20 + 10) + '%';
+            container.style.width = isBig ? (Math.random()*40 + 40) + '%' : (Math.random()*20 + 10) + '%';
             container.style.top = Math.random()*50 + '%';
             container.style.left = Math.random()*50 + '%';
+            if (Math.random() < 0.2) container.style.transform = `rotate(${Math.random()*10-5}deg)`;
             const img = document.createElement('img');
             img.src = src;
             container.appendChild(img);
