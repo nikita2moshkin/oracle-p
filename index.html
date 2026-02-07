@@ -20,7 +20,6 @@
         .element { position: absolute; word-wrap: break-word; line-height: 0.85; opacity: 0; transition: opacity 0.5s ease-in-out; }  
         .visible { opacity: 1 !important; }
 
-        /* ТИПОГРАФИКА ECAL */  
         .f1 { font-family: "Impact", sans-serif; font-weight: 800; letter-spacing: -0.02em; } 
         .f2 { font-family: "Helvetica Neue", sans-serif; font-weight: 200; letter-spacing: 0.05em; } 
         .f3 { font-family: "Georgia", serif; font-style: italic; text-transform: none; } 
@@ -30,7 +29,6 @@
         .f7 { font-family: "Courier", monospace; font-weight: 700; border-bottom: 0.1em solid currentColor; } 
         .f8 { font-family: "Arial Black", sans-serif; font-weight: 900; letter-spacing: 0.1em; transform: scaleX(1.1); transform-origin: left; } 
 
-        /* ЦЕНТРАЛЬНЫЙ СИМВОЛ */
         .giant-bg { 
             font-size: 85vh; font-weight: 900; position: absolute;
             top: 50%; left: 50%; transform: translate(-50%, -50%);
@@ -38,11 +36,8 @@
         }
         body.white-mode .giant-bg { color: #ddd; }
 
-        /* ГРАФИКА */
         .line { position: absolute; background-color: rgba(255,255,255,0.15); z-index: 1; }
         .image-container { position: absolute; z-index: 5; filter: grayscale(1) contrast(1.2); mix-blend-mode: difference; }
-        
-        /* СТИЛЬ ДЛЯ ТЕНЕВЫХ ФОНОВЫХ КАРТИНОК */
         .image-shadow { opacity: 0.12 !important; filter: grayscale(1) blur(1px); mix-blend-mode: normal; z-index: -1; }
         .image-container img { width: 100%; height: auto; display: block; }
 
@@ -54,16 +49,43 @@
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
             background: #000; z-index: 9999; display: none; overflow: hidden;
         }
+
+        /* ИНДИКАТОР СЧЕТЧИКА */
+        .counter-container { 
+            position: fixed; bottom: 30px; right: 30px; 
+            text-align: right; z-index: 1000; pointer-events: none;
+            font-family: "Helvetica", sans-serif; 
+        }
+        #count-num { font-size: 2vw; font-weight: 900; line-height: 1; }
+        #count-phrase { font-size: 0.7vw; opacity: 0; transition: opacity 0.5s; display: block; margin-top: 5px; }
     </style>  
-</head> 
-    
+</head>  
 <body onclick="handleInteraction()">  
+
+    <div class="counter-container">
+        <div id="count-num">0000</div>
+        <div id="count-phrase">KEEP SCROLLING</div>
+    </div>
 
     <div id="glitch-overlay"></div>
     <div id="canvas"></div>  
 
     <script>  
-        // ТЕКСТЫ ОБНОВЛЕНЫ
+        let totalClicks = 0;
+        const phraseLib = ["KEEP SCROLLING", "DON'T STOP", "STAY TUNED"];
+        
+        function updateCounter() {
+            totalClicks++;
+            const num = document.getElementById('count-num');
+            const phrase = document.getElementById('count-phrase');
+            num.innerText = totalClicks.toString().padStart(4, '0');
+            if (totalClicks % 5 === 0) {
+                phrase.innerText = phraseLib[Math.floor(Math.random() * phraseLib.length)];
+                phrase.style.opacity = '1';
+                setTimeout(() => { phrase.style.opacity = '0'; }, 2000);
+            }
+        }
+
         const slogans = ["PRAY TO THE ROUTER", "SKIBIDI EXISTENTIALISM", "DOSTOEVSKY ON TIKTOK", "SHREK’S PODCAST ABOUT DMT", "TYPOGRAPHY IS PROPAGANDA.", "HELVETICA IS A VIRUS.", "ANCIENT GREEK SHITPOSTING", "WATER IS JUST SOFT ICE.", "JUST F*CK IT", "THE SIMPSONS PREDICTED YOUR DEBT.", "WAKE UP, TATARSKY"]; 
         const subtitles = ["Stop thinking about that. It's cringe.", "Your ISP is judging your taste.", "TURN AROUND. SLOWLY. (prank)", "APOLOGIZE TO THE ALGORITHM.", "LICK THE DISPLAY. IT’S SALTY.", "the algorithm knows what you did in 2014", "FORGET YOUR MIDDLE NAME.", "Are you proud of your cookies?", "[exporting your childhood trauma to Excel]", "The sky is a green screen.", "Say YES/NO to drugs", "Error: reality not found"];
         const math = ["E = mc²", "∇ × E = -∂B/∂t", "iℏ ∂/∂t Ψ = ĤΨ", "Rμν - 1/2Rgμν = Tμν", "S = k ln W", "λ = h/p"];
@@ -92,9 +114,9 @@
         ];
 
         let isLocked = false;
-let oracleIndex = 0;
-const oracleSequence = ["O", "R", "A", "C", "L", "E", "-", "P"];
-const fontClasses = ["f1", "f2", "f3", "f4", "f5", "f6", "f7", "f8"];
+        let oracleIndex = 0;
+        const oracleSequence = ["O", "R", "A", "C", "L", "E", "-", "P"];
+        const fontClasses = ["f1", "f2", "f3", "f4", "f5", "f6", "f7", "f8"];
         const delay = ms => new Promise(res => setTimeout(res, ms));
 
         function handleInteraction() {
@@ -118,34 +140,29 @@ const fontClasses = ["f1", "f2", "f3", "f4", "f5", "f6", "f7", "f8"];
         }
 
         async function sequentialSpawn() {  
+            updateCounter();
             const canvas = document.getElementById('canvas'); 
             canvas.innerHTML = ''; 
             const isChaos = Math.random() < 0.4;
             document.body.className = (Math.random() < 0.15) ? 'white-mode' : '';
 
-            // 1. ЦЕНТРАЛЬНЫЙ СИМВОЛ (O-R-A-C-L-E-P)
-const centerChar = oracleSequence[oracleIndex];
-oracleIndex = (oracleIndex + 1) % oracleSequence.length;
-createEl('giant-bg f6 visible', centerChar, {});
+            const centerChar = oracleSequence[oracleIndex];
+            oracleIndex = (oracleIndex + 1) % oracleSequence.length;
+            createEl('giant-bg f6 visible', centerChar, {});
 
-            // 2. ФОНОВАЯ ТЕНЬ (Большая картинка с низкой прозрачностью)
-            // --- ССЫЛКА №2: ФОНОВАЯ ВСПЫШКА (10% ШАНС) ---
             if (Math.random() < 0.10) {
                 const flashSrc = imageLibrary[Math.floor(Math.random()*imageLibrary.length)];
                 if(flashSrc) {
                     const flashImg = createImage(flashSrc, 'shadow');
-                    flashImg.style.opacity = '0.9'; // Яркая вспышка
-                    flashImg.classList.add('visible');
-                    setTimeout(() => { flashImg.style.opacity = '0.12'; }, 150); // Быстрый уход в тень
+                    flashImg.style.opacity = '0.9'; flashImg.classList.add('visible');
+                    setTimeout(() => { flashImg.style.opacity = '0.12'; }, 150);
                 }
             } else if (Math.random() < 0.3) {
-                // Обычная фоновая тень
                 const shadowImg = createImage(imageLibrary[Math.floor(Math.random()*imageLibrary.length)], 'shadow');
                 shadowImg.classList.add('visible');
             }
 
-            // 3. ЛИНИИ И ФОРМУЛЫ
-            const lineCount = isChaos ? 2 : 5;
+            const lineCount = isChaos ? 3 : 6;
             for (let i = 0; i < lineCount; i++) createLine(!isChaos).classList.add('visible');
             
             if (!isChaos) {
@@ -156,16 +173,16 @@ createEl('giant-bg f6 visible', centerChar, {});
                 }
             }
 
-            // 4. КОМПОЗИЦИЯ ТЕКСТА
-            if (isChaos) await layoutChaos(); else await layoutSwiss();
+            const mode = Math.random();
+            if (mode < 0.3) await layoutSwiss();
+            else if (mode < 0.6) await layoutChaos();
+            else if (mode < 0.8) await layoutGrid();
+            else await layoutMinimal();
         }  
 
         async function layoutSwiss() {
-            // Текст по краям
             createEl('edge-text f6 visible', slogans[Math.floor(Math.random()*slogans.length)], { top: '0', left: '0' });
             createEl('edge-text f2 vertical visible', subtitles[Math.floor(Math.random()*subtitles.length)], { right: '0', top: '0' });
-
-            // ШАНС НА ВЕРТИКАЛЬНЫЙ БЛОК СПРАВА (Швейцарский стиль)
             const hasVerticalRight = Math.random() < 0.4;
             if (hasVerticalRight) {
                 const vBlock = createTextBlock(slogans[Math.floor(Math.random()*slogans.length)], true, { 
@@ -173,16 +190,12 @@ createEl('giant-bg f6 visible', centerChar, {});
                 });
                 vBlock.classList.add('visible');
             }
-
             const block = createTextBlock(slogans[Math.floor(Math.random()*slogans.length)], true, { left: '10%', top: '40%' });
             block.classList.add('visible');
-            
             if (Math.random() > 0.5) {
                 const img = createImage(imageLibrary[Math.floor(Math.random()*imageLibrary.length)], 'normal');
-                // Если справа есть текст, смещаем картинку чуть левее
                 img.style.right = hasVerticalRight ? '20%' : '10%'; 
-                img.style.top = '15%';
-                img.classList.add('visible');
+                img.style.top = '15%'; img.classList.add('visible');
             }
         }
 
@@ -195,7 +208,6 @@ createEl('giant-bg f6 visible', centerChar, {});
                     transform: `rotate(${(Math.random()-0.5)*20}deg)`, zIndex: 10
                 });
                 block.classList.add('visible');
-                
                 if (Math.random() > 0.6) {
                     const type = Math.random() > 0.7 ? 'big' : 'normal';
                     createImage(imageLibrary[Math.floor(Math.random()*imageLibrary.length)], type).classList.add('visible');
@@ -204,11 +216,26 @@ createEl('giant-bg f6 visible', centerChar, {});
             }
         }
 
+        async function layoutGrid() {
+            createEl('edge-text f6 visible', slogans[Math.floor(Math.random()*slogans.length)], { top: '10%', left: '10%' });
+            createEl('edge-text f4 visible', subtitles[Math.floor(Math.random()*subtitles.length)], { bottom: '10%', left: '10%' });
+            const img = createImage(imageLibrary[Math.floor(Math.random()*imageLibrary.length)], 'big');
+            img.style.left = '50%'; img.style.top = '20%'; img.classList.add('visible');
+            const block = createTextBlock(meta[Math.floor(Math.random()*meta.length)], true, { right: '10%', bottom: '20%' });
+            block.classList.add('visible');
+        }
+
+        async function layoutMinimal() {
+            createLine(false); 
+            const txt = slogans[Math.floor(Math.random()*slogans.length)];
+            const block = createTextBlock(txt.split(' ')[0], true, { left: '50%', top: '50%', transform: 'translate(-50%, -50%)' });
+            block.classList.add('visible');
+        }
+
         function createTextBlock(txt, isHero, styles) {
             const block = createEl(isHero ? 'hero' : 'sub-hero', '', styles);
             let baseSize = isHero ? (txt.length > 15 ? 8 : 12) : (Math.random()*2 + 3);
             if (isHero && Math.random() < 0.2) baseSize = 18; 
-            
             block.style.fontSize = baseSize + 'vw';
             txt.split(' ').forEach(word => {
                 const span = document.createElement('span');
@@ -230,12 +257,10 @@ createEl('giant-bg f6 visible', centerChar, {});
 
         function createLine(isGrid) {
             const line = document.createElement('div');
-            line.className = 'line element';
+            line.className = 'line element visible';
             const isVert = Math.random() > 0.5;
-            
-            // Случайная толщина: 1px или более жирная (до 6px) для красоты
-            const thickness = Math.random() < 0.25 ? (Math.random() * 4 + 2) + 'px' : '1px';
-            
+            const weights = ['1px', '1px', '2px', '5px', '15px'];
+            const thickness = weights[Math.floor(Math.random() * weights.length)];
             if (isVert) {
                 line.style.width = thickness; line.style.height = '100vh';
                 line.style.left = isGrid ? (Math.floor(Math.random()*10)*10) + '%' : Math.random()*100 + '%';
@@ -243,35 +268,23 @@ createEl('giant-bg f6 visible', centerChar, {});
                 line.style.width = '100vw'; line.style.height = thickness;
                 line.style.top = isGrid ? (Math.floor(Math.random()*10)*10) + '%' : Math.random()*100 + '%';
             }
-            
             document.getElementById('canvas').appendChild(line);
-
-            // ОЧИСТКА: Линии исчезают сами через 1-3 секунды
-            setTimeout(() => {
-                line.style.opacity = '0';
-                setTimeout(() => line.remove(), 500);
-            }, 800 + Math.random() * 2000);
-
             return line;
         }
 
         function createImage(src, type) {
             const container = document.createElement('div');
             container.className = 'image-container element';
-            
             if (type === 'shadow') {
                 container.classList.add('image-shadow');
                 container.style.width = '100vw'; container.style.left = '0'; container.style.top = '0';
             } else if (type === 'big') {
                 container.style.width = (Math.random()*30 + 40) + '%';
-                container.style.top = Math.random()*40 + '%';
-                container.style.left = Math.random()*40 + '%';
+                container.style.top = Math.random()*40 + '%'; container.style.left = Math.random()*40 + '%';
             } else {
                 container.style.width = (Math.random()*15 + 10) + '%';
-                container.style.top = Math.random()*60 + '%';
-                container.style.left = Math.random()*60 + '%';
+                container.style.top = Math.random()*60 + '%'; container.style.left = Math.random()*60 + '%';
             }
-            
             const img = document.createElement('img');
             img.src = src;
             container.appendChild(img);
