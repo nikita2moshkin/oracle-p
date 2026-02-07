@@ -55,7 +55,8 @@
             background: #000; z-index: 9999; display: none; overflow: hidden;
         }
     </style>  
-</head>  
+</head> 
+    
 <body onclick="handleInteraction()">  
 
     <div id="glitch-overlay"></div>
@@ -86,13 +87,14 @@
             'https://reference.wolfram.com/language/ref/Files/SphericalPlot3D.en/O_30.png',
             'https://png.pngtree.com/element_pic/16/11/22/825255d6e652ad7777602cdd4e52f4fe.png',
             'https://pngimg.com/d/cow_PNG50583.png',
-            'https://experiencelife.lifetime.life/wp-content/uploads/2021/02/Talking-Trash-e1746736243231.jpg',
             'https://uweed.ch/wp-content/uploads/2025/07/slow-weed-durban-poison-greenhouse-uweed-cbd-shop-02.png',
             'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Illuminati_triangle_eye.png/960px-Illuminati_triangle_eye.png'
         ];
 
         let isLocked = false;
-        const fontClasses = ["f1", "f2", "f3", "f4", "f5", "f6", "f7", "f8"];
+let oracleIndex = 0;
+const oracleSequence = ["O", "R", "A", "C", "L", "E", "-", "P"];
+const fontClasses = ["f1", "f2", "f3", "f4", "f5", "f6", "f7", "f8"];
         const delay = ms => new Promise(res => setTimeout(res, ms));
 
         function handleInteraction() {
@@ -121,12 +123,23 @@
             const isChaos = Math.random() < 0.4;
             document.body.className = (Math.random() < 0.15) ? 'white-mode' : '';
 
-            // 1. ЦЕНТРАЛЬНЫЙ СИМВОЛ (P или ?)
-            const centerChar = Math.random() < 0.1 ? "?" : "P";
-            createEl('giant-bg f6 visible', centerChar, {});
+            // 1. ЦЕНТРАЛЬНЫЙ СИМВОЛ (O-R-A-C-L-E-P)
+const centerChar = oracleSequence[oracleIndex];
+oracleIndex = (oracleIndex + 1) % oracleSequence.length;
+createEl('giant-bg f6 visible', centerChar, {});
 
             // 2. ФОНОВАЯ ТЕНЬ (Большая картинка с низкой прозрачностью)
-            if (Math.random() < 0.3) {
+            // --- ССЫЛКА №2: ФОНОВАЯ ВСПЫШКА (10% ШАНС) ---
+            if (Math.random() < 0.10) {
+                const flashSrc = imageLibrary[Math.floor(Math.random()*imageLibrary.length)];
+                if(flashSrc) {
+                    const flashImg = createImage(flashSrc, 'shadow');
+                    flashImg.style.opacity = '0.9'; // Яркая вспышка
+                    flashImg.classList.add('visible');
+                    setTimeout(() => { flashImg.style.opacity = '0.12'; }, 150); // Быстрый уход в тень
+                }
+            } else if (Math.random() < 0.3) {
+                // Обычная фоновая тень
                 const shadowImg = createImage(imageLibrary[Math.floor(Math.random()*imageLibrary.length)], 'shadow');
                 shadowImg.classList.add('visible');
             }
@@ -152,12 +165,23 @@
             createEl('edge-text f6 visible', slogans[Math.floor(Math.random()*slogans.length)], { top: '0', left: '0' });
             createEl('edge-text f2 vertical visible', subtitles[Math.floor(Math.random()*subtitles.length)], { right: '0', top: '0' });
 
+            // ШАНС НА ВЕРТИКАЛЬНЫЙ БЛОК СПРАВА (Швейцарский стиль)
+            const hasVerticalRight = Math.random() < 0.4;
+            if (hasVerticalRight) {
+                const vBlock = createTextBlock(slogans[Math.floor(Math.random()*slogans.length)], true, { 
+                    right: '2%', top: '5%', writingMode: 'vertical-rl', transform: 'rotate(180deg)', height: '90vh'
+                });
+                vBlock.classList.add('visible');
+            }
+
             const block = createTextBlock(slogans[Math.floor(Math.random()*slogans.length)], true, { left: '10%', top: '40%' });
             block.classList.add('visible');
             
             if (Math.random() > 0.5) {
                 const img = createImage(imageLibrary[Math.floor(Math.random()*imageLibrary.length)], 'normal');
-                img.style.right = '10%'; img.style.top = '15%';
+                // Если справа есть текст, смещаем картинку чуть левее
+                img.style.right = hasVerticalRight ? '20%' : '10%'; 
+                img.style.top = '15%';
                 img.classList.add('visible');
             }
         }
@@ -208,14 +232,26 @@
             const line = document.createElement('div');
             line.className = 'line element';
             const isVert = Math.random() > 0.5;
+            
+            // Случайная толщина: 1px или более жирная (до 6px) для красоты
+            const thickness = Math.random() < 0.25 ? (Math.random() * 4 + 2) + 'px' : '1px';
+            
             if (isVert) {
-                line.style.width = '1px'; line.style.height = '100vh';
+                line.style.width = thickness; line.style.height = '100vh';
                 line.style.left = isGrid ? (Math.floor(Math.random()*10)*10) + '%' : Math.random()*100 + '%';
             } else {
-                line.style.width = '100vw'; line.style.height = '1px';
+                line.style.width = '100vw'; line.style.height = thickness;
                 line.style.top = isGrid ? (Math.floor(Math.random()*10)*10) + '%' : Math.random()*100 + '%';
             }
+            
             document.getElementById('canvas').appendChild(line);
+
+            // ОЧИСТКА: Линии исчезают сами через 1-3 секунды
+            setTimeout(() => {
+                line.style.opacity = '0';
+                setTimeout(() => line.remove(), 500);
+            }, 800 + Math.random() * 2000);
+
             return line;
         }
 
