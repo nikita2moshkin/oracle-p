@@ -109,7 +109,6 @@
             'https://reference.wolfram.com/language/ref/Files/SphericalPlot3D.en/O_30.png',
             'https://png.pngtree.com/element_pic/16/11/22/825255d6e652ad7777602cdd4e52f4fe.png',
             'https://pngimg.com/d/cow_PNG50583.png',
-            'https://uweed.ch/wp-content/uploads/2025/07/slow-weed-durban-poison-greenhouse-uweed-cbd-shop-02.png',
             'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Illuminati_triangle_eye.png/960px-Illuminati_triangle_eye.png',
             'https://pngimg.com/d/eye_PNG35661.png',
             'https://www.pngarts.com/files/3/Crystal-Pyramid-PNG-Transparent-Image.png'
@@ -146,17 +145,32 @@
             const isChaos = Math.random() < 0.4;
             document.body.className = (Math.random() < 0.15) ? 'white-mode' : '';
 
-            // 1. ЦЕНТРАЛЬНЫЙ СИМВОЛ (Всегда P)
             createEl('giant-bg f6 visible', "P", {});
 
-            if (Math.random() < 0.10) {
+            // --- ФОНОВЫЕ ЭФФЕКТЫ (Мега-вспышка / Вспышка / Тень) ---
+            const bgRnd = Math.random();
+            if (bgRnd < 0.05) {
+                // 5% ШАНС: МЕГА-ВСПЫШКА (Огромная, растворяется)
+                const megaSrc = imageLibrary[Math.floor(Math.random()*imageLibrary.length)];
+                if(megaSrc) {
+                    const megaImg = createImage(megaSrc, 'mega-flash');
+                    // Делаем видимой сразу, потом запускаем долгое растворение
+                    requestAnimationFrame(() => {
+                        megaImg.classList.add('visible');
+                        setTimeout(() => { megaImg.style.opacity = '0'; }, 100);
+                        setTimeout(() => megaImg.remove(), 3500); // Удаляем после растворения
+                    });
+                }
+            } else if (bgRnd < 0.15) {
+                // 10% ШАНС: ОБЫЧНАЯ ВСПЫШКА (Быстрая, переходит в тень)
                 const flashSrc = imageLibrary[Math.floor(Math.random()*imageLibrary.length)];
                 if(flashSrc) {
                     const flashImg = createImage(flashSrc, 'shadow');
                     flashImg.style.opacity = '0.9'; flashImg.classList.add('visible');
                     setTimeout(() => { flashImg.style.opacity = '0.12'; }, 150);
                 }
-            } else if (Math.random() < 0.3) {
+            } else if (bgRnd < 0.4) {
+                // 25% ШАНС: ОБЫЧНАЯ ТЕНЬ
                 const shadowImg = createImage(imageLibrary[Math.floor(Math.random()*imageLibrary.length)], 'shadow');
                 shadowImg.classList.add('visible');
             }
@@ -172,11 +186,15 @@
                 }
             }
 
+            // ВЫБОР КОМПОЗИЦИИ (Теперь 7 вариантов)
             const mode = Math.random();
-            if (mode < 0.3) await layoutSwiss();
-            else if (mode < 0.6) await layoutChaos();
-            else if (mode < 0.8) await layoutGrid();
-            else await layoutMinimal();
+            if (mode < 0.2) await layoutSwiss();
+            else if (mode < 0.4) await layoutChaos();
+            else if (mode < 0.55) await layoutGrid();
+            else if (mode < 0.7) await layoutMinimal();
+            else if (mode < 0.8) await layoutBurst();   // Новая
+            else if (mode < 0.9) await layoutSplit();   // Новая
+            else await layoutWildcard();                // Новая (максимум рандома)
         }  
 
         async function layoutSwiss() {
@@ -231,6 +249,69 @@
             block.classList.add('visible');
         }
 
+        async function layoutBurst() {
+            // "Взрыв": Центральный текст и разлетающиеся мелкие элементы
+            const centerTxt = slogans[Math.floor(Math.random()*slogans.length)];
+            createTextBlock(centerTxt, true, { left: '50%', top: '50%', transform: 'translate(-50%, -50%)', zIndex: 20 }).classList.add('visible');
+            
+            for(let i=0; i<5; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const dist = Math.random() * 30 + 20;
+                const x = 50 + Math.cos(angle) * dist;
+                const y = 50 + Math.sin(angle) * dist;
+                createEl('element f7 visible', meta[Math.floor(Math.random()*meta.length)], {
+                    left: x+'%', top: y+'%', fontSize: '1vw', transform: `rotate(${angle}rad)`
+                });
+                await delay(50);
+            }
+        }
+
+        async function layoutSplit() {
+            // "Разделение": Экран делится пополам (вертикально или горизонтально)
+            const isVertSplit = Math.random() > 0.5;
+            
+            // Жирная разделительная линия
+            const splitLine = createLine(false);
+            splitLine.style.width = isVertSplit ? '10px' : '100vw';
+            splitLine.style.height = isVertSplit ? '100vh' : '10px';
+            splitLine.style.left = isVertSplit ? '50%' : '0';
+            splitLine.style.top = isVertSplit ? '0' : '50%';
+            if(isVertSplit) splitLine.style.transform = 'translateX(-50%)'; else splitLine.style.transform = 'translateY(-50%)';
+
+            // Контент по бокам
+            const txt = slogans[Math.floor(Math.random()*slogans.length)];
+            createTextBlock(txt, true, { 
+                left: isVertSplit ? '25%' : '50%', top: isVertSplit ? '50%' : '25%', 
+                transform: 'translate(-50%, -50%)', textAlign: 'center', maxWidth: '40%'
+            }).classList.add('visible');
+
+            const img = createImage(imageLibrary[Math.floor(Math.random()*imageLibrary.length)], 'normal');
+            img.style.left = isVertSplit ? '75%' : '50%'; img.style.top = isVertSplit ? '50%' : '75%';
+            img.style.transform = 'translate(-50%, -50%)';
+            img.classList.add('visible');
+        }
+
+        async function layoutWildcard() {
+            // "Дикая карта": Полный рандом количества и типов элементов
+            const count = Math.floor(Math.random() * 5) + 3; // От 3 до 7 элементов
+            for(let i=0; i<count; i++) {
+                if (Math.random() > 0.5) {
+                    // Текст
+                    const isHero = Math.random() > 0.7;
+                    const txt = isHero ? slogans[Math.floor(Math.random()*slogans.length)] : subtitles[Math.floor(Math.random()*subtitles.length)];
+                    createTextBlock(txt, isHero, {
+                        left: Math.random()*80+'%', top: Math.random()*80+'%',
+                        transform: `rotate(${(Math.random()-0.5)*90}deg)` // Сильный поворот
+                    }).classList.add('visible');
+                } else {
+                    // Картинка
+                    const type = Math.random() > 0.7 ? 'big' : 'normal';
+                    createImage(imageLibrary[Math.floor(Math.random()*imageLibrary.length)], type).classList.add('visible');
+                }
+                await delay(150); // Задержка появления для динамики
+            }
+        }
+
         function createTextBlock(txt, isHero, styles) {
             const block = createEl(isHero ? 'hero' : 'sub-hero', '', styles);
             let baseSize = isHero ? (txt.length > 15 ? 8 : 12) : (Math.random()*2 + 3);
@@ -274,9 +355,18 @@
         function createImage(src, type) {
             const container = document.createElement('div');
             container.className = 'image-container element';
+            
             if (type === 'shadow') {
                 container.classList.add('image-shadow');
                 container.style.width = '100vw'; container.style.left = '0'; container.style.top = '0';
+            } else if (type === 'mega-flash') {
+                // НОВЫЙ ТИП: Огромная, по центру, поверх всего, свое долгое затухание
+                container.style.width = '150vw'; container.style.height = '150vh';
+                container.style.left = '50%'; container.style.top = '50%';
+                container.style.transform = 'translate(-50%, -50%)';
+                container.style.zIndex = '50'; 
+                container.style.opacity = '1'; // Начинает яркой
+                container.style.transition = 'opacity 3s ease-out'; // Медленное растворение
             } else if (type === 'big') {
                 container.style.width = (Math.random()*30 + 40) + '%';
                 container.style.top = Math.random()*40 + '%'; container.style.left = Math.random()*40 + '%';
@@ -284,6 +374,7 @@
                 container.style.width = (Math.random()*15 + 10) + '%';
                 container.style.top = Math.random()*60 + '%'; container.style.left = Math.random()*60 + '%';
             }
+            
             const img = document.createElement('img');
             img.src = src;
             container.appendChild(img);
