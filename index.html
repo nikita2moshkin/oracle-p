@@ -58,20 +58,9 @@
         }
         #count-num { font-size: 2vw; font-weight: 900; line-height: 1; }
         #count-phrase { font-size: 0.7vw; opacity: 0; transition: opacity 0.5s; display: block; margin-top: 5px; }
-
-        /* АНИМАЦИЯ ТРЯСКИ */
-        @keyframes shake {
-            0% { transform: translate(0, 0); }
-            25% { transform: translate(5px, -5px); }
-            50% { transform: translate(-5px, 5px); }
-            75% { transform: translate(5px, 5px); }
-            100% { transform: translate(0, 0); }
-        }
-        .shaking { animation: shake 0.1s infinite; }
-        .white-flash { background-color: #fff !important; transition: background 0.2s; }
     </style>  
 </head>  
-<body onmousedown="startHold()" onmouseup="endHold()" ontouchstart="startHold()" ontouchend="endHold()" onclick="handleInteraction()">  
+<body onclick="handleInteraction()">  
 
     <div class="counter-container">
         <div id="count-num">0000</div>
@@ -83,8 +72,6 @@
 
     <script>  
         let totalClicks = 0;
-        let holdTimer;
-        let isResetting = false;
         const phraseLib = ["KEEP SCROLLING", "DON'T STOP", "STAY TUNED"];
         
         function updateCounter() {
@@ -97,33 +84,6 @@
                 phrase.style.opacity = '1';
                 setTimeout(() => { phrase.style.opacity = '0'; }, 2000);
             }
-        }
-
-        function startHold() {
-            if (isResetting) return;
-            holdTimer = setTimeout(async () => {
-                isResetting = true;
-                document.body.classList.add('shaking');
-                await delay(500);
-                document.body.classList.add('white-flash');
-                await delay(300);
-                resetSystem();
-            }, 3000);
-        }
-
-        function endHold() {
-            clearTimeout(holdTimer);
-            if (!isResetting) document.body.classList.remove('shaking');
-        }
-
-        function resetSystem() {
-            const canvas = document.getElementById('canvas');
-            canvas.innerHTML = '';
-            document.body.className = ''; 
-            totalClicks = 0;
-            document.getElementById('count-num').innerText = '0000';
-            createEl('giant-bg f6 visible', "P", {});
-            isResetting = false;
         }
 
         const slogans = [
@@ -167,6 +127,8 @@
             'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Dopamine-based-on-xtal-3D-bs-17.png/1280px-Dopamine-based-on-xtal-3D-bs-17.png',
             'https://www.coca-cola.com/content/dam/onexp/ch/de/brands/coca-cola/new-packshots-december-2024/transparent_background_cco_pet.png',
             'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Cube-h.svg/250px-Cube-h.svg.png',
+            'https://storage.googleapis.com/pod_public/1300/250576.png',
+            'https://upload.wikimedia.org/wikipedia/ru/5/5d/Ресурс-П.png',
             'https://reference.wolfram.com/language/ref/Files/SphericalPlot3D.en/O_30.png',
             'https://png.pngtree.com/element_pic/16/11/22/825255d6e652ad7777602cdd4e52f4fe.png',
             'https://pngimg.com/d/cow_PNG50583.png',
@@ -180,7 +142,7 @@
         const delay = ms => new Promise(res => setTimeout(res, ms));
 
         function handleInteraction() {
-            if (isLocked || isResetting) return;
+            if (isLocked) return;
             if (Math.random() < 0.04) triggerHardGlitch();
             else sequentialSpawn();
         }
@@ -243,13 +205,12 @@
             }
 
             const mode = Math.random();
-            if (mode < 0.15) await layoutSwiss();
-            else if (mode < 0.30) await layoutChaos();
-            else if (mode < 0.45) await layoutGrid();
-            else if (mode < 0.60) await layoutMinimal();
-            else if (mode < 0.75) await layoutBurst();
-            else if (mode < 0.85) await layoutSplit();
-            else if (mode < 0.95) await layoutColumns(); // Новая композиция
+            if (mode < 0.2) await layoutSwiss();
+            else if (mode < 0.4) await layoutChaos();
+            else if (mode < 0.55) await layoutGrid();
+            else if (mode < 0.7) await layoutMinimal();
+            else if (mode < 0.8) await layoutBurst();
+            else if (mode < 0.9) await layoutSplit();
             else await layoutWildcard();
         }  
 
@@ -336,20 +297,6 @@
             const img = createImage(imageLibrary[Math.floor(Math.random()*imageLibrary.length)], 'normal');
             img.style.left = isVertSplit ? '75%' : '50%'; img.style.top = isVertSplit ? '50%' : '75%';
             img.style.transform = 'translate(-50%, -50%)'; img.classList.add('visible');
-        }
-
-        async function layoutColumns() {
-            const colWidth = 33;
-            for (let i = 0; i < 3; i++) {
-                const txt = subtitles[Math.floor(Math.random()*subtitles.length)];
-                createEl('element f4 visible', txt, {
-                    left: (i * colWidth + 5) + '%',
-                    top: '10%', width: '25%', fontSize: '1vw', opacity: 0.6, lineHeight: '1.5'
-                });
-                if (Math.random() > 0.5) createLine(false).style.left = (i * colWidth + colWidth) + '%';
-            }
-            const mainTxt = slogans[Math.floor(Math.random()*slogans.length)];
-            createTextBlock(mainTxt, true, { left: '10%', bottom: '15%' }).classList.add('visible');
         }
 
         async function layoutWildcard() {
