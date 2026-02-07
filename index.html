@@ -33,6 +33,7 @@
             font-size: 85vh; font-weight: 900; position: absolute;
             top: 50%; left: 50%; transform: translate(-50%, -50%);
             color: #222; opacity: 0.18; z-index: 0; pointer-events: none;
+            transition: none !important; 
         }
         body.white-mode .giant-bg { color: #ddd; }
 
@@ -50,7 +51,6 @@
             background: #000; z-index: 9999; display: none; overflow: hidden;
         }
 
-        /* ИНДИКАТОР СЧЕТЧИКА */
         .counter-container { 
             position: fixed; bottom: 30px; right: 30px; 
             text-align: right; z-index: 1000; pointer-events: none;
@@ -110,12 +110,12 @@
             'https://png.pngtree.com/element_pic/16/11/22/825255d6e652ad7777602cdd4e52f4fe.png',
             'https://pngimg.com/d/cow_PNG50583.png',
             'https://uweed.ch/wp-content/uploads/2025/07/slow-weed-durban-poison-greenhouse-uweed-cbd-shop-02.png',
-            'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Illuminati_triangle_eye.png/960px-Illuminati_triangle_eye.png'
+            'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Illuminati_triangle_eye.png/960px-Illuminati_triangle_eye.png',
+            'https://pngimg.com/d/eye_PNG35661.png',
+            'https://www.pngarts.com/files/3/Crystal-Pyramid-PNG-Transparent-Image.png'
         ];
 
         let isLocked = false;
-        let oracleIndex = 0;
-        const oracleSequence = ["O", "R", "A", "C", "L", "E", "-", "P"];
         const fontClasses = ["f1", "f2", "f3", "f4", "f5", "f6", "f7", "f8"];
         const delay = ms => new Promise(res => setTimeout(res, ms));
 
@@ -146,9 +146,8 @@
             const isChaos = Math.random() < 0.4;
             document.body.className = (Math.random() < 0.15) ? 'white-mode' : '';
 
-            const centerChar = oracleSequence[oracleIndex];
-            oracleIndex = (oracleIndex + 1) % oracleSequence.length;
-            createEl('giant-bg f6 visible', centerChar, {});
+            // 1. ЦЕНТРАЛЬНЫЙ СИМВОЛ (Всегда P)
+            createEl('giant-bg f6 visible', "P", {});
 
             if (Math.random() < 0.10) {
                 const flashSrc = imageLibrary[Math.floor(Math.random()*imageLibrary.length)];
