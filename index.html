@@ -3,7 +3,7 @@
 <head>  
     <meta charset="UTF-8">  
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">  
-    <title>ORACLE.P | ECAL HYBRID SYSTEM</title>  
+    <title>ORACLE.P | ULTIMATE ECAL SYSTEM</title>  
     <style>  
         body, html {  
             margin: 0; padding: 0; width: 100%; height: 100%;  
@@ -11,60 +11,68 @@
             overflow: hidden; text-transform: uppercase;  
             -webkit-user-select: none;  
             font-family: "Helvetica Neue", Arial, sans-serif;
+            transition: background-color 0.3s ease;
         }  
 
         body.white-mode { background-color: #fff; color: #000; }
         body.white-mode .line { background-color: #000; }
+        body.white-mode .artifact { background-color: #000; }
         
         #canvas { position: relative; width: 100vw; height: 100vh; overflow: hidden; }  
-        .element { position: absolute; word-wrap: break-word; line-height: 0.75; opacity: 0; transition: opacity 0.4s ease-out; }  
+        .element { position: absolute; word-wrap: break-word; line-height: 0.8; opacity: 0; transition: opacity 0.5s ease-in-out; }  
         .visible { opacity: 1 !important; }
 
-        /* ТИПОГРАФИКА: СМЕСЬ СТИЛЕЙ */  
+        /* ТИПОГРАФИКА ECAL & ARTIFACT */  
         .f1 { font-family: "Impact", sans-serif; font-weight: 800; letter-spacing: -0.05em; } 
-        .f2 { font-family: "Helvetica Neue", sans-serif; font-weight: 200; letter-spacing: 0.1em; } 
+        .f2 { font-family: "Helvetica Neue", sans-serif; font-weight: 200; letter-spacing: 0.05em; } 
         .f3 { font-family: "Georgia", serif; font-style: italic; text-transform: none; } 
         .f4 { font-family: "Courier New", monospace; font-weight: 400; } 
-        .f5 { font-family: "Arial Black", sans-serif; font-weight: 900; transform: scaleY(1.2); } 
+        .f5 { font-family: "Arial Black", sans-serif; font-weight: 800; transform: scaleX(0.9); transform-origin: left; } 
         .f6 { font-family: "Helvetica", sans-serif; font-weight: 900; } 
-        .f7 { font-family: "Courier", monospace; font-weight: 700; border-bottom: 0.2em solid currentColor; } 
-        .f8 { font-family: "Arial Black", sans-serif; font-weight: 900; letter-spacing: -0.02em; transform: scaleX(1.4); transform-origin: left; } 
+        .f7 { font-family: "Courier", monospace; font-weight: 700; border-bottom: 0.15em solid currentColor; } 
+        .f8 { font-family: "Arial Black", sans-serif; font-weight: 900; letter-spacing: 0.1em; transform: scaleX(1.1); transform-origin: left; } 
 
+        /* ЦЕНТРАЛЬНЫЙ СИМВОЛ */
         .giant-bg { 
-            font-size: 90vh; font-weight: 900; position: absolute;
+            font-size: 85vh; font-weight: 900; position: absolute;
             top: 50%; left: 50%; transform: translate(-50%, -50%);
             color: #222; opacity: 0.15; z-index: 0; pointer-events: none;
         }
         body.white-mode .giant-bg { color: #ddd; }
 
-        .line { position: absolute; background-color: rgba(255,255,255,0.2); z-index: 1; }
-        .artifact { position: absolute; background: currentColor; opacity: 0.4; z-index: 200; mix-blend-mode: exclusion; }
+        /* ГРАФИКА */
+        .line { position: absolute; background-color: rgba(255,255,255,0.2); z-index: 1; pointer-events: none; }
+        .artifact { position: absolute; background: currentColor; opacity: 0.5; z-index: 200; mix-blend-mode: exclusion; pointer-events: none; }
 
-        /* ИЗОБРАЖЕНИЯ И ЭФФЕКТЫ */
-        .image-container { position: absolute; z-index: 5; filter: grayscale(1) contrast(1.3); mix-blend-mode: difference; transition: all 0.7s cubic-bezier(0.2, 1, 0.3, 1); }
+        /* ИЗОБРАЖЕНИЯ: ЛОГИКА ИЗ ОБЪЕДИНЕННЫХ КОДОВ */
+        .image-container { position: absolute; z-index: 5; filter: grayscale(1) contrast(1.2); mix-blend-mode: difference; transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1); }
         .image-container img { width: 100%; height: auto; display: block; }
-        
-        .flash-active { opacity: 1 !important; width: 100vw !important; height: 100vh !important; top: 0 !important; left: 0 !important; z-index: 1000 !important; filter: grayscale(0) invert(1) !important; }
-        .flash-ghost { opacity: 0.1 !important; filter: grayscale(1) blur(4px) !important; z-index: -1 !important; mix-blend-mode: normal !important; }
-        .image-shadow { opacity: 0.12 !important; filter: grayscale(1) blur(1px); mix-blend-mode: normal; z-index: -1; }
 
-        .hero { z-index: 100; max-width: 100%; width: 100%; }
-        .edge-text { font-size: 1.4vw; z-index: 110; padding: 12px; white-space: nowrap; }
+        /* ЭФФЕКТЫ ВСПЫШКИ */
+        .flash-active { opacity: 1 !important; width: 100vw !important; height: 100vh !important; top: 0 !important; left: 0 !important; z-index: 1000 !important; filter: grayscale(0) invert(1) !important; mix-blend-mode: normal !important; }
+        .flash-ghost { opacity: 0.1 !important; filter: grayscale(1) blur(8px) !important; z-index: -1 !important; mix-blend-mode: normal !important; }
+        .image-shadow { opacity: 0.12 !important; filter: grayscale(1) blur(2px); mix-blend-mode: normal; z-index: -1; }
+
+        .hero { z-index: 100; max-width: 95%; width: 100%; }
+        .edge-text { font-size: 1.3vw; z-index: 110; padding: 15px; white-space: nowrap; }
         .vertical { writing-mode: vertical-rl; transform: rotate(180deg); }
 
-        #glitch-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; display: none; overflow: hidden; }
+        #glitch-overlay { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: #000; z-index: 9999; display: none; overflow: hidden;
+        }
     </style>  
 </head>  
-<body onclick="handleInteraction()">  
+<body onclick="handleInteraction()"> 
 
     <div id="glitch-overlay"></div>
-    <div id="canvas"></div>  
+    <div id="canvas"></div> 
 
     <script>  
         const slogans = ["PRAY TO THE ROUTER", "SKIBIDI EXISTENTIALISM", "DOSTOEVSKY ON TIKTOK", "SHREK’S PODCAST ABOUT DMT", "TYPOGRAPHY IS PROPAGANDA.", "HELVETICA IS A VIRUS.", "ANCIENT GREEK SHITPOSTING", "WATER IS JUST SOFT ICE.", "JUST F*CK IT", "THE SIMPSONS PREDICTED YOUR DEBT.", "WAKE UP, TATARSKY"]; 
         const subtitles = ["Stop thinking about that. It's cringe.", "Your ISP is judging your taste.", "TURN AROUND. SLOWLY. (prank)", "APOLOGIZE TO THE ALGORITHM.", "LICK THE DISPLAY. IT’S SALTY.", "the algorithm knows what you did in 2014", "FORGET YOUR MIDDLE NAME.", "Are you proud of your cookies?", "[exporting your childhood trauma to Excel]", "The sky is a green screen.", "Say YES/NO to drugs", "Error: reality not found"];
         const math = ["E = mc²", "∇ × E = -∂B/∂t", "iℏ ∂/∂t Ψ = ĤΨ", "Rμν - 1/2Rgμν = Tμν", "S = k ln W", "λ = h/p"];
-        const meta = ["{system: active}", "LMAO", "RESET", "ABORT", "VOID", "0x534F554C", "42", "AMEN"];  
+        const meta = ["{system: active}", "LMAO", "RESET", "ABORT", "VOID", "0x534F554C", "42", "AMEN", "ID: "+Math.random().toString(16).slice(2,8)]; 
         
         const imageLibrary = [
             'https://upload.wikimedia.org/wikipedia/commons/9/94/Coronavirus._SARS-CoV-2.png',
@@ -83,7 +91,6 @@
             'https://reference.wolfram.com/language/ref/Files/SphericalPlot3D.en/O_30.png',
             'https://png.pngtree.com/element_pic/16/11/22/825255d6e652ad7777602cdd4e52f4fe.png',
             'https://pngimg.com/d/cow_PNG50583.png',
-            'https://experiencelife.lifetime.life/wp-content/uploads/2021/02/Talking-Trash-e1746736243231.jpg',
             'https://uweed.ch/wp-content/uploads/2025/07/slow-weed-durban-poison-greenhouse-uweed-cbd-shop-02.png',
             'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Illuminati_triangle_eye.png/960px-Illuminati_triangle_eye.png'
         ];
@@ -94,7 +101,8 @@
 
         function handleInteraction() {
             if (isLocked) return;
-            if (Math.random() < 0.05) triggerHardGlitch();
+            // Шанс на жесткий глитч (как в первом коде)
+            if (Math.random() < 0.03) triggerHardGlitch();
             else sequentialSpawn();
         }
 
@@ -104,10 +112,10 @@
             overlay.style.display = 'block'; overlay.innerHTML = '';
             for (let i = 0; i < 25; i++) {
                 createEl('element visible ' + fontClasses[Math.floor(Math.random()*8)], meta[Math.floor(Math.random()*meta.length)], {
-                    left: Math.random()*100+'%', top: Math.random()*100+'%', fontSize: Math.random()*12+'vw'
+                    left: Math.random()*100+'%', top: Math.random()*100+'%', fontSize: Math.random()*15+'vw', color: Math.random() > 0.5 ? '#fff' : '#ff0000'
                 }, overlay);
             }
-            await delay(1000);
+            await delay(800);
             overlay.style.display = 'none'; isLocked = false;
             sequentialSpawn();
         }
@@ -115,88 +123,103 @@
         async function sequentialSpawn() {  
             const canvas = document.getElementById('canvas'); 
             canvas.innerHTML = ''; 
-            const isChaos = Math.random() < 0.45;
+            
+            // ОПРЕДЕЛЕНИЕ МОДАЛЬНОСТИ (95% - ШВЕЙЦАРИЯ, 5% - ПСИХОДЕЛИКА)
+            const isPsycho = Math.random() < 0.08; 
+            const isChaos = Math.random() < 0.35;
             document.body.className = (Math.random() < 0.15) ? 'white-mode' : '';
 
-            // 1. АРТЕФАКТЫ И СИМВОЛ
-            for(let i=0; i<4; i++) createArtifact();
-            createEl('giant-bg f6 visible', Math.random() < 0.15 ? "?" : "P", {});
+            // 1. СЕТКА (Всегда как в первом коде)
+            const lineCount = isPsycho ? 3 : 6;
+            for (let i = 0; i < lineCount; i++) createLine(true).classList.add('visible');
 
-            // 2. ЛИНИИ
-            const lineCount = isChaos ? 3 : 6;
-            for (let i = 0; i < lineCount; i++) createLine(!isChaos).classList.add('visible');
+            // 2. АРТЕФАКТЫ (Если хаос или психоделика)
+            if (isPsycho || isChaos) {
+                for(let i=0; i < (isPsycho ? 8 : 3); i++) createArtifact();
+            }
 
-            // 3. ИЗОБРАЖЕНИЯ (Реже: 0-2 штуки)
-            const imgChance = Math.random();
-            if (imgChance > 0.6) { // 40% шанс появления картинок
-                const count = Math.random() < 0.8 ? 1 : 2;
-                for(let i=0; i<count; i++) {
-                    const isFlash = Math.random() < 0.25; // Редкая вспышка
-                    const img = createImage(imageLibrary[Math.floor(Math.random()*imageLibrary.length)], isFlash ? 'flash' : 'big');
+            // 3. ЦЕНТРАЛЬНЫЙ СИМВОЛ
+            const centerChar = Math.random() < 0.15 ? "?" : "P";
+            createEl('giant-bg f6 visible', centerChar, {});
+
+            // 4. ИЗОБРАЖЕНИЯ (Логика вероятностей)
+            const imgProb = Math.random();
+            if (imgProb > 0.6 || isPsycho) {
+                // Если психоделика - шанс на ВСПЫШКУ (flash)
+                const isFlash = isPsycho && Math.random() > 0.3;
+                const imgCount = isPsycho ? 2 : 1;
+                
+                for(let i=0; i<imgCount; i++) {
+                    const type = isFlash ? 'flash' : (Math.random() > 0.7 ? 'shadow' : 'normal');
+                    const img = createImage(imageLibrary[Math.floor(Math.random()*imageLibrary.length)], type);
                     img.classList.add('visible');
                 }
             }
 
-            // 4. ТЕКСТОВАЯ КОМПОЗИЦИЯ
-            if (isChaos) await layoutChaos(); else await layoutSwiss();
+            // 5. ТИПОГРАФИКА
+            if (isPsycho) await layoutPsychoTypography();
+            else if (isChaos) await layoutChaos(); 
+            else await layoutSwiss();
         }  
 
+        // ТИПОГРАФИКА: ШВЕЙЦАРСКИЙ ПОРЯДОК
         async function layoutSwiss() {
-            createEl('edge-text f8 visible', slogans[Math.floor(Math.random()*slogans.length)], { top: '0', left: '0' });
+            createEl('edge-text f6 visible', slogans[Math.floor(Math.random()*slogans.length)], { top: '0', left: '0' });
             createEl('edge-text f2 vertical visible', subtitles[Math.floor(Math.random()*subtitles.length)], { right: '0', top: '0' });
-            createEl('edge-text f4 visible', "ID: "+Math.random().toString(16).slice(2,8), { bottom: '0', right: '0' });
-
-            const block = createTextBlock(slogans[Math.floor(Math.random()*slogans.length)], true, { left: '5%', top: '35%' });
+            
+            const mainTxt = slogans[Math.floor(Math.random()*slogans.length)];
+            const block = createTextBlock(mainTxt, true, { left: '10%', top: '35%' });
             block.classList.add('visible');
             
-            if (Math.random() < 0.3) {
-                const mathEl = createEl('element f4 visible', math[Math.floor(Math.random()*math.length)], {
-                    left: '5%', bottom: '10%', fontSize: '1.5vw', opacity: 0.5
+            // Формулы (как в первом коде)
+            for(let i=0; i<2; i++) {
+                createEl('element f4 visible', math[Math.floor(Math.random()*math.length)], {
+                    left: Math.random()*70+'%', top: Math.random()*90+'%', fontSize: '1.1vw', opacity: 0.4
                 });
             }
         }
 
+        // ТИПОГРАФИКА: ХАОС
         async function layoutChaos() {
             for(let i=0; i<3; i++) {
                 const isHero = i === 0;
                 const txt = isHero ? slogans[Math.floor(Math.random()*slogans.length)] : subtitles[Math.floor(Math.random()*subtitles.length)];
                 const block = createTextBlock(txt, isHero, {
-                    left: Math.random()*40+'%', top: Math.random()*60+'%',
+                    left: Math.random()*30+'%', top: Math.random()*60+'%',
                     transform: `rotate(${(Math.random()-0.5)*15}deg)`, zIndex: 10
                 });
                 block.classList.add('visible');
-                await delay(100);
+                await delay(50);
             }
         }
 
-        function createTextBlock(txt, isHero, styles) {
-            const block = createEl(isHero ? 'hero' : 'sub-hero', '', styles);
-            // ПОВЫШЕННЫЙ ШАНС БОЛЬШОГО ТЕКСТА (до 25vw)
-            let baseSize = isHero ? (txt.length > 12 ? 16 : 22) : (Math.random()*3 + 5);
-            if (isHero && Math.random() < 0.4) baseSize = 25; 
+        // ТИПОГРАФИКА: ПСИХОДЕЛИКА (ГИГАНТЫ)
+        async function layoutPsychoTypography() {
+            const txt = slogans[Math.floor(Math.random()*slogans.length)];
+            const block = createTextBlock(txt, true, { 
+                left: '0', top: '20%', width: '100vw', textAlign: 'center' 
+            }, true); // true для гигантского размера
+            block.classList.add('visible');
             
+            createEl('edge-text f7 visible', meta[Math.floor(Math.random()*meta.length)], { bottom: '5%', left: '50%', transform: 'translateX(-50%)' });
+        }
+
+        function createTextBlock(txt, isHero, styles, isGiant = false) {
+            const block = createEl(isHero ? 'hero' : 'sub-hero', '', styles);
+            let baseSize;
+            
+            if (isGiant) baseSize = 25; // Максимальный из второго кода
+            else if (isHero) baseSize = (txt.length > 15 ? 9 : 14);
+            else baseSize = (Math.random()*2 + 3);
+
             block.style.fontSize = baseSize + 'vw';
             txt.split(' ').forEach(word => {
                 const span = document.createElement('span');
                 span.innerText = word + ' ';
-                span.className = fontClasses[Math.floor(Math.random()*8)];
+                span.className = fontClasses[Math.floor(Math.random()*fontClasses.length)];
                 block.appendChild(span);
             });
             return block;
-        }
-
-        function createArtifact() {
-            const a = document.createElement('div');
-            a.className = 'artifact element visible';
-            const horizontal = Math.random() > 0.5;
-            if (horizontal) {
-                a.style.width = Math.random()*100+'vw'; a.style.height = '2px';
-                a.style.left = '0'; a.style.top = Math.random()*100+'vh';
-            } else {
-                a.style.width = Math.random()*15+'px'; a.style.height = Math.random()*50+'vh';
-                a.style.left = Math.random()*100+'vw'; a.style.top = Math.random()*100+'vh';
-            }
-            document.getElementById('canvas').appendChild(a);
         }
 
         function createLine(isGrid) {
@@ -214,6 +237,20 @@
             return line;
         }
 
+        function createArtifact() {
+            const a = document.createElement('div');
+            a.className = 'artifact element visible';
+            const horizontal = Math.random() > 0.5;
+            if (horizontal) {
+                a.style.width = Math.random()*100+'vw'; a.style.height = '3px';
+                a.style.left = '0'; a.style.top = Math.random()*100+'vh';
+            } else {
+                a.style.width = Math.random()*30+'px'; a.style.height = Math.random()*50+'vh';
+                a.style.left = Math.random()*100+'vw'; a.style.top = Math.random()*100+'vh';
+            }
+            document.getElementById('canvas').appendChild(a);
+        }
+
         function createImage(src, type) {
             const container = document.createElement('div');
             container.className = 'image-container element';
@@ -224,11 +261,14 @@
                     container.classList.remove('flash-active');
                     container.classList.add('flash-ghost');
                 }, 700);
+            } else if (type === 'shadow') {
+                container.classList.add('image-shadow');
+                container.style.width = '100vw'; container.style.left = '0'; container.style.top = '0';
             } else {
-                container.style.width = (Math.random()*40 + 25) + '%';
-                container.style.top = Math.random()*50 + '%';
-                container.style.left = Math.random()*50 + '%';
-                if (Math.random() < 0.2) container.classList.add('image-shadow');
+                // Обычная картинка (как в первом коде)
+                container.style.width = (Math.random()*20 + 15) + '%';
+                container.style.top = Math.random()*60 + '%';
+                container.style.left = Math.random()*70 + '%';
             }
             
             const img = document.createElement('img');
@@ -249,5 +289,5 @@
 
         window.onload = sequentialSpawn;  
     </script>  
-</body> 
+</body>  
 </html>
