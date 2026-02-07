@@ -10,228 +10,236 @@
             background-color: #000; color: #fff; 
             overflow: hidden; text-transform: uppercase;  
             -webkit-user-select: none;  
-            font-family: "Helvetica Neue", Arial, sans-serif;
+            font-family: "Helvetica Neue", Arial, sans-serif; 
         }  
 
-        body.white-mode { background-color: #fff; color: #000; }
-        body.white-mode .line, body.white-mode .artifact { background-color: #000; }
-        
+        body.white-mode { background-color: #fff; color: #000; } 
+        body.white-mode .line { background-color: #000; } 
+         
         #canvas { position: relative; width: 100vw; height: 100vh; overflow: hidden; }  
         .element { position: absolute; word-wrap: break-word; line-height: 0.85; opacity: 0; transition: opacity 0.5s ease-in-out; }  
-        .visible { opacity: 1 !important; }
+        .visible { opacity: 1 !important; } 
 
-        /* ТИПОГРАФИКА ECAL */  
-        .f1 { font-family: "Impact", sans-serif; font-weight: 800; letter-spacing: -0.02em; } 
-        .f2 { font-family: "Helvetica Neue", sans-serif; font-weight: 200; letter-spacing: 0.05em; } 
-        .f3 { font-family: "Georgia", serif; font-style: italic; text-transform: none; } 
-        .f4 { font-family: "Courier New", monospace; font-weight: 400; } 
-        .f5 { font-family: "Arial Black", sans-serif; font-weight: 800; transform: scaleX(0.9); transform-origin: left; } 
-        .f6 { font-family: "Helvetica", sans-serif; font-weight: 900; } 
-        .f7 { font-family: "Courier", monospace; font-weight: 700; border-bottom: 0.1em solid currentColor; } 
-        .f8 { font-family: "Arial Black", sans-serif; font-weight: 900; letter-spacing: 0.1em; transform: scaleX(1.1); transform-origin: left; } 
+        /* ТИПОГРАФИКА ECAL (Code 1 + Code 2 adjustments) */  
+        .f1 { font-family: "Impact", sans-serif; font-weight: 800; letter-spacing: -0.02em; }  
+        .f2 { font-family: "Helvetica Neue", sans-serif; font-weight: 200; letter-spacing: 0.05em; }  
+        .f3 { font-family: "Georgia", serif; font-style: italic; text-transform: none; }  
+        .f4 { font-family: "Courier New", monospace; font-weight: 400; }  
+        .f5 { font-family: "Arial Black", sans-serif; font-weight: 800; transform: scaleX(0.9); transform-origin: left; }  
+        .f6 { font-family: "Helvetica", sans-serif; font-weight: 900; }  
+        .f7 { font-family: "Courier", monospace; font-weight: 700; border-bottom: 0.1em solid currentColor; }  
+        .f8 { font-family: "Arial Black", sans-serif; font-weight: 900; letter-spacing: 0.1em; transform: scaleX(1.1); transform-origin: left; }  
 
-        /* АРТЕФАКТЫ (ИЗ КОДА №2) */
-        .artifact { position: absolute; background: #fff; z-index: 999; }
-        .flash-active { filter: invert(1) !important; z-index: 1000 !important; opacity: 1 !important; }
-        .flash-ghost { opacity: 0.15 !important; filter: grayscale(1) contrast(3) !important; transition: opacity 2s ease-out; }
-        .giant-mode { font-size: 25vw !important; line-height: 0.7 !important; z-index: 500; mix-blend-mode: difference; }
+        /* ЦЕНТРАЛЬНЫЙ СИМВОЛ */ 
+        .giant-bg {  
+            font-size: 85vh; font-weight: 900; position: absolute; 
+            top: 50%; left: 50%; transform: translate(-50%, -50%); 
+            color: #222; opacity: 0.18; z-index: 0; pointer-events: none; 
+        } 
+        body.white-mode .giant-bg { color: #ddd; } 
 
-        /* ЦЕНТРАЛЬНЫЙ СИМВОЛ */
-        .giant-bg { 
-            font-size: 85vh; font-weight: 900; position: absolute;
-            top: 50%; left: 50%; transform: translate(-50%, -50%);
-            color: #222; opacity: 0.18; z-index: 0; pointer-events: none;
-        }
-        body.white-mode .giant-bg { color: #ddd; }
+        /* ГРАФИКА И ЛИНИИ */ 
+        .line { position: absolute; background-color: rgba(255,255,255,0.15); z-index: 1; } 
+        
+        /* АРТЕФАКТЫ (Из Кода №2) */
+        .artifact { position: absolute; background: currentColor; opacity: 0.4; z-index: 200; mix-blend-mode: exclusion; }
 
-        /* ГРАФИКА */
-        .line { position: absolute; background-color: rgba(255,255,255,0.15); z-index: 1; }
-        .image-container { position: absolute; z-index: 5; filter: grayscale(1) contrast(1.2); mix-blend-mode: difference; }
-        .image-shadow { opacity: 0.12 !important; filter: grayscale(1) blur(1px); mix-blend-mode: normal; z-index: -1; }
-        .image-container img { width: 100%; height: auto; display: block; }
+        /* ИЗОБРАЖЕНИЯ И ЛОГИКА ВСПЫШКИ */ 
+        .image-container { position: absolute; z-index: 5; filter: grayscale(1) contrast(1.2); mix-blend-mode: difference; transition: all 0.8s cubic-bezier(0.2, 1, 0.3, 1); } 
+        .image-container img { width: 100%; height: auto; display: block; } 
+        
+        /* Спецэффекты вспышки (Из Кода №2) */
+        .flash-active { opacity: 1 !important; width: 100vw !important; height: 100vh !important; top: 0 !important; left: 0 !important; z-index: 1000 !important; filter: grayscale(0) invert(1) !important; }
+        .flash-ghost { opacity: 0.08 !important; filter: grayscale(1) blur(5px) !important; z-index: -1 !important; mix-blend-mode: normal !important; }
 
-        .hero { z-index: 100; max-width: 90%; }
-        .edge-text { font-size: 1.3vw; z-index: 110; padding: 15px; white-space: nowrap; }
-        .vertical { writing-mode: vertical-rl; transform: rotate(180deg); }
+        /* СТИЛЬ ДЛЯ ТЕНЕВЫХ ФОНОВЫХ КАРТИНОК */ 
+        .image-shadow { opacity: 0.12 !important; filter: grayscale(1) blur(1px); mix-blend-mode: normal; z-index: -1; } 
 
-        #glitch-overlay { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: #000; z-index: 9999; display: none; overflow: hidden;
-        }
+        .hero { z-index: 100; max-width: 95%; } 
+        .edge-text { font-size: 1.3vw; z-index: 110; padding: 15px; white-space: nowrap; } 
+        .vertical { writing-mode: vertical-rl; transform: rotate(180deg); } 
+
+        #glitch-overlay {  
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;  
+            background: #000; z-index: 9999; display: none; overflow: hidden; 
+        } 
     </style>  
 </head>  
-<body onclick="handleInteraction()"> 
+<body onclick="handleInteraction()">  
 
-    <div id="glitch-overlay"></div>
+    <div id="glitch-overlay"></div> 
     <div id="canvas"></div>  
 
     <script>  
-        const slogans = ["PRAY TO THE ROUTER", "SKIBIDI EXISTENTIALISM", "DOSTOEVSKY ON TIKTOK", "SHREK’S PODCAST ABOUT DMT", "TYPOGRAPHY IS PROPAGANDA.", "HELVETICA IS A VIRUS.", "ANCIENT GREEK SHITPOSTING", "WATER IS JUST SOFT ICE.", "JUST F*CK IT", "THE SIMPSONS PREDICTED YOUR DEBT.", "WAKE UP, TATARSKY"]; 
-        const subtitles = ["Stop thinking about that. It's cringe.", "Your ISP is judging your taste.", "TURN AROUND. SLOWLY. (prank)", "APOLOGIZE TO THE ALGORITHM.", "LICK THE DISPLAY. IT’S SALTY.", "the algorithm knows what you did in 2014", "FORGET YOUR MIDDLE NAME.", "Are you proud of your cookies?", "[exporting your childhood trauma to Excel]", "The sky is a green screen.", "Say YES/NO to drugs", "Error: reality not found"];
-        const math = ["E = mc²", "∇ × E = -∂B/∂t", "iℏ ∂/∂t Ψ = ĤΨ", "Rμν - 1/2Rgμν = Tμν", "S = k ln W", "λ = h/p"];
+        // ОБЪЕДИНЕННЫЕ ТЕКСТЫ
+        const slogans = ["PRAY TO THE ROUTER", "SKIBIDI EXISTENTIALISM", "DOSTOEVSKY ON TIKTOK", "SHREK’S PODCAST ABOUT DMT", "TYPOGRAPHY IS PROPAGANDA.", "HELVETICA IS A VIRUS.", "ANCIENT GREEK SHITPOSTING", "WATER IS JUST SOFT ICE.", "JUST F*CK IT", "THE SIMPSONS PREDICTED YOUR DEBT.", "WAKE UP, TATARSKY"];  
+        const subtitles = ["Stop thinking about that. It's cringe.", "Your ISP is judging your taste.", "TURN AROUND. SLOWLY. (prank)", "APOLOGIZE TO THE ALGORITHM.", "LICK THE DISPLAY. IT’S SALTY.", "the algorithm knows what you did in 2014", "FORGET YOUR MIDDLE NAME.", "Are you proud of your cookies?", "[exporting your childhood trauma to Excel]", "The sky is a green screen.", "Say YES/NO to drugs", "Error: reality not found"]; 
+        const math = ["E = mc²", "∇ × E = -∂B/∂t", "iℏ ∂/∂t Ψ = ĤΨ", "Rμν - 1/2Rgμν = Tμν", "S = k ln W", "λ = h/p"]; 
         const meta = ["{system: active}", "LMAO", "RESET", "ABORT", "VOID", "0x534F554C", "42", "AMEN"];  
-        
-        const imageLibrary = [
-            'https://upload.wikimedia.org/wikipedia/commons/9/94/Coronavirus._SARS-CoV-2.png',
-            'https://png.pngtree.com/png-vector/20231017/ourmid/pngtree-fresh-apple-fruit-red-png-image_10203073.png',
-            'https://imageio.forbes.com/blogs-images/booked/files/2011/05/300px-Che_por_Jim_Fitzpatrick.svg_.png?height=295&width=240&fit=bounds',
-            'https://static.vecteezy.com/system/resources/previews/053/687/197/non_2x/severely-rotten-apple-with-dark-mold-and-extensive-decay-on-transparent-background-png.png',
-            'https://upload.wikimedia.org/wikipedia/commons/2/2c/Octavian_Smigelschi_-_Serafim_%28Cat._Blaj%29%2C_1903.png',
-            'https://leonardodavinci.it/wp-content/uploads/2021/10/Leonardo-da-Vinci-Uomo-vitruviano.png',
-            'https://www.davincisciencecenter.org/wp-content/uploads/2024/03/Rat-Snake-02.png',
-            'https://remihogar.es/cdn/shop/articles/cucaracha-oriental-blatta-orienta_480x.png?v=1761727332',
-            'https://static.vecteezy.com/system/resources/thumbnails/029/347/022/small/one-hundred-dollar-bill-falling-or-floating-on-empty-background-transparent-png.png',
-            'https://3dgladiator.com/wp-content/themes/dddgladiator/assets/img/teeth-model/intro-model.png',
-            'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Dopamine-based-on-xtal-3D-bs-17.png/1280px-Dopamine-based-on-xtal-3D-bs-17.png',
-            'https://www.coca-cola.com/content/dam/onexp/ch/de/brands/coca-cola/new-packshots-december-2024/transparent_background_cco_pet.png',
-            'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Cube-h.svg/250px-Cube-h.svg.png',
-            'https://reference.wolfram.com/language/ref/Files/SphericalPlot3D.en/O_30.png',
-            'https://png.pngtree.com/element_pic/16/11/22/825255d6e652ad7777602cdd4e52f4fe.png',
-            'https://pngimg.com/d/cow_PNG50583.png',
-            'https://experiencelife.lifetime.life/wp-content/uploads/2021/02/Talking-Trash-e1746736243231.jpg',
-            'https://uweed.ch/wp-content/uploads/2025/07/slow-weed-durban-poison-greenhouse-uweed-cbd-shop-02.png',
-            'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Illuminati_triangle_eye.png/960px-Illuminati_triangle_eye.png'
-        ];
+         
+        // ОБЪЕДИНЕННАЯ БИБЛИОТЕКА ИЗОБРАЖЕНИЙ
+        const imageLibrary = [ 
+            'https://upload.wikimedia.org/wikipedia/commons/9/94/Coronavirus._SARS-CoV-2.png', 
+            'https://png.pngtree.com/png-vector/20231017/ourmid/pngtree-fresh-apple-fruit-red-png-image_10203073.png', 
+            'https://imageio.forbes.com/blogs-images/booked/files/2011/05/300px-Che_por_Jim_Fitzpatrick.svg_.png?height=295&width=240&fit=bounds', 
+            'https://static.vecteezy.com/system/resources/previews/053/687/197/non_2x/severely-rotten-apple-with-dark-mold-and-extensive-decay-on-transparent-background-png.png', 
+            'https://upload.wikimedia.org/wikipedia/commons/2/2c/Octavian_Smigelschi_-_Serafim_%28Cat._Blaj%29%2C_1903.png', 
+            'https://leonardodavinci.it/wp-content/uploads/2021/10/Leonardo-da-Vinci-Uomo-vitruviano.png', 
+            'https://www.davincisciencecenter.org/wp-content/uploads/2024/03/Rat-Snake-02.png', 
+            'https://remihogar.es/cdn/shop/articles/cucaracha-oriental-blatta-orienta_480x.png?v=1761727332', 
+            'https://static.vecteezy.com/system/resources/thumbnails/029/347/022/small/one-hundred-dollar-bill-falling-or-floating-on-empty-background-transparent-png.png', 
+            'https://3dgladiator.com/wp-content/themes/dddgladiator/assets/img/teeth-model/intro-model.png', 
+            'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Dopamine-based-on-xtal-3D-bs-17.png/1280px-Dopamine-based-on-xtal-3D-bs-17.png', 
+            'https://www.coca-cola.com/content/dam/onexp/ch/de/brands/coca-cola/new-packshots-december-2024/transparent_background_cco_pet.png', 
+            'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Cube-h.svg/250px-Cube-h.svg.png', 
+            'https://reference.wolfram.com/language/ref/Files/SphericalPlot3D.en/O_30.png', 
+            'https://png.pngtree.com/element_pic/16/11/22/825255d6e652ad7777602cdd4e52f4fe.png', 
+            'https://pngimg.com/d/cow_PNG50583.png', 
+            'https://experiencelife.lifetime.life/wp-content/uploads/2021/02/Talking-Trash-e1746736243231.jpg', 
+            'https://uweed.ch/wp-content/uploads/2025/07/slow-weed-durban-poison-greenhouse-uweed-cbd-shop-02.png', 
+            'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Illuminati_triangle_eye.png/960px-Illuminati_triangle_eye.png' 
+        ]; 
 
-        let isLocked = false;
-        const fontClasses = ["f1", "f2", "f3", "f4", "f5", "f6", "f7", "f8"];
-        const delay = ms => new Promise(res => setTimeout(res, ms));
+        let isLocked = false; 
+        const fontClasses = ["f1", "f2", "f3", "f4", "f5", "f6", "f7", "f8"]; 
+        const delay = ms => new Promise(res => setTimeout(res, ms)); 
 
-        function handleInteraction() {
-            if (isLocked) return;
-            const rnd = Math.random();
-            if (rnd < 0.04) triggerHardGlitch(); // Старый хард-глитч
-            else if (rnd < 0.14) artifactMode(); // Тот самый режим 10%
-            else sequentialSpawn(); // Основной Код №1
-        }
-
-        // РЕЖИМ ИСКЛЮЧЕНИЯ (Код №2 - 10%)
-        async function artifactMode() {
-            const canvas = document.getElementById('canvas');
-            const isWhite = document.body.classList.contains('white-mode');
+        function handleInteraction() { 
+            if (isLocked) return; 
             
-            // 1. Создаем битые полосы
-            for(let i=0; i<5; i++) createArtifact();
-
-            // 2. Гигантская типографика
-            const txt = slogans[Math.floor(Math.random()*slogans.length)];
-            const giant = createEl('giant-mode f6 visible flash-active', txt, {
-                left: Math.random()*10 + '%',
-                top: Math.random()*20 + '%',
-                zIndex: 1000
-            });
-
-            // 3. Изображение с вспышкой
-            const img = createImage(imageLibrary[Math.floor(Math.random()*imageLibrary.length)], 'big');
-            img.classList.add('visible', 'flash-active');
-
-            await delay(150);
-            giant.classList.remove('flash-active');
-            giant.classList.add('flash-ghost');
-            img.classList.remove('flash-active');
-            img.classList.add('flash-ghost');
-        }
-
-        function createArtifact() {
-            const art = document.createElement('div');
-            art.className = 'artifact';
-            const horizontal = Math.random() > 0.5;
-            if(horizontal) {
-                art.style.width = '100vw'; art.style.height = (Math.random()*20 + 2)+'px';
-                art.style.left = '0'; art.style.top = Math.random()*100+'vh';
+            const roll = Math.random();
+            if (roll < 0.04) {
+                triggerHardGlitch(); // 4% Глитч-оверлей (Код 1)
+            } else if (roll < 0.14) {
+                sequentialSpawn(true); // 10% Режим Артефакта (Код 2)
             } else {
-                art.style.width = (Math.random()*50 + 5)+'px'; art.style.height = '100vh';
-                art.style.left = Math.random()*100+'vw'; art.style.top = '0';
+                sequentialSpawn(false); // 86% Обычный режим (Код 1)
             }
-            document.getElementById('canvas').appendChild(art);
-            setTimeout(() => art.remove(), 200);
-        }
+        } 
 
-        async function triggerHardGlitch() {
-            isLocked = true;
-            const overlay = document.getElementById('glitch-overlay');
-            overlay.style.display = 'block'; overlay.innerHTML = '';
-            for (let i = 0; i < 20; i++) {
-                createEl('element visible ' + fontClasses[Math.floor(Math.random()*8)], meta[Math.floor(Math.random()*meta.length)], {
-                    left: Math.random()*100+'%', top: Math.random()*100+'%', fontSize: Math.random()*10+'vw'
-                }, overlay);
-            }
-            await delay(1000);
-            overlay.style.display = 'none'; isLocked = false;
-        }
+        async function triggerHardGlitch() { 
+            isLocked = true; 
+            const overlay = document.getElementById('glitch-overlay'); 
+            overlay.style.display = 'block'; overlay.innerHTML = ''; 
+            for (let i = 0; i < 20; i++) { 
+                createEl('element visible ' + fontClasses[Math.floor(Math.random()*8)], meta[Math.floor(Math.random()*meta.length)], { 
+                    left: Math.random()*100+'%', top: Math.random()*100+'%', fontSize: Math.random()*10+'vw' 
+                }, overlay); 
+            } 
+            await delay(1000); 
+            overlay.style.display = 'none'; isLocked = false; 
+            sequentialSpawn(false); 
+        } 
 
-        async function sequentialSpawn() {  
-            const canvas = document.getElementById('canvas'); 
-            canvas.innerHTML = ''; 
-            const isChaos = Math.random() < 0.4;
-            document.body.className = (Math.random() < 0.15) ? 'white-mode' : '';
+        async function sequentialSpawn(isArtifactMode = false) {  
+            const canvas = document.getElementById('canvas');  
+            canvas.innerHTML = '';  
+            const isChaos = isArtifactMode ? true : (Math.random() < 0.4); 
+            document.body.className = (Math.random() < 0.15) ? 'white-mode' : ''; 
 
-            const centerChar = Math.random() < 0.1 ? "?" : "P";
-            createEl('giant-bg f6 visible', centerChar, {});
-
-            if (Math.random() < 0.3) {
-                const shadowImg = createImage(imageLibrary[Math.floor(Math.random()*imageLibrary.length)], 'shadow');
-                shadowImg.classList.add('visible');
+            // 1. АРТЕФАКТЫ (Только в режиме 10%)
+            if (isArtifactMode) {
+                for(let i=0; i<6; i++) createArtifact();
             }
 
-            const lineCount = isChaos ? 2 : 5;
-            for (let i = 0; i < lineCount; i++) createLine(!isChaos).classList.add('visible');
-            
-            if (!isChaos) {
-                for(let i=0; i<3; i++) {
-                    createEl('element f4 visible', math[Math.floor(Math.random()*math.length)], {
-                        left: Math.random()*80+'%', top: Math.random()*90+'%', fontSize: '1.2vw', opacity: 0.3
-                    });
-                }
-            }
+            // 2. ЦЕНТРАЛЬНЫЙ СИМВОЛ
+            const centerChar = Math.random() < 0.1 ? "?" : "P"; 
+            createEl('giant-bg f6 visible', centerChar, {}); 
 
-            if (isChaos) await layoutChaos(); else await layoutSwiss();
+            // 3. ФОНОВАЯ ТЕНЬ
+            if (Math.random() < 0.3) { 
+                const shadowImg = createImage(imageLibrary[Math.floor(Math.random()*imageLibrary.length)], 'shadow'); 
+                shadowImg.classList.add('visible'); 
+            } 
+
+            // 4. ЛИНИИ И ФОРМУЛЫ 
+            const lineCount = isChaos ? 2 : 5; 
+            for (let i = 0; i < lineCount; i++) createLine(!isChaos).classList.add('visible'); 
+             
+            if (!isChaos) { 
+                for(let i=0; i<3; i++) { 
+                    createEl('element f4 visible', math[Math.floor(Math.random()*math.length)], { 
+                        left: Math.random()*80+'%', top: Math.random()*90+'%', fontSize: '1.2vw', opacity: 0.3 
+                    }); 
+                } 
+            } 
+
+            // 5. КОМПОЗИЦИЯ ТЕКСТА 
+            if (isChaos) await layoutChaos(isArtifactMode); else await layoutSwiss(); 
         }  
 
-        async function layoutSwiss() {
-            createEl('edge-text f6 visible', slogans[Math.floor(Math.random()*slogans.length)], { top: '0', left: '0' });
-            createEl('edge-text f2 vertical visible', subtitles[Math.floor(Math.random()*subtitles.length)], { right: '0', top: '0' });
+        async function layoutSwiss() { 
+            createEl('edge-text f6 visible', slogans[Math.floor(Math.random()*slogans.length)], { top: '0', left: '0' }); 
+            createEl('edge-text f2 vertical visible', subtitles[Math.floor(Math.random()*subtitles.length)], { right: '0', top: '0' }); 
 
-            const block = createTextBlock(slogans[Math.floor(Math.random()*slogans.length)], true, { left: '10%', top: '40%' });
-            block.classList.add('visible');
-            
-            if (Math.random() > 0.5) {
-                const img = createImage(imageLibrary[Math.floor(Math.random()*imageLibrary.length)], 'normal');
-                img.style.right = '10%'; img.style.top = '15%';
-                img.classList.add('visible');
-            }
-        }
+            const block = createTextBlock(slogans[Math.floor(Math.random()*slogans.length)], true, { left: '10%', top: '40%' }); 
+            block.classList.add('visible'); 
+             
+            if (Math.random() > 0.5) { 
+                const img = createImage(imageLibrary[Math.floor(Math.random()*imageLibrary.length)], 'normal'); 
+                img.style.right = '10%'; img.style.top = '15%'; 
+                img.classList.add('visible'); 
+            } 
+        } 
 
-        async function layoutChaos() {
-            for(let i=0; i<4; i++) {
-                const isHero = i === 0;
-                const txt = isHero ? slogans[Math.floor(Math.random()*slogans.length)] : subtitles[Math.floor(Math.random()*subtitles.length)];
-                const block = createTextBlock(txt, isHero, {
-                    left: Math.random()*50+'%', top: Math.random()*70+'%',
-                    transform: `rotate(${(Math.random()-0.5)*20}deg)`, zIndex: 10
-                });
-                block.classList.add('visible');
+        async function layoutChaos(isArtifactMode) { 
+            const iterations = isArtifactMode ? 6 : 4;
+            for(let i=0; i < iterations; i++) { 
+                const isHero = i === 0; 
+                const txt = isHero ? slogans[Math.floor(Math.random()*slogans.length)] : subtitles[Math.floor(Math.random()*subtitles.length)]; 
                 
-                if (Math.random() > 0.6) {
-                    createImage(imageLibrary[Math.floor(Math.random()*imageLibrary.length)], Math.random() > 0.7 ? 'big' : 'normal').classList.add('visible');
-                }
-                await delay(100);
-            }
-        }
+                const block = createTextBlock(txt, isHero, { 
+                    left: Math.random()*50+'%', top: Math.random()*70+'%', 
+                    transform: `rotate(${(Math.random()-0.5)*20}deg)`, zIndex: 10 
+                }, isArtifactMode); 
 
-        function createTextBlock(txt, isHero, styles) {
-            const block = createEl(isHero ? 'hero' : 'sub-hero', '', styles);
-            let baseSize = isHero ? (txt.length > 15 ? 8 : 12) : (Math.random()*2 + 3);
-            if (isHero && Math.random() < 0.2) baseSize = 18; 
+                block.classList.add('visible'); 
+                 
+                if (Math.random() > 0.6) { 
+                    let type = 'normal';
+                    if (isArtifactMode) type = 'flash';
+                    else type = Math.random() > 0.7 ? 'big' : 'normal';
+
+                    createImage(imageLibrary[Math.floor(Math.random()*imageLibrary.length)], type).classList.add('visible'); 
+                } 
+                await delay(100); 
+            } 
+        } 
+
+        function createTextBlock(txt, isHero, styles, isArtifactMode = false) { 
+            const block = createEl(isHero ? 'hero' : 'sub-hero', '', styles); 
             
-            block.style.fontSize = baseSize + 'vw';
-            txt.split(' ').forEach(word => {
-                const span = document.createElement('span');
-                span.innerText = word + ' ';
-                span.className = fontClasses[Math.floor(Math.random()*8)];
-                block.appendChild(span);
-            });
-            return block;
+            // Расчет размера шрифта (с учетом режима Артефакта из Кода 2)
+            let baseSize;
+            if (isArtifactMode && isHero) {
+                baseSize = Math.random() < 0.4 ? 25 : 18; // Гигантская типографика 25vw
+            } else {
+                baseSize = isHero ? (txt.length > 15 ? 8 : 12) : (Math.random()*2 + 3); 
+                if (isHero && Math.random() < 0.2) baseSize = 18;  
+            }
+             
+            block.style.fontSize = baseSize + 'vw'; 
+            txt.split(' ').forEach(word => { 
+                const span = document.createElement('span'); 
+                span.innerText = word + ' '; 
+                span.className = fontClasses[Math.floor(Math.random()*8)]; 
+                block.appendChild(span); 
+            }); 
+            return block; 
+        } 
+
+        function createArtifact() {
+            const a = document.createElement('div');
+            a.className = 'artifact element visible';
+            const horizontal = Math.random() > 0.5;
+            if (horizontal) {
+                a.style.width = Math.random()*100+'vw'; a.style.height = '2px';
+                a.style.left = '0'; a.style.top = Math.random()*100+'vh';
+            } else {
+                a.style.width = Math.random()*20+'px'; a.style.height = Math.random()*40+'vh';
+                a.style.left = Math.random()*100+'vw'; a.style.top = Math.random()*100+'vh';
+            }
+            document.getElementById('canvas').appendChild(a);
         }
 
         function createEl(cls, txt, styles, parent = null) {  
@@ -243,42 +251,53 @@
             return div;  
         }  
 
-        function createLine(isGrid) {
-            const line = document.createElement('div');
-            line.className = 'line element';
-            const isVert = Math.random() > 0.5;
-            if (isVert) {
-                line.style.width = '1px'; line.style.height = '100vh';
-                line.style.left = isGrid ? (Math.floor(Math.random()*10)*10) + '%' : Math.random()*100 + '%';
-            } else {
-                line.style.width = '100vw'; line.style.height = '1px';
-                line.style.top = isGrid ? (Math.floor(Math.random()*10)*10) + '%' : Math.random()*100 + '%';
-            }
-            document.getElementById('canvas').appendChild(line);
-            return line;
-        }
+        function createLine(isGrid) { 
+            const line = document.createElement('div'); 
+            line.className = 'line element'; 
+            const isVert = Math.random() > 0.5; 
+            if (isVert) { 
+                line.style.width = '1px'; line.style.height = '100vh'; 
+                line.style.left = isGrid ? (Math.floor(Math.random()*10)*10) + '%' : Math.random()*100 + '%'; 
+            } else { 
+                line.style.width = '100vw'; line.style.height = '1px'; 
+                line.style.top = isGrid ? (Math.floor(Math.random()*10)*10) + '%' : Math.random()*100 + '%'; 
+            } 
+            document.getElementById('canvas').appendChild(line); 
+            return line; 
+        } 
 
-        function createImage(src, type) {
-            const container = document.createElement('div');
-            container.className = 'image-container element';
-            if (type === 'shadow') {
-                container.classList.add('image-shadow');
-                container.style.width = '100vw'; container.style.left = '0'; container.style.top = '0';
-            } else if (type === 'big') {
-                container.style.width = (Math.random()*30 + 40) + '%';
-                container.style.top = Math.random()*40 + '%'; container.style.left = Math.random()*40 + '%';
-            } else {
-                container.style.width = (Math.random()*15 + 10) + '%';
-                container.style.top = Math.random()*60 + '%'; container.style.left = Math.random()*60 + '%';
-            }
-            const img = document.createElement('img');
-            img.src = src;
-            container.appendChild(img);
-            document.getElementById('canvas').appendChild(container);
-            return container;
-        }
+        function createImage(src, type) { 
+            const container = document.createElement('div'); 
+            container.className = 'image-container element'; 
+             
+            if (type === 'shadow') { 
+                container.classList.add('image-shadow'); 
+                container.style.width = '100vw'; container.style.left = '0'; container.style.top = '0'; 
+            } else if (type === 'flash') {
+                // Логика вспышки из Кода 2
+                container.classList.add('flash-active');
+                setTimeout(() => {
+                    container.classList.remove('flash-active');
+                    container.classList.add('flash-ghost');
+                }, 800);
+            } else if (type === 'big') { 
+                container.style.width = (Math.random()*30 + 40) + '%'; 
+                container.style.top = Math.random()*40 + '%'; 
+                container.style.left = Math.random()*40 + '%'; 
+            } else { 
+                container.style.width = (Math.random()*15 + 10) + '%'; 
+                container.style.top = Math.random()*60 + '%'; 
+                container.style.left = Math.random()*60 + '%'; 
+            } 
+             
+            const img = document.createElement('img'); 
+            img.src = src; 
+            container.appendChild(img); 
+            document.getElementById('canvas').appendChild(container); 
+            return container; 
+        } 
 
-        window.onload = sequentialSpawn;  
+        window.onload = () => sequentialSpawn(false);  
     </script>  
 </body>  
 </html>
