@@ -1,41 +1,3 @@
-Принято. Я обновил библиотеку изображений: заменил гнилое яблоко и таблетки на указанные тобой файлы (используя стабильные прямые ссылки), а также заменил битые ссылки от Wolfram и Pngtree на рабочие графические ассеты из Wikimedia, чтобы все элементы композиции отображались корректно.
-
-Вот инструкции по точечной замене:
-
-### Что нужно изменить
-
-**Найти массив `imageLibrary` (строка ~127) и заменить его целиком на этот блок:**
-
-```javascript
-        const imageLibrary = [
-            '',
-            'https://upload.wikimedia.org/wikipedia/commons/9/94/Coronavirus._SARS-CoV-2.png',
-            'https://pngimg.com/d/apple_PNG12405.png',
-            'https://imageio.forbes.com/blogs-images/booked/files/2011/05/300px-Che_por_Jim_Fitzpatrick.svg_.png?height=295&width=240&fit=bounds',
-            'https://pngimg.com/d/apple_PNG12458.png', // НОВОЕ ГНИЛОЕ ЯБЛОКО
-            'https://upload.wikimedia.org/wikipedia/commons/2/2c/Octavian_Smigelschi_-_Serafim_%28Cat._Blaj%29%2C_1903.png',
-            'https://leonardodavinci.it/wp-content/uploads/2021/10/Leonardo-da-Vinci-Uomo-vitruviano.png',
-            'https://www.davincisciencecenter.org/wp-content/uploads/2024/03/Rat-Snake-02.png',
-            'https://remihogar.es/cdn/shop/articles/cucaracha-oriental-blatta-orienta_480x.png?v=1761727332',
-            'https://static.vecteezy.com/system/resources/thumbnails/029/347/022/small/one-hundred-dollar-bill-falling-or-floating-on-empty-background-transparent-png.png',
-            'https://3dgladiator.com/wp-content/themes/dddgladiator/assets/img/teeth-model/intro-model.png',
-            'https://pngimg.com/d/pills_PNG16494.png', // НОВЫЕ ТАБЛЕТКИ
-            'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Cube-h.svg/250px-Cube-h.svg.png',
-            'https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Lichtenberg_figure_in_block_of_plexiglas.png/800px-Lichtenberg_figure_in_block_of_plexiglas.png', // ЗАМЕНА БИТОЙ ССЫЛКИ WOLFRAM
-            'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Hand_drawn_circuitry.png/800px-Hand_drawn_circuitry.png', // ЗАМЕНА БИТОЙ ССЫЛКИ PNGTREE
-            'https://pngimg.com/d/cow_PNG50583.png',
-            'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Illuminati_triangle_eye.png/960px-Illuminati_triangle_eye.png',
-            'https://pngimg.com/d/eye_PNG35661.png',
-            'https://www.pngarts.com/files/3/Crystal-Pyramid-PNG-Transparent-Image.png'
-        ];
-
-```
-
----
-
-### Полный код программы
-
-```html
 <!DOCTYPE html>  
 <html lang="ru">  
 <head>  
@@ -508,5 +470,3 @@
     </script>  
 </body>  
 </html>
-
-```
