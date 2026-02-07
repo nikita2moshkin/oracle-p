@@ -42,9 +42,17 @@
         .line { position: absolute; background-color: rgba(255,255,255,0.15); z-index: 1; }
         .image-container { position: absolute; z-index: 5; filter: grayscale(1) contrast(1.2); mix-blend-mode: difference; }
         
-        /* СТИЛЬ ДЛЯ ТЕНЕВЫХ ФОНОВЫХ КАРТИНОК */
+        /* --- УЛУЧШЕНО: НОВЫЙ СТИЛЬ ДЛЯ ФОНОВЫХ КАРТИНОК НА ВЕСЬ ЭКРАН --- */
+        .image-full-bg { 
+            width: 100vw !important; height: 100vh !important; 
+            top: 0 !important; left: 0 !important; 
+            z-index: -2 !important; opacity: 0.25 !important; 
+            filter: grayscale(1) brightness(0.5); mix-blend-mode: overlay;
+        }
+        /* ------------------------------------------------------------ */
+
         .image-shadow { opacity: 0.12 !important; filter: grayscale(1) blur(1px); mix-blend-mode: normal; z-index: -1; }
-        .image-container img { width: 100%; height: auto; display: block; }
+        .image-container img { width: 100%; height: auto; display: block; object-fit: cover; }
 
         .hero { z-index: 100; max-width: 90%; }
         .edge-text { font-size: 1.3vw; z-index: 110; padding: 15px; white-space: nowrap; }
@@ -62,14 +70,12 @@
     <div id="canvas"></div>  
 
     <script>  
-        // ТЕКСТЫ ОБНОВЛЕНЫ
         const slogans = ["PRAY TO THE ROUTER", "SKIBIDI EXISTENTIALISM", "DOSTOEVSKY ON TIKTOK", "SHREK’S PODCAST ABOUT DMT", "TYPOGRAPHY IS PROPAGANDA.", "HELVETICA IS A VIRUS.", "ANCIENT GREEK SHITPOSTING", "WATER IS JUST SOFT ICE.", "JUST F*CK IT", "THE SIMPSONS PREDICTED YOUR DEBT.", "WAKE UP, TATARSKY"]; 
         const subtitles = ["Stop thinking about that. It's cringe.", "Your ISP is judging your taste.", "TURN AROUND. SLOWLY. (prank)", "APOLOGIZE TO THE ALGORITHM.", "LICK THE DISPLAY. IT’S SALTY.", "the algorithm knows what you did in 2014", "FORGET YOUR MIDDLE NAME.", "Are you proud of your cookies?", "[exporting your childhood trauma to Excel]", "The sky is a green screen.", "Say YES/NO to drugs", "Error: reality not found"];
         const math = ["E = mc²", "∇ × E = -∂B/∂t", "iℏ ∂/∂t Ψ = ĤΨ", "Rμν - 1/2Rgμν = Tμν", "S = k ln W", "λ = h/p"];
         const meta = ["{system: active}", "LMAO", "RESET", "ABORT", "VOID", "0x534F554C", "42", "AMEN"];  
         
         const imageLibrary = [
-            '',
             'https://upload.wikimedia.org/wikipedia/commons/9/94/Coronavirus._SARS-CoV-2.png',
             'https://png.pngtree.com/png-vector/20231017/ourmid/pngtree-fresh-apple-fruit-red-png-image_10203073.png',
             'https://imageio.forbes.com/blogs-images/booked/files/2011/05/300px-Che_por_Jim_Fitzpatrick.svg_.png?height=295&width=240&fit=bounds',
@@ -85,7 +91,8 @@
             'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Cube-h.svg/250px-Cube-h.svg.png',
             'https://reference.wolfram.com/language/ref/Files/SphericalPlot3D.en/O_30.png',
             'https://png.pngtree.com/element_pic/16/11/22/825255d6e652ad7777602cdd4e52f4fe.png',
-            'https://www.giantfreakinrobot.com/wp-content/uploads/2021/03/brain-3168269_1280-e1669331427390-900x506.png',
+            'https://pngimg.com/d/cow_PNG50583.png',
+            'https://experiencelife.lifetime.life/wp-content/uploads/2021/02/Talking-Trash-e1746736243231.jpg',
             'https://uweed.ch/wp-content/uploads/2025/07/slow-weed-durban-poison-greenhouse-uweed-cbd-shop-02.png',
             'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Illuminati_triangle_eye.png/960px-Illuminati_triangle_eye.png'
         ];
@@ -120,15 +127,18 @@
             const isChaos = Math.random() < 0.4;
             document.body.className = (Math.random() < 0.15) ? 'white-mode' : '';
 
-            // 1. ЦЕНТРАЛЬНЫЙ СИМВОЛ (P или ?)
+            // 1. ЦЕНТРАЛЬНЫЙ СИМВОЛ
             const centerChar = Math.random() < 0.1 ? "?" : "P";
             createEl('giant-bg f6 visible', centerChar, {});
 
-            // 2. ФОНОВАЯ ТЕНЬ (Большая картинка с низкой прозрачностью)
-            if (Math.random() < 0.3) {
-                const shadowImg = createImage(imageLibrary[Math.floor(Math.random()*imageLibrary.length)], 'shadow');
-                shadowImg.classList.add('visible');
+            // --- УЛУЧШЕНО: ФОНОВАЯ КАРТИНКА СТАЛА ЧАЩЕ И МОЖЕТ БЫТЬ FULL-BG ---
+            const bgRoll = Math.random();
+            if (bgRoll < 0.3) {
+                createImage(imageLibrary[Math.floor(Math.random()*imageLibrary.length)], 'full-bg').classList.add('visible');
+            } else if (bgRoll < 0.6) {
+                createImage(imageLibrary[Math.floor(Math.random()*imageLibrary.length)], 'shadow').classList.add('visible');
             }
+            // -------------------------------------------------------------
 
             // 3. ЛИНИИ И ФОРМУЛЫ
             const lineCount = isChaos ? 2 : 5;
@@ -147,35 +157,37 @@
         }  
 
         async function layoutSwiss() {
-            // Текст по краям
             createEl('edge-text f6 visible', slogans[Math.floor(Math.random()*slogans.length)], { top: '0', left: '0' });
             createEl('edge-text f2 vertical visible', subtitles[Math.floor(Math.random()*subtitles.length)], { right: '0', top: '0' });
 
             const block = createTextBlock(slogans[Math.floor(Math.random()*slogans.length)], true, { left: '10%', top: '40%' });
             block.classList.add('visible');
             
-            if (Math.random() > 0.5) {
-                const img = createImage(imageLibrary[Math.floor(Math.random()*imageLibrary.length)], 'normal');
-                img.style.right = '10%'; img.style.top = '15%';
+            // --- УЛУЧШЕНО: БОЛЬШЕ ШАНСОВ НА КАРТИНКУ В ШВЕЙЦАРСКОМ СТИЛЕ ---
+            if (Math.random() > 0.3) {
+                const img = createImage(imageLibrary[Math.floor(Math.random()*imageLibrary.length)], 'big');
+                img.style.right = '5%'; img.style.top = '10%';
                 img.classList.add('visible');
             }
         }
 
         async function layoutChaos() {
-            for(let i=0; i<4; i++) {
+            for(let i=0; i<6; i++) { // Увеличено количество итераций для плотности
                 const isHero = i === 0;
                 const txt = isHero ? slogans[Math.floor(Math.random()*slogans.length)] : subtitles[Math.floor(Math.random()*subtitles.length)];
+                
+                if (Math.random() > 0.4) { // Частый спавн картинок в хаосе
+                    const type = Math.random() > 0.6 ? 'big' : 'normal';
+                    createImage(imageLibrary[Math.floor(Math.random()*imageLibrary.length)], type).classList.add('visible');
+                }
+
                 const block = createTextBlock(txt, isHero, {
                     left: Math.random()*50+'%', top: Math.random()*70+'%',
-                    transform: `rotate(${(Math.random()-0.5)*20}deg)`, zIndex: 10
+                    transform: `rotate(${(Math.random()-0.5)*30}deg)`, zIndex: 10
                 });
                 block.classList.add('visible');
                 
-                if (Math.random() > 0.6) {
-                    const type = Math.random() > 0.7 ? 'big' : 'normal';
-                    createImage(imageLibrary[Math.floor(Math.random()*imageLibrary.length)], type).classList.add('visible');
-                }
-                await delay(100);
+                await delay(80);
             }
         }
 
@@ -218,19 +230,24 @@
             return line;
         }
 
+        /* --- УЛУЧШЕНО: ЛОГИКА ТИПОВ И РАЗМЕРОВ КАРТИНОК --- */
         function createImage(src, type) {
+            if (!src) src = imageLibrary[1]; // fallback
             const container = document.createElement('div');
             container.className = 'image-container element';
             
-            if (type === 'shadow') {
+            if (type === 'full-bg') {
+                container.classList.add('image-full-bg');
+            } else if (type === 'shadow') {
                 container.classList.add('image-shadow');
-                container.style.width = '100vw'; container.style.left = '0'; container.style.top = '0';
+                container.style.width = '90vw'; container.style.left = '5%'; container.style.top = '5%';
             } else if (type === 'big') {
-                container.style.width = (Math.random()*30 + 40) + '%';
-                container.style.top = Math.random()*40 + '%';
-                container.style.left = Math.random()*40 + '%';
+                container.style.width = (Math.random()*40 + 30) + '%'; // До 70% экрана
+                container.style.top = Math.random()*30 + '%';
+                container.style.left = Math.random()*30 + '%';
+                container.style.zIndex = "2";
             } else {
-                container.style.width = (Math.random()*15 + 10) + '%';
+                container.style.width = (Math.random()*25 + 15) + '%';
                 container.style.top = Math.random()*60 + '%';
                 container.style.left = Math.random()*60 + '%';
             }
@@ -241,6 +258,7 @@
             document.getElementById('canvas').appendChild(container);
             return container;
         }
+        /* -------------------------------------------------- */
 
         window.onload = sequentialSpawn;  
     </script>  
