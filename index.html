@@ -58,9 +58,20 @@
         }
         #count-num { font-size: 2vw; font-weight: 900; line-height: 1; }
         #count-phrase { font-size: 0.7vw; opacity: 0; transition: opacity 0.5s; display: block; margin-top: 5px; }
+
+        /* АНИМАЦИЯ ТРЯСКИ */
+        @keyframes shake {
+            0% { transform: translate(0, 0); }
+            25% { transform: translate(5px, -5px); }
+            50% { transform: translate(-5px, 5px); }
+            75% { transform: translate(5px, 5px); }
+            100% { transform: translate(0, 0); }
+        }
+        .shaking { animation: shake 0.1s infinite; }
+        .white-flash { background-color: #fff !important; transition: background 0.2s; }
     </style>  
 </head>  
-<body onclick="handleInteraction()">  
+<body onmousedown="startHold()" onmouseup="endHold()" ontouchstart="startHold()" ontouchend="endHold()" onclick="handleInteraction()">  
 
     <div class="counter-container">
         <div id="count-num">0000</div>
@@ -72,6 +83,8 @@
 
     <script>  
         let totalClicks = 0;
+        let holdTimer;
+        let isResetting = false;
         const phraseLib = ["KEEP SCROLLING", "DON'T STOP", "STAY TUNED"];
         
         function updateCounter() {
@@ -86,12 +99,61 @@
             }
         }
 
-        const slogans = ["Just F*ck It", "Don't Think Different", "Think Simulacrum", "Believe in Worst", "BECAUSE YOU'RE A PRODUCT", "Want a break from the ads?", "Enjoy the Emptiness", "Keep Scrolling", "Taste the Nothing", "Save 50% on your karma", "Subscribe to Reality+", "Limited time offer: Reincarnation", "God is a beta tester", "1000 AURA VOID", "J-SUS X", "Buddha’s Premium Plan", "Jesus: Sponsored by Raid: Shadow Legends", "The Holy Grail: Free Shipping", "Satan: Unsubscribe at any time", "WinRAR: Please buy the license.", "iPhone (New One)", "Everything must go.", "Sold my data for a donut.", "Sponsored by your insecurities", "Luxury is a mental illness", "Optimized for disappointment", "Your soul is a DLC", "Skibidi Capitalism", "Brainrot Premium"]; 
-        const subtitles = ["Naruto vs Elon Musk!?", "Shrek: Podcast about DMT", "Adam and Eva were smoking pot!", "Fish learned to swim underwater", "Who still remembers Skype?", "goofy ahh", "Meta-Vegan", "QR CODE 2", "1000 Aura", "One Million Likes", "Smells Like Trend Spirit", "Dinosaurs died from cringe", "Birds are not real", "Sigma Male: 100% Organic", "Mecca: Now in Metaverse", "Internet Explorer: Still loading...", "We are cooked...", "Aliens turned out to be racists", "Post-Irony is the new religion", "HTML IS NOT REAL", "CSS IS PROPAGANDA", "JAVASCRIPT IS A SIN", "Cookies are watching you", "Gluten-Free Ego"];
-        const math = ["E = mc²", "∇ × E = -∂B/∂t", "iℏ ∂/∂t Ψ = ĤΨ", "Rμν - 1/2Rgμν = Tμν"];
+        function startHold() {
+            if (isResetting) return;
+            holdTimer = setTimeout(async () => {
+                isResetting = true;
+                document.body.classList.add('shaking');
+                await delay(500);
+                document.body.classList.add('white-flash');
+                await delay(300);
+                resetSystem();
+            }, 3000);
+        }
+
+        function endHold() {
+            clearTimeout(holdTimer);
+            if (!isResetting) document.body.classList.remove('shaking');
+        }
+
+        function resetSystem() {
+            const canvas = document.getElementById('canvas');
+            canvas.innerHTML = '';
+            document.body.className = ''; 
+            totalClicks = 0;
+            document.getElementById('count-num').innerText = '0000';
+            createEl('giant-bg f6 visible', "P", {});
+            isResetting = false;
+        }
+
+        const slogans = [
+            "Just F*ck It", "Don't Think Different", "Think Simulacrum", "Believe in Worst", 
+            "BECAUSE YOU'RE A PRODUCT", "Want a break from the ads?", "Enjoy the Emptiness", 
+            "Keep Scrolling", "Taste the Nothing", "Save 50% on your karma", "Subscribe to Reality+", 
+            "Limited time offer: Reincarnation", "God is a beta tester", "1000 AURA VOID", 
+            "J-SUS X", "Buddha’s Premium Plan", "Jesus: Sponsored by Raid: Shadow Legends", 
+            "The Holy Grail: Free Shipping", "Satan: Unsubscribe at any time", 
+            "WinRAR: Please buy the license. Anyone, please", "Coca-Cola returned the original recipe", 
+            "iPhone (New One)", "Everything must go. Including you.", "Sold my data for a donut.", 
+            "Sponsored by your insecurities", "Luxury is a mental illness", "Optimized for disappointment", 
+            "Your soul is a DLC", "Naruto vs Elon Musk!?", "Shrek: Podcast about DMT", 
+            "Adam and Eva were smoking pot!", "Fish learned to swim underwater", "Who still remembers Skype?", 
+            "goofy ahh", "Meta-Vegan", "QR CODE 2", "1000 Aura", "One Million Likes", 
+            "Smells Like Trend Spirit", "One Million Likes to Reboot", "Dinosaurs died from cringe", 
+            "Birds are not real: Premium Edition", "Sigma Male: 100% Organic", "Mecca: Now in Metaverse", 
+            "Internet Explorer: Still loading...", "We are cooked...", "42", "Bill was killed (Press F)", 
+            "Aliens turned out to be racists", "The world is over! Everyone suffers! (except Bali)", "Oops...", 
+            "Post-Irony is the new religion", "Skibidi Capitalism", "Brainrot Premium (Ad-free)", 
+            "HTML IS NOT REAL", "CSS IS PROPAGANDA", "JAVASCRIPT IS A SIN", "PRAY TO THE ROUTER", 
+            "SKIBIDI EXISTENTIALISM", "DOSTOEVSKY ON TIKTOK", "TYPOGRAPHY IS PROPAGANDA."
+        ]; 
+
+        const subtitles = ["Stop thinking about that. It's cringe.", "Your ISP is judging your taste.", "TURN AROUND. SLOWLY. (prank)", "APOLOGIZE TO THE ALGORITHM.", "LICK THE DISPLAY. IT’S SALTY.", "the algorithm knows what you did in 2014", "FORGET YOUR MIDDLE NAME.", "Are you proud of your cookies?", "[exporting your childhood trauma to Excel]", "The sky is a green screen.", "Say YES/NO to drugs", "Error: reality not found"];
+        const math = ["E = mc²", "∇ × E = -∂B/∂t", "iℏ ∂/∂t Ψ = ĤΨ", "Rμν - 1/2Rgμν = Tμν", "S = k ln W", "λ = h/p"];
         const meta = ["{system: active}", "LMAO", "RESET", "ABORT", "VOID", "0x534F554C", "42", "AMEN"];  
         
         const imageLibrary = [
+            '',
             'https://upload.wikimedia.org/wikipedia/commons/9/94/Coronavirus._SARS-CoV-2.png',
             'https://png.pngtree.com/png-vector/20231017/ourmid/pngtree-fresh-apple-fruit-red-png-image_10203073.png',
             'https://imageio.forbes.com/blogs-images/booked/files/2011/05/300px-Che_por_Jim_Fitzpatrick.svg_.png?height=295&width=240&fit=bounds',
@@ -117,27 +179,11 @@
         const fontClasses = ["f1", "f2", "f3", "f4", "f5", "f6", "f7", "f8"];
         const delay = ms => new Promise(res => setTimeout(res, ms));
 
-        let pressTimer;
         function handleInteraction() {
-            if (isLocked) return;
-            sequentialSpawn();
+            if (isLocked || isResetting) return;
+            if (Math.random() < 0.04) triggerHardGlitch();
+            else sequentialSpawn();
         }
-
-        // Очистка при нажатии 4 секунды
-        document.body.onmousedown = (e) => {
-            pressTimer = setTimeout(() => {
-                const canvas = document.getElementById('canvas');
-                canvas.innerHTML = '';
-                totalClicks = 0;
-                document.getElementById('count-num').innerText = '0000';
-                createEl('hero visible f6', 'SYSTEM RESET', { left: '50%', top: '50%', transform: 'translate(-50%, -50%)', fontSize: '10vw' });
-                isLocked = true;
-                setTimeout(() => { isLocked = false; canvas.innerHTML = ''; }, 1000);
-            }, 4000);
-        };
-        document.body.onmouseup = () => clearTimeout(pressTimer);
-        document.body.ontouchstart = (e) => document.body.onmousedown(e);
-        document.body.ontouchend = () => clearTimeout(pressTimer);
 
         async function triggerHardGlitch() {
             isLocked = true;
@@ -157,7 +203,7 @@
             updateCounter();
             const canvas = document.getElementById('canvas'); 
             canvas.innerHTML = ''; 
-            const isChaos = Math.random() < 0.5;
+            const isChaos = Math.random() < 0.4;
             document.body.className = (Math.random() < 0.15) ? 'white-mode' : '';
 
             createEl('giant-bg f6 visible', "P", {});
@@ -170,7 +216,7 @@
                     requestAnimationFrame(() => {
                         megaImg.classList.add('visible');
                         setTimeout(() => { megaImg.style.opacity = '0'; }, 100);
-                        setTimeout(() => megaImg.remove(), 3500);
+                        setTimeout(() => megaImg.remove(), 3500); 
                     });
                 }
             } else if (bgRnd < 0.15) {
@@ -185,74 +231,149 @@
                 shadowImg.classList.add('visible');
             }
 
-            // Линии теперь спавнятся не всегда
-            if (Math.random() < 0.6) {
-                const lineCount = isChaos ? 2 : 4;
-                for (let i = 0; i < lineCount; i++) createLine(!isChaos).classList.add('visible');
+            const lineCount = isChaos ? 3 : 6;
+            for (let i = 0; i < lineCount; i++) createLine(!isChaos).classList.add('visible');
+            
+            if (!isChaos) {
+                for(let i=0; i<3; i++) {
+                    createEl('element f4 visible', math[Math.floor(Math.random()*math.length)], {
+                        left: Math.random()*80+'%', top: Math.random()*90+'%', fontSize: '1.2vw', opacity: 0.3
+                    });
+                }
             }
 
             const mode = Math.random();
-            if (mode < 0.25) await layoutSwiss();
-            else if (mode < 0.50) await layoutChaos();
-            else if (mode < 0.70) await layoutBurst();
+            if (mode < 0.15) await layoutSwiss();
+            else if (mode < 0.30) await layoutChaos();
+            else if (mode < 0.45) await layoutGrid();
+            else if (mode < 0.60) await layoutMinimal();
+            else if (mode < 0.75) await layoutBurst();
             else if (mode < 0.85) await layoutSplit();
+            else if (mode < 0.95) await layoutColumns(); // Новая композиция
             else await layoutWildcard();
         }  
 
         async function layoutSwiss() {
             createEl('edge-text f6 visible', slogans[Math.floor(Math.random()*slogans.length)], { top: '0', left: '0' });
             createEl('edge-text f2 vertical visible', subtitles[Math.floor(Math.random()*subtitles.length)], { right: '0', top: '0' });
+            const hasVerticalRight = Math.random() < 0.4;
+            if (hasVerticalRight) {
+                const vBlock = createTextBlock(slogans[Math.floor(Math.random()*slogans.length)], true, { 
+                    right: '2%', top: '5%', writingMode: 'vertical-rl', transform: 'rotate(180deg)', height: '90vh'
+                });
+                vBlock.classList.add('visible');
+            }
             const block = createTextBlock(slogans[Math.floor(Math.random()*slogans.length)], true, { left: '10%', top: '40%' });
             block.classList.add('visible');
+            if (Math.random() > 0.5) {
+                const img = createImage(imageLibrary[Math.floor(Math.random()*imageLibrary.length)], 'normal');
+                img.style.right = hasVerticalRight ? '20%' : '10%'; 
+                img.style.top = '15%'; img.classList.add('visible');
+            }
         }
 
         async function layoutChaos() {
             for(let i=0; i<4; i++) {
-                const txt = slogans[Math.floor(Math.random()*slogans.length)];
-                const block = createTextBlock(txt, true, {
+                const isHero = i === 0;
+                const txt = isHero ? slogans[Math.floor(Math.random()*slogans.length)] : subtitles[Math.floor(Math.random()*subtitles.length)];
+                const block = createTextBlock(txt, isHero, {
                     left: Math.random()*50+'%', top: Math.random()*70+'%',
-                    transform: `rotate(${(Math.random()-0.5)*40}deg)`, zIndex: 10
+                    transform: `rotate(${(Math.random()-0.5)*20}deg)`, zIndex: 10
                 });
                 block.classList.add('visible');
+                if (Math.random() > 0.6) {
+                    const type = Math.random() > 0.7 ? 'big' : 'normal';
+                    createImage(imageLibrary[Math.floor(Math.random()*imageLibrary.length)], type).classList.add('visible');
+                }
                 await delay(100);
             }
+        }
+
+        async function layoutGrid() {
+            createEl('edge-text f6 visible', slogans[Math.floor(Math.random()*slogans.length)], { top: '10%', left: '10%' });
+            createEl('edge-text f4 visible', subtitles[Math.floor(Math.random()*subtitles.length)], { bottom: '10%', left: '10%' });
+            const img = createImage(imageLibrary[Math.floor(Math.random()*imageLibrary.length)], 'big');
+            img.style.left = '50%'; img.style.top = '20%'; img.classList.add('visible');
+            const block = createTextBlock(meta[Math.floor(Math.random()*meta.length)], true, { right: '10%', bottom: '20%' });
+            block.classList.add('visible');
+        }
+
+        async function layoutMinimal() {
+            createLine(false); 
+            const txt = slogans[Math.floor(Math.random()*slogans.length)];
+            const block = createTextBlock(txt.split(' ')[0], true, { left: '50%', top: '50%', transform: 'translate(-50%, -50%)' });
+            block.classList.add('visible');
         }
 
         async function layoutBurst() {
             const centerTxt = slogans[Math.floor(Math.random()*slogans.length)];
             createTextBlock(centerTxt, true, { left: '50%', top: '50%', transform: 'translate(-50%, -50%)', zIndex: 20 }).classList.add('visible');
-            for(let i=0; i<6; i++) {
+            for(let i=0; i<5; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const dist = Math.random() * 30 + 20;
+                const x = 50 + Math.cos(angle) * dist;
+                const y = 50 + Math.sin(angle) * dist;
                 createEl('element f7 visible', meta[Math.floor(Math.random()*meta.length)], {
-                    left: Math.random()*100+'%', top: Math.random()*100+'%', fontSize: '1.5vw'
+                    left: x+'%', top: y+'%', fontSize: '1vw', transform: `rotate(${angle}rad)`
                 });
+                await delay(50);
             }
         }
 
         async function layoutSplit() {
-            const isVert = Math.random() > 0.5;
+            const isVertSplit = Math.random() > 0.5;
             const splitLine = createLine(false);
-            splitLine.style.width = isVert ? '15px' : '100vw';
-            splitLine.style.height = isVert ? '100vh' : '15px';
-            splitLine.style.left = isVert ? '50%' : '0';
-            splitLine.style.top = isVert ? '0' : '50%';
+            splitLine.style.width = isVertSplit ? '10px' : '100vw';
+            splitLine.style.height = isVertSplit ? '100vh' : '10px';
+            splitLine.style.left = isVertSplit ? '50%' : '0';
+            splitLine.style.top = isVertSplit ? '0' : '50%';
+            if(isVertSplit) splitLine.style.transform = 'translateX(-50%)'; else splitLine.style.transform = 'translateY(-50%)';
             const txt = slogans[Math.floor(Math.random()*slogans.length)];
-            createTextBlock(txt, true, { left: '25%', top: '50%', transform: 'translate(-50%, -50%)', textAlign: 'center' }).classList.add('visible');
+            createTextBlock(txt, true, { 
+                left: isVertSplit ? '25%' : '50%', top: isVertSplit ? '50%' : '25%', 
+                transform: 'translate(-50%, -50%)', textAlign: 'center', maxWidth: '40%'
+            }).classList.add('visible');
+            const img = createImage(imageLibrary[Math.floor(Math.random()*imageLibrary.length)], 'normal');
+            img.style.left = isVertSplit ? '75%' : '50%'; img.style.top = isVertSplit ? '50%' : '75%';
+            img.style.transform = 'translate(-50%, -50%)'; img.classList.add('visible');
+        }
+
+        async function layoutColumns() {
+            const colWidth = 33;
+            for (let i = 0; i < 3; i++) {
+                const txt = subtitles[Math.floor(Math.random()*subtitles.length)];
+                createEl('element f4 visible', txt, {
+                    left: (i * colWidth + 5) + '%',
+                    top: '10%', width: '25%', fontSize: '1vw', opacity: 0.6, lineHeight: '1.5'
+                });
+                if (Math.random() > 0.5) createLine(false).style.left = (i * colWidth + colWidth) + '%';
+            }
+            const mainTxt = slogans[Math.floor(Math.random()*slogans.length)];
+            createTextBlock(mainTxt, true, { left: '10%', bottom: '15%' }).classList.add('visible');
         }
 
         async function layoutWildcard() {
-            const count = Math.floor(Math.random() * 4) + 3;
+            const count = Math.floor(Math.random() * 5) + 3; 
             for(let i=0; i<count; i++) {
-                const txt = Math.random() > 0.5 ? slogans[Math.floor(Math.random()*slogans.length)] : subtitles[Math.floor(Math.random()*subtitles.length)];
-                createTextBlock(txt, Math.random() > 0.5, {
-                    left: Math.random()*70+'%', top: Math.random()*70+'%', transform: `rotate(${(Math.random()-0.5)*180}deg)`
-                }).classList.add('visible');
-                await delay(100);
+                if (Math.random() > 0.5) {
+                    const isHero = Math.random() > 0.7;
+                    const txt = isHero ? slogans[Math.floor(Math.random()*slogans.length)] : subtitles[Math.floor(Math.random()*subtitles.length)];
+                    createTextBlock(txt, isHero, {
+                        left: Math.random()*80+'%', top: Math.random()*80+'%',
+                        transform: `rotate(${(Math.random()-0.5)*90}deg)` 
+                    }).classList.add('visible');
+                } else {
+                    const type = Math.random() > 0.7 ? 'big' : 'normal';
+                    createImage(imageLibrary[Math.floor(Math.random()*imageLibrary.length)], type).classList.add('visible');
+                }
+                await delay(150);
             }
         }
 
         function createTextBlock(txt, isHero, styles) {
             const block = createEl(isHero ? 'hero' : 'sub-hero', '', styles);
-            let baseSize = isHero ? (txt.length > 15 ? 7 : 10) : (Math.random()*2 + 3);
+            let baseSize = isHero ? (txt.length > 15 ? 8 : 12) : (Math.random()*2 + 3);
+            if (isHero && Math.random() < 0.2) baseSize = 18; 
             block.style.fontSize = baseSize + 'vw';
             txt.split(' ').forEach(word => {
                 const span = document.createElement('span');
@@ -276,7 +397,8 @@
             const line = document.createElement('div');
             line.className = 'line element visible';
             const isVert = Math.random() > 0.5;
-            const thickness = ['1px', '2px', '8px', '20px'][Math.floor(Math.random()*4)];
+            const weights = ['1px', '1px', '2px', '5px', '15px'];
+            const thickness = weights[Math.floor(Math.random() * weights.length)];
             if (isVert) {
                 line.style.width = thickness; line.style.height = '100vh';
                 line.style.left = isGrid ? (Math.floor(Math.random()*10)*10) + '%' : Math.random()*100 + '%';
@@ -300,8 +422,11 @@
                 container.style.transform = 'translate(-50%, -50%)';
                 container.style.zIndex = '50'; container.style.opacity = '1';
                 container.style.transition = 'opacity 3s ease-out';
+            } else if (type === 'big') {
+                container.style.width = (Math.random()*30 + 40) + '%';
+                container.style.top = Math.random()*40 + '%'; container.style.left = Math.random()*40 + '%';
             } else {
-                container.style.width = (Math.random()*25 + 15) + '%';
+                container.style.width = (Math.random()*15 + 10) + '%';
                 container.style.top = Math.random()*60 + '%'; container.style.left = Math.random()*60 + '%';
             }
             const img = document.createElement('img');
