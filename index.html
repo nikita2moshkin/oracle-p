@@ -3,7 +3,7 @@
 <head>  
     <meta charset="UTF-8">  
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">  
-    <title>ORACLE.P | ECAL SWISS SYSTEM</title>  
+    <title>ORACLE.P | ECAL ARTIFACT SYSTEM</title>  
     <style>  
         body, html {  
             margin: 0; padding: 0; width: 100%; height: 100%;  
@@ -13,52 +13,46 @@
             font-family: "Helvetica Neue", Arial, sans-serif;
         }  
 
-        body.white-mode { background-color: #f0f0f0; color: #000; }
+        body.white-mode { background-color: #fff; color: #000; }
         body.white-mode .line { background-color: #000; }
         
         #canvas { position: relative; width: 100vw; height: 100vh; overflow: hidden; }  
-        .element { position: absolute; word-wrap: break-word; line-height: 0.85; opacity: 0; transition: opacity 0.6s cubic-bezier(0.23, 1, 0.32, 1); }  
+        .element { position: absolute; word-wrap: break-word; line-height: 0.75; opacity: 0; transition: opacity 0.4s ease-out; }  
         .visible { opacity: 1 !important; }
 
-        /* ТИПОГРАФИКА */  
-        .f1 { font-family: "Impact", sans-serif; font-weight: 800; letter-spacing: -0.02em; } 
-        .f2 { font-family: "Helvetica Neue", sans-serif; font-weight: 200; letter-spacing: 0.05em; } 
+        /* ТИПОГРАФИКА: ЕЩЕ БОЛЬШЕ И ЖЕСТЧЕ */  
+        .f1 { font-family: "Impact", sans-serif; font-weight: 800; letter-spacing: -0.05em; } 
+        .f2 { font-family: "Helvetica Neue", sans-serif; font-weight: 200; letter-spacing: 0.1em; } 
         .f3 { font-family: "Georgia", serif; font-style: italic; text-transform: none; } 
         .f4 { font-family: "Courier New", monospace; font-weight: 400; } 
-        .f5 { font-family: "Arial Black", sans-serif; font-weight: 800; transform: scaleX(0.9); transform-origin: left; } 
+        .f5 { font-family: "Arial Black", sans-serif; font-weight: 900; transform: scaleY(1.2); } 
         .f6 { font-family: "Helvetica", sans-serif; font-weight: 900; } 
-        .f7 { font-family: "Courier", monospace; font-weight: 700; border-bottom: 0.1em solid currentColor; } 
-        .f8 { font-family: "Arial Black", sans-serif; font-weight: 900; letter-spacing: 0.1em; transform: scaleX(1.1); transform-origin: left; } 
-
-        /* ЭФФЕКТЫ */
-        .vertical { writing-mode: vertical-rl; transform: rotate(180deg); }
-        .ghost-kindle { 
-            position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
-            z-index: -10; object-fit: cover;
-            filter: grayscale(1) contrast(1.5) brightness(1.4);
-            opacity: 0.12 !important;
-            mix-blend-mode: multiply;
-        }
-        body.white-mode .ghost-kindle { opacity: 0.08 !important; mix-blend-mode: darken; }
+        .f7 { font-family: "Courier", monospace; font-weight: 700; border-bottom: 0.2em solid currentColor; } 
+        .f8 { font-family: "Arial Black", sans-serif; font-weight: 900; letter-spacing: -0.02em; transform: scaleX(1.4); transform-origin: left; } 
 
         .giant-bg { 
-            font-size: 88vh; font-weight: 900; position: absolute;
+            font-size: 95vh; font-weight: 900; position: absolute;
             top: 50%; left: 50%; transform: translate(-50%, -50%);
-            color: #222; opacity: 0.15; z-index: -5; pointer-events: none;
+            color: #222; opacity: 0.12; z-index: 0; pointer-events: none;
         }
-        body.white-mode .giant-bg { color: #ccc; }
 
-        .line { position: absolute; background-color: rgba(255,255,255,0.1); z-index: 1; }
-        .image-container { position: absolute; z-index: 5; filter: grayscale(1); mix-blend-mode: difference; }
+        .line { position: absolute; background-color: rgba(255,255,255,0.3); z-index: 1; }
+        
+        /* --- АРТЕФАКТЫ --- */
+        .artifact { position: absolute; background: currentColor; opacity: 0.4; z-index: 200; mix-blend-mode: exclusion; }
+
+        /* --- ИЗОБРАЖЕНИЯ: ЛОГИКА ВСПЫШКИ --- */
+        .image-container { position: absolute; z-index: 5; filter: grayscale(1) contrast(1.5); mix-blend-mode: difference; transition: all 0.8s cubic-bezier(0.2, 1, 0.3, 1); }
         .image-container img { width: 100%; height: auto; display: block; }
 
-        .hero { z-index: 100; max-width: 95%; }
-        .edge-text { font-size: 1.1vw; z-index: 110; padding: 15px; white-space: nowrap; }
+        .flash-active { opacity: 1 !important; width: 100vw !important; height: 100vh !important; top: 0 !important; left: 0 !important; z-index: 1000 !important; filter: grayscale(0) invert(1) !important; }
+        .flash-ghost { opacity: 0.08 !important; filter: grayscale(1) blur(5px) !important; z-index: -1 !important; mix-blend-mode: normal !important; }
 
-        #glitch-overlay { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: #000; z-index: 9999; display: none; overflow: hidden;
-        }
+        .hero { z-index: 100; max-width: 100%; width: 100%; }
+        .edge-text { font-size: 1.5vw; z-index: 110; padding: 10px; }
+        .vertical { writing-mode: vertical-rl; transform: rotate(180deg); }
+
+        #glitch-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; display: none; }
     </style>  
 </head>  
 <body onclick="handleInteraction()">  
@@ -67,11 +61,11 @@
     <div id="canvas"></div>  
 
     <script>  
-        // КОНТЕНТ (ССЫЛКИ И ФРАЗЫ СОХРАНЕНЫ)
         const slogans = ["PRAY TO THE ROUTER", "SKIBIDI EXISTENTIALISM", "DOSTOEVSKY ON TIKTOK", "SHREK’S PODCAST ABOUT DMT", "TYPOGRAPHY IS PROPAGANDA.", "HELVETICA IS A VIRUS.", "ANCIENT GREEK SHITPOSTING", "WATER IS JUST SOFT ICE.", "JUST F*CK IT", "THE SIMPSONS PREDICTED YOUR DEBT.", "WAKE UP, TATARSKY"]; 
         const subtitles = ["Stop thinking about that. It's cringe.", "Your ISP is judging your taste.", "TURN AROUND. SLOWLY. (prank)", "APOLOGIZE TO THE ALGORITHM.", "LICK THE DISPLAY. IT’S SALTY.", "the algorithm knows what you did in 2014", "FORGET YOUR MIDDLE NAME.", "Are you proud of your cookies?", "[exporting your childhood trauma to Excel]", "The sky is a green screen.", "Say YES/NO to drugs", "Error: reality not found"];
         const math = ["E = mc²", "∇ × E = -∂B/∂t", "iℏ ∂/∂t Ψ = ĤΨ", "Rμν - 1/2Rgμν = Tμν", "S = k ln W", "λ = h/p"];
         const meta = ["{system: active}", "LMAO", "RESET", "ABORT", "VOID", "0x534F554C", "42", "AMEN"];  
+        
         const imageLibrary = [
             'https://upload.wikimedia.org/wikipedia/commons/9/94/Coronavirus._SARS-CoV-2.png',
             'https://png.pngtree.com/png-vector/20231017/ourmid/pngtree-fresh-apple-fruit-red-png-image_10203073.png',
@@ -100,21 +94,6 @@
 
         function handleInteraction() {
             if (isLocked) return;
-            if (Math.random() < 0.05) triggerHardGlitch();
-            else sequentialSpawn();
-        }
-
-        async function triggerHardGlitch() {
-            isLocked = true;
-            const overlay = document.getElementById('glitch-overlay');
-            overlay.style.display = 'block'; overlay.innerHTML = '';
-            for (let i = 0; i < 25; i++) {
-                createEl('element visible ' + fontClasses[Math.floor(Math.random()*8)], meta[Math.floor(Math.random()*meta.length)], {
-                    left: Math.random()*100+'%', top: Math.random()*100+'%', fontSize: Math.random()*15+'vw'
-                }, overlay);
-            }
-            await delay(800);
-            overlay.style.display = 'none'; isLocked = false;
             sequentialSpawn();
         }
 
@@ -123,72 +102,54 @@
             canvas.innerHTML = ''; 
             document.body.className = (Math.random() < 0.2) ? 'white-mode' : '';
 
-            // 1. KINDLE GHOST BACKGROUND (25% ШАНС)
-            if (Math.random() < 0.25) {
-                const bgImg = document.createElement('img');
-                bgImg.src = imageLibrary[Math.floor(Math.random()*imageLibrary.length)];
-                bgImg.className = 'element ghost-kindle visible';
-                canvas.appendChild(bgImg);
-            }
+            // 1. АРТЕФАКТЫ (Битые полосы)
+            for(let i=0; i<5; i++) createArtifact();
 
             // 2. ЦЕНТРАЛЬНЫЙ СИМВОЛ
-            const centerChar = Math.random() < 0.15 ? "?" : "P";
-            createEl('giant-bg f6 visible', centerChar, {});
+            createEl('giant-bg f6 visible', Math.random() < 0.2 ? "?" : "P", {});
 
-            // 3. СЕТКА ЛИНИЙ
-            const lineCount = 6;
-            for (let i = 0; i < lineCount; i++) createLine(true).classList.add('visible');
-
-            // 4. ЛОГИКА КАРТИНОК
-            const imgRoll = Math.random();
-            let imgsToSpawn = 0;
-            if (imgRoll > 0.95) imgsToSpawn = Math.floor(Math.random() * 5) + 5; // МНОГО (редко)
-            else if (imgRoll > 0.4) imgsToSpawn = Math.floor(Math.random() * 2) + 1; // 1-2 картинки (средне)
-            
-            for (let i = 0; i < imgsToSpawn; i++) {
-                const img = createImage(imageLibrary[Math.floor(Math.random()*imageLibrary.length)]);
+            // 3. ИЗОБРАЖЕНИЯ (1-2 штуки, но БОЛЬШИЕ или ВСПЫШКИ)
+            const imgCount = Math.floor(Math.random() * 2) + 1;
+            for(let i=0; i<imgCount; i++) {
+                const isFlash = Math.random() < 0.4;
+                const img = createImage(imageLibrary[Math.floor(Math.random()*imageLibrary.length)], isFlash ? 'flash' : 'big');
                 img.classList.add('visible');
             }
 
-            // 5. ТИПОГРАФИКА
-            await spawnTypography();
-        }
+            // 4. ТЕКСТ (Посмелее размеры)
+            await layoutTypography();
+        }  
 
-        async function spawnTypography() {
+        async function layoutTypography() {
             // Края
-            createEl('edge-text f6 visible', slogans[Math.floor(Math.random()*slogans.length)], { top: '0', left: '0' });
-            createEl('edge-text f4 visible', meta[Math.floor(Math.random()*meta.length)], { bottom: '0', right: '0' });
-            
-            const isChaos = Math.random() < 0.35;
-            
-            if (isChaos) {
-                // Хаотичная раскладка с вертикальными элементами
-                for (let i = 0; i < 5; i++) {
-                    const isVert = Math.random() < 0.4;
-                    const block = createTextBlock(subtitles[Math.floor(Math.random()*subtitles.length)], false, {
-                        left: Math.random()*60 + '%', top: Math.random()*60 + '%',
-                        transform: `rotate(${(Math.random()-0.5)*20}deg)`
-                    });
-                    if (isVert) block.classList.add('vertical');
-                    block.classList.add('visible');
-                    await delay(50);
-                }
-            } else {
-                // Строгая швейцарская раскладка
-                const heroText = slogans[Math.floor(Math.random()*slogans.length)];
-                const main = createTextBlock(heroText, true, { left: '8%', top: '35%' });
-                if (Math.random() < 0.2) main.classList.add('vertical');
-                main.classList.add('visible');
+            createEl('edge-text f8 visible', slogans[Math.floor(Math.random()*slogans.length)], { top: '0', left: '0' });
+            createEl('edge-text f4 visible', "ID: "+Math.random().toString(16).slice(2,8), { bottom: '0', right: '0' });
 
-                createEl('element f2 visible', subtitles[Math.floor(Math.random()*subtitles.length)], {
-                    left: '8%', top: '75%', fontSize: '1.5vw', maxWidth: '30%'
+            // Главный блок (ГИГАНТСКИЙ)
+            const isChaos = Math.random() < 0.5;
+            const mainTxt = slogans[Math.floor(Math.random()*slogans.length)];
+            
+            const block = createTextBlock(mainTxt, true, { 
+                left: isChaos ? Math.random()*20+'%' : '5%', 
+                top: isChaos ? Math.random()*40+'%' : '30%',
+                transform: `rotate(${(Math.random()-0.5)*10}deg)`
+            });
+            block.classList.add('visible');
+
+            // Подтекст
+            if (Math.random() > 0.3) {
+                const sub = createTextBlock(subtitles[Math.floor(Math.random()*subtitles.length)], false, {
+                    left: '10%', bottom: '15%', maxWidth: '60%'
                 });
+                sub.classList.add('visible');
             }
         }
 
         function createTextBlock(txt, isHero, styles) {
             const block = createEl(isHero ? 'hero' : 'sub-hero', '', styles);
-            let baseSize = isHero ? (txt.length > 15 ? 9 : 13) : (Math.random()*1.5 + 2.5);
+            // --- УЛУЧШЕНО: РАЗМЕР ШРИФТА ДО 25vw ---
+            let baseSize = isHero ? (txt.length > 12 ? 14 : 22) : (Math.random()*3 + 4);
+            if (isHero && Math.random() < 0.3) baseSize = 25; 
             
             block.style.fontSize = baseSize + 'vw';
             txt.split(' ').forEach(word => {
@@ -200,48 +161,51 @@
             return block;
         }
 
-        function createEl(cls, txt, styles, parent = null) {  
-            const div = document.createElement('div');  
-            div.className = 'element ' + cls;  
-            if (txt) div.innerText = txt;  
-            Object.assign(div.style, styles);  
-            (parent || document.getElementById('canvas')).appendChild(div);  
-            return div;  
-        }  
-
-        function createLine(isGrid) {
-            const line = document.createElement('div');
-            line.className = 'line element';
-            const isVert = Math.random() > 0.5;
-            if (isVert) {
-                line.style.width = '1px'; line.style.height = '100vh';
-                line.style.left = isGrid ? (Math.floor(Math.random()*10)*10) + '%' : Math.random()*100 + '%';
+        function createArtifact() {
+            const a = document.createElement('div');
+            a.className = 'artifact element visible';
+            const horizontal = Math.random() > 0.5;
+            if (horizontal) {
+                a.style.width = Math.random()*100+'vw'; a.style.height = '2px';
+                a.style.left = '0'; a.style.top = Math.random()*100+'vh';
             } else {
-                line.style.width = '100vw'; line.style.height = '1px';
-                line.style.top = isGrid ? (Math.floor(Math.random()*10)*10) + '%' : Math.random()*100 + '%';
+                a.style.width = Math.random()*20+'px'; a.style.height = Math.random()*40+'vh';
+                a.style.left = Math.random()*100+'vw'; a.style.top = Math.random()*100+'vh';
             }
-            document.getElementById('canvas').appendChild(line);
-            return line;
+            document.getElementById('canvas').appendChild(a);
         }
 
-        function createImage(src) {
+        function createImage(src, type) {
             const container = document.createElement('div');
             container.className = 'image-container element';
             
-            // Случайный размер: от маленького до очень большого
-            const size = Math.random() > 0.8 ? (Math.random()*30 + 40) : (Math.random()*15 + 10);
-            container.style.width = size + '%';
-            container.style.top = Math.random()*70 + '%';
-            container.style.left = Math.random()*70 + '%';
+            if (type === 'flash') {
+                container.classList.add('flash-active');
+                setTimeout(() => {
+                    container.classList.remove('flash-active');
+                    container.classList.add('flash-ghost');
+                }, 800); // Длительность вспышки
+            } else {
+                container.style.width = (Math.random()*50 + 30) + '%';
+                container.style.top = Math.random()*40 + '%';
+                container.style.left = Math.random()*40 + '%';
+            }
             
-            if (Math.random() < 0.3) container.style.transform = `rotate(${(Math.random()-0.5)*15}deg)`;
-
             const img = document.createElement('img');
-            img.src = src;
+            img.src = src || imageLibrary[1];
             container.appendChild(img);
             document.getElementById('canvas').appendChild(container);
             return container;
         }
+
+        function createEl(cls, txt, styles) {  
+            const div = document.createElement('div');  
+            div.className = 'element ' + cls;  
+            if (txt) div.innerText = txt;  
+            Object.assign(div.style, styles);  
+            document.getElementById('canvas').appendChild(div);  
+            return div;  
+        }  
 
         window.onload = sequentialSpawn;  
     </script>  
