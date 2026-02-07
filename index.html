@@ -152,7 +152,7 @@
         const meta = ["{system: active}", "LMAO", "RESET", "ABORT", "VOID", "0x534F554C", "42", "AMEN"];  
         
         const imageLibrary = [
-            '',
+          '',
             'https://upload.wikimedia.org/wikipedia/commons/9/94/Coronavirus._SARS-CoV-2.png',
             'https://pngimg.com/d/apple_PNG12405.png',
             'https://imageio.forbes.com/blogs-images/booked/files/2011/05/300px-Che_por_Jim_Fitzpatrick.svg_.png?height=295&width=240&fit=bounds',
@@ -168,7 +168,7 @@
             'https://www.americangrocer.co.uk/cdn/shop/products/Campbell_sTomatoSoup.png?v=1631286352',
             'https://static.vecteezy.com/system/resources/thumbnails/049/667/622/small_2x/marble-statue-of-a-man-pointing-upward-dressed-in-a-flowing-robe-with-a-transparent-background-png.png',
             'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Illuminati_triangle_eye.png/960px-Illuminati_triangle_eye.png',
-            'https://www.softub.ch/wp-content/uploads/Spielkarten.png',
+            'https://td-sport.ru/upload/iblock/828/19uwq3fr16j9l7l3u83z8l42q4pt4l3y.png',
             'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Klein_bottle.svg/960px-Klein_bottle.svg.png'
         ];
 
@@ -240,13 +240,15 @@
             }
 
             const mode = Math.random();
-            if (mode < 0.15) await layoutSwiss();
-            else if (mode < 0.30) await layoutChaos();
-            else if (mode < 0.45) await layoutGrid();
-            else if (mode < 0.60) await layoutMinimal();
-            else if (mode < 0.70) await layoutBurst();
-            else if (mode < 0.80) await layoutSplit();
-            else if (mode < 0.88) await layoutColumns();
+            // КЛАССИКА (70% вероятности)
+            if (mode < 0.20) await layoutSwiss();
+            else if (mode < 0.40) await layoutChaos();
+            else if (mode < 0.55) await layoutGrid();
+            else if (mode < 0.70) await layoutMinimal();
+            // НОВЫЕ АКЦЕНТЫ (30% вероятности)
+            else if (mode < 0.77) await layoutBurst();
+            else if (mode < 0.84) await layoutSplit();
+            else if (mode < 0.90) await layoutColumns();
             else if (mode < 0.94) await layoutFocus();
             else if (mode < 0.97) await layoutMadness();
             else await layoutWildcard();
